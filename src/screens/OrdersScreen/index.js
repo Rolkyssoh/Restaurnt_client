@@ -1,12 +1,17 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import React from 'react';
 import {OrderListItem} from '../../components';
+import {useOrderContext} from '../../contexts/OrderContext';
 
 export const OrdersScreen = () => {
+  const {orders} = useOrderContext();
+
   return (
     <View style={styles.container}>
-      <OrderListItem />
-      <OrderListItem />
+      <FlatList
+        data={orders}
+        renderItem={({item}) => <OrderListItem order={item} />}
+      />
     </View>
   );
 };

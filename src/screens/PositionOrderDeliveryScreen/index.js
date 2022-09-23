@@ -3,7 +3,7 @@ import React from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-export const PositionOrderDeliveryScreen = () => {
+export const PositionOrderDeliveryScreen = ({id}) => {
   return (
     <View>
       <Text>Position Order Delivery Screen</Text>

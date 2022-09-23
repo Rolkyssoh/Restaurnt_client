@@ -10,8 +10,16 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {RootNavigator} from './src/components';
+import {Amplify} from 'aws-amplify';
+import config from './src/aws-exports';
+import AuthContextProvider from './src/contexts/AuthContext';
+import {withAuthenticator} from 'aws-amplify-react-native/dist/Auth';
+import BasketContextProvider from './src/contexts/BasketContext';
+import OrderContextProvider from './src/contexts/OrderContext';
 
+Amplify.configure({...config, Analytics: {disabled: true}});
 enableLatestRenderer();
+// Amplify.configure(config);
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -20,7 +28,13 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
-        <RootNavigator />
+        <AuthContextProvider>
+          <BasketContextProvider>
+            <OrderContextProvider>
+              <RootNavigator />
+            </OrderContextProvider>
+          </BasketContextProvider>
+        </AuthContextProvider>
       </NavigationContainer>
     </SafeAreaView>
   );
@@ -30,4 +44,4 @@ const styles = StyleSheet.create({
   container: {backgroundColor: '#fff', flex: 1},
 });
 
-export default App;
+export default withAuthenticator(App);

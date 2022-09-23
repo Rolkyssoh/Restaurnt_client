@@ -1,18 +1,15 @@
 import {View, Text, Pressable, StyleSheet} from 'react-native';
 import React from 'react';
 import {Image} from '@rneui/themed';
-import orders from '../../../assets/data/orders.json';
 import {useNavigation} from '@react-navigation/native';
 
-const order = orders[0];
-
-export const OrderListItem = () => {
+export const OrderListItem = ({order}) => {
   const navigation = useNavigation();
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('Order')}>
+      onPress={() => navigation.navigate('Order', {id: order.id})}>
       <Image source={{uri: order.Restaurant.image}} style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{order.Restaurant.name}</Text>

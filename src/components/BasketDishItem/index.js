@@ -1,20 +1,19 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
-import dishes from '../../../assets/data/dashboard/dishes.json';
 
-const dish = dishes[0];
-
-export const BasketDishItem = () => {
+export const BasketDishItem = ({basketDish}) => {
   return (
     <View style={styles.container}>
       <View style={styles.quantityContainer}>
-        <Text>{dish.quantity}</Text>
+        <Text>{basketDish.quantity}</Text>
       </View>
       <Text
         style={{fontWeight: '600', color: '#000', fontFamily: 'Nunito-Bold'}}>
-        {dish.name}
+        {basketDish.Dish.name}
       </Text>
-      <Text style={{marginLeft: 'auto', color: '#000'}}>${dish.price}</Text>
+      <Text style={{marginLeft: 'auto', color: '#000'}}>
+        ${basketDish.Dish.price}
+      </Text>
     </View>
   );
 };

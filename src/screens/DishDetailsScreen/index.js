@@ -1,28 +1,28 @@
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import restaurants from '../../../assets/data/restaurants.json';
 import {Button, Divider} from '@rneui/themed';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
-
-const restaurant = restaurants[0].dishes;
+import {DataStore} from 'aws-amplify';
+import {Dish} from '../../models';
+import {useBasketContext} from '../../contexts/BasketContext';
 
 export const DishDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const {addDishToBasket} = useBasketContext();
+
   const id = route.params?.id;
 
   const [dish, setDish] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    if (id) {
-      const theDish = restaurant.filter(_ => _.id === id);
-      setDish(theDish);
-    }
+    if (id) DataStore.query(Dish, id).then(setDish);
   }, [id]);
 
-  onAddToBasket = async () => {
+  const onAddToBasket = async () => {
+    await addDishToBasket(dish, quantity);
     navigation.goBack();
   };
 
@@ -54,7 +54,7 @@ export const DishDetailsSCreen = () => {
           color="#000"
           onPress={onMinus}
         />
-        <Text style={styles.quantity}>2</Text>
+        <Text style={styles.quantity}>{quantity}</Text>
         <AntDesign name="pluscircleo" size={60} color="#000" onPress={onPlus} />
       </View>
       <Button

@@ -269,6 +269,13 @@ android {
 
         }
     }
+
+    compileOptions {
+        // Support for Java 8 features
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -300,6 +307,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation 'com.amplifyframework:aws-datastore:1.37.3'
+        // Support for Java 8 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }
 
 if (isNewArchitectureEnabled()) {

@@ -1,14 +1,11 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import styles from './styles';
-import restaurants from '../../../assets/data/restaurants.json';
 import {Image} from '@rneui/base';
 import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
-const restaurant = restaurants[0];
-
-const Header = () => {
+const Header = ({restaurant}) => {
   return (
     <View style={styles.container}>
       <Image source={{uri: restaurant.image}} style={styles.image} />

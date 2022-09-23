@@ -1,12 +1,16 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
-import orders from '../../../assets/data/orders.json';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Image} from '@rneui/themed';
 import {BasketDishItem} from '../../components';
+import {useOrderContext} from '../../contexts/OrderContext';
 
-const order = orders[0];
-
-const OrderDetailsHeader = () => {
+const OrderDetailsHeader = ({order}) => {
   return (
     <View>
       <View style={styles.screenContainer}>
@@ -27,14 +31,24 @@ const OrderDetailsHeader = () => {
   );
 };
 
-export const OrderDetailsScreen = () => {
+export const OrderDetailsScreen = ({id}) => {
+  const {getOrder} = useOrderContext();
+  const [order, setOrder] = useState();
+
+  useEffect(() => {
+    getOrder(id).then(setOrder);
+  }, []);
+
+  if (!order) {
+    return <ActivityIndicator size={'large'} color="black" />;
+  }
+
   return (
-    <View>
-      <OrderDetailsHeader />
-      <View style={{paddingHorizontal: 10}}>
-        <BasketDishItem />
-      </View>
-    </View>
+    <FlatList
+      ListHeaderComponent={() => <OrderDetailsHeader order={order} />}
+      data={order.dishes}
+      renderItem={({item}) => <BasketDishItem basketDish={item} />}
+    />
   );
 };
 
