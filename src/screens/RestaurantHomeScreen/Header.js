@@ -4,8 +4,9 @@ import styles from './styles';
 import {Image} from '@rneui/base';
 import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import {SearchBar} from '@rneui/themed';
 
-const Header = ({restaurant}) => {
+const Header = ({restaurant, searchTerm, setTerm}) => {
   return (
     <View style={styles.container}>
       <Image source={{uri: restaurant.image}} style={styles.image} />
@@ -25,6 +26,13 @@ const Header = ({restaurant}) => {
             </Text>
           </View>
         </View>
+        <SearchBar
+          placeholder="Que recherchez vous?"
+          containerStyle={styles.searBarContainer}
+          inputContainerStyle={{height: 30, backgroundColor: 'lightgrey'}}
+          value={searchTerm}
+          onChangeText={val => setTerm(val)}
+        />
         <Text style={styles.menuTitle}>Menu</Text>
       </View>
       <Divider color="lightgrey" width={1} />

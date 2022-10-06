@@ -36,7 +36,7 @@ export const HomeScreen = () => {
   }
 
   return (
-    <View>
+    <View style={{flex: 1, marginBottom: 45}}>
       <SearchBar
         placeholder="Que recherchez vous?"
         containerStyle={styles.searchBarContainer}
