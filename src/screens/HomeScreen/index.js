@@ -46,19 +46,22 @@ export const HomeScreen = () => {
         onClear={() => setSearchTerm('')}
       />
       <View style={styles.homeContainer}>
-        {filteredRestaurants ? (
-          <FlatList
-            data={filteredRestaurants}
-            renderItem={({item}) => <RestaurantItem restaurant={item} />}
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
+        {filteredRestaurants.length <= 0 && (
           <Text
             h3
-            style={{alignSelf: 'center', marginTop: '25%', color: 'lightgrey'}}>
+            style={{
+              alignSelf: 'center',
+              marginTop: '50%',
+              color: 'lightgrey',
+            }}>
             Aucun restaurant trouvé
           </Text>
         )}
+        <FlatList
+          data={filteredRestaurants}
+          renderItem={({item}) => <RestaurantItem restaurant={item} />}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     </View>
   );

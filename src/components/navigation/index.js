@@ -104,7 +104,11 @@ const HomeStackNavigator = () => {
 const OrdersStackNavigator = () => {
   return (
     <OrdersStackRoutes.Navigator>
-      <OrdersStackRoutes.Screen name="Orders" component={OrdersScreen} />
+      <OrdersStackRoutes.Screen
+        name="Orders"
+        component={OrdersScreen}
+        options={{headerShown: false}}
+      />
       <OrdersStackRoutes.Screen
         name="Order"
         component={OrderDetailsNavigator}
