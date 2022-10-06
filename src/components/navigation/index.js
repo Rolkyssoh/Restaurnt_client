@@ -12,6 +12,8 @@ import {OrderDetailsNavigator} from './OrderDetailsNavigator';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {useAuthContext} from '../../contexts/AuthContext';
+import {ActivityIndicator} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -19,10 +21,25 @@ const HomeStackRoutes = createNativeStackNavigator();
 const OrdersStackRoutes = createNativeStackNavigator();
 
 export const RootNavigator = () => {
+  const {dbUser, loading} = useAuthContext();
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        size={'large'}
+        color="#000"
+        style={{alignSelf: 'center', marginTop: 60}}
+      />
+    );
+  }
+
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="HomeTabs" component={HomeTabsRoutes} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      {dbUser ? (
+        <Stack.Screen name="HomeTabs" component={HomeTabsRoutes} />
+      ) : (
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+      )}
     </Stack.Navigator>
   );
 };
@@ -64,7 +81,11 @@ const HomeTabsRoutes = () => {
 const HomeStackNavigator = () => {
   return (
     <HomeStackRoutes.Navigator>
-      <HomeStackRoutes.Screen name="Restaurants" component={HomeScreen} />
+      <HomeStackRoutes.Screen
+        name="Restaurants"
+        component={HomeScreen}
+        options={{headerShown: false}}
+      />
       <HomeStackRoutes.Screen
         name="Restaurant"
         component={RestaurantHomeScreen}
