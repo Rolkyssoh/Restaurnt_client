@@ -6,32 +6,37 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {DataStore} from 'aws-amplify';
 import {Dish} from '../../models';
 import {useBasketContext} from '../../contexts/BasketContext';
+import {useDishContext} from '../../contexts/DishContext';
 
 export const DishDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {addDishToBasket} = useBasketContext();
+  const {addDishToBasket, basketDishes} = useBasketContext();
+  const {onMinus, onPlus, quantity, setQuantity} = useDishContext();
 
   const id = route.params?.id;
 
   const [dish, setDish] = useState(null);
-  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (id) DataStore.query(Dish, id).then(setDish);
   }, [id]);
 
+  useEffect(() => {
+    if (dish) {
+      basketDishes.map(_ => {
+        if (_.Dish.id === dish.id) {
+          setQuantity(_.quantity);
+        } else {
+          setQuantity(0);
+        }
+      });
+    }
+  }, [dish]);
+
   const onAddToBasket = async () => {
     await addDishToBasket(dish, quantity);
     navigation.goBack();
-  };
-
-  const onMinus = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
-
-  const onPlus = () => {
-    setQuantity(quantity + 1);
   };
 
   const getTotalPrice = () => {
@@ -57,12 +62,14 @@ export const DishDetailsSCreen = () => {
         <Text style={styles.quantity}>{quantity}</Text>
         <AntDesign name="pluscircleo" size={60} color="#000" onPress={onPlus} />
       </View>
-      <Button
-        title={`Ajouter ${quantity} plat(s) au Panier (${getTotalPrice()})MAD`}
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.styleButton}
-        onPress={onAddToBasket}
-      />
+      {quantity > 0 && (
+        <Button
+          title={`Ajouter ${quantity} plat(s) au Panier (${getTotalPrice()})MAD`}
+          containerStyle={styles.buttonContainer}
+          buttonStyle={styles.styleButton}
+          onPress={onAddToBasket}
+        />
+      )}
     </View>
   );
 };
@@ -83,11 +90,8 @@ const styles = StyleSheet.create({
   },
   quantity: {fontSize: 25, marginHorizontal: 20, color: '#000'},
   buttonContainer: {
-    // backgroundColor: '#000',
     marginTop: 'auto',
-    // bottom: 0,
     padding: 20,
-    // alignItems: 'center',
   },
   styleButton: {
     backgroundColor: '#000',

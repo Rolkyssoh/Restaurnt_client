@@ -11,11 +11,14 @@ import {Button, Text} from '@rneui/themed';
 import {DataStore} from 'aws-amplify';
 import {Dish, Restaurant} from '../../models';
 import {useBasketContext} from '../../contexts/BasketContext';
+import {useDishContext} from '../../contexts/DishContext';
 
 export const RestaurantHomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {setRestaurantInfos, basket, basketDishes} = useBasketContext();
+  const {setRestaurantInfos, basket, basketDishes, setBasketDishes} =
+    useBasketContext();
+  const {quantity} = useDishContext();
 
   const [dishes, setDishes] = useState([]);
   const [filteredDishes, setFilteredDishes] = useState([]);
@@ -23,6 +26,21 @@ export const RestaurantHomeScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const id = route.params?.id;
+
+  // useEffect(() => {
+  //   if (basketDishes.length === 1) {
+  //     console.log('the once basket:', basketDishes[0]);
+  //     if (basketDishes[0].quantity === 0) {
+  //       setBasketDishes([]);
+  //     }
+  //   }
+  // }, [quantity]);
+
+  const fetchDishes = idRestau => {
+    DataStore.query(Dish, dish => dish.restaurantID('eq', idRestau)).then(
+      setDishes,
+    );
+  };
 
   useEffect(() => {
     if (!id) {
@@ -32,8 +50,20 @@ export const RestaurantHomeScreen = () => {
     // fetch the restaurant with the id
     DataStore.query(Restaurant, id).then(setRestaurant);
 
-    DataStore.query(Dish, dish => dish.restaurantID('eq', id)).then(setDishes);
+    fetchDishes(id);
   }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      // Watch the home restau
+      const subscription = DataStore.observe(Dish).subscribe(msg => {
+        if (msg.opType === 'UPDATE') {
+          fetchDishes(id);
+        }
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, []);
 
   useEffect(() => {
     setRestaurantInfos(restaurant);

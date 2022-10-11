@@ -16,6 +16,7 @@ import AuthContextProvider from './src/contexts/AuthContext';
 import {withAuthenticator} from 'aws-amplify-react-native/dist/Auth';
 import BasketContextProvider from './src/contexts/BasketContext';
 import OrderContextProvider from './src/contexts/OrderContext';
+import DishContextProvider from './src/contexts/DishContext';
 
 Amplify.configure({...config, Analytics: {disabled: true}});
 enableLatestRenderer();
@@ -31,7 +32,9 @@ const App = () => {
         <AuthContextProvider>
           <BasketContextProvider>
             <OrderContextProvider>
-              <RootNavigator />
+              <DishContextProvider>
+                <RootNavigator />
+              </DishContextProvider>
             </OrderContextProvider>
           </BasketContextProvider>
         </AuthContextProvider>

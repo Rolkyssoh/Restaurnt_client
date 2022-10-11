@@ -1,10 +1,27 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
+import {useDishContext} from '../../contexts/DishContext';
+import {useBasketContext} from '../../contexts/BasketContext';
 
 export const DishListItem = ({dish}) => {
   const navigation = useNavigation();
+  const {quantity} = useDishContext();
+  const {basketDishes} = useBasketContext();
+
+  const [dishQty, setDishQty] = useState(0);
+
+  useEffect(() => {
+    console.log({basketDishes});
+    basketDishes.map(_ => {
+      if (_.Dish.id == dish.id) {
+        console.log('dans le if!! DishListItem');
+        setDishQty(_.quantity);
+      }
+      console.log({_});
+    });
+  }, [basketDishes, quantity]);
 
   return (
     <Pressable
@@ -16,7 +33,7 @@ export const DishListItem = ({dish}) => {
           {dish.description}
         </Text>
         <Text style={styles.price}>${dish.price}</Text>
-        <Text style={styles.quantity}>400x</Text>
+        {dishQty != 0 && <Text style={styles.quantity}>{dishQty}x</Text>}
       </View>
       <Image
         source={{uri: dish.image}}
