@@ -35,6 +35,7 @@ export const RestaurantHomeScreen = () => {
   //     }
   //   }
   // }, [quantity]);
+  // useEffect(() => {}, [basketDishes.length]);
 
   const fetchDishes = idRestau => {
     DataStore.query(Dish, dish => dish.restaurantID('eq', idRestau)).then(

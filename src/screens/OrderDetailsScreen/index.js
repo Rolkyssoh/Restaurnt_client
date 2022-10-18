@@ -24,7 +24,7 @@ const OrderDetailsHeader = ({order}) => {
           <Text style={styles.subtitle}>
             {order.status} &#8226; 2 days ago{' '}
           </Text>
-          <Text style={styles.menuTitle}>Your orders</Text>
+          <Text style={styles.menuTitle}>Votre Commande</Text>
         </View>
       </View>
     </View>
@@ -48,6 +48,7 @@ export const OrderDetailsScreen = ({id}) => {
       ListHeaderComponent={() => <OrderDetailsHeader order={order} />}
       data={order.dishes}
       renderItem={({item}) => <BasketDishItem basketDish={item} />}
+      showsVerticalScrollIndicator={false}
     />
   );
 };

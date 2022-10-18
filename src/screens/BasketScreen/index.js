@@ -9,7 +9,7 @@ import {useDishContext} from '../../contexts/DishContext';
 
 export const BasketScreen = () => {
   const navigation = useNavigation();
-  const {restaurantInfos, basketDishes, totalPrice, setBasketDishes} =
+  const {restaurantInfos, basketDishes, totalPrice, setBasketDishes, basket} =
     useBasketContext();
   const {quantity} = useDishContext();
   const {createOrder, setOrders, orders} = useOrderContext();
@@ -17,9 +17,12 @@ export const BasketScreen = () => {
   const [showOrderBtn, setShowOrderBtn] = useState(false);
 
   useEffect(() => {
+    if (basket === null) navigation.goBack();
+  }, [basket]);
+
+  useEffect(() => {
     if (basketDishes.length === 1) {
       if (basketDishes[0].quantity === 0) {
-        setBasketDishes([]);
         setShowOrderBtn(false);
       }
     } else {
@@ -29,6 +32,8 @@ export const BasketScreen = () => {
 
   const onCreateOrder = async () => {
     const newOrder = await createOrder();
+    console.log({newOrder});
+    setBasketDishes([]);
     setOrders([...orders, newOrder]);
     navigation.navigate('Commande(s)');
   };

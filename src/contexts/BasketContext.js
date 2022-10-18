@@ -62,6 +62,10 @@ const BasketContextProvider = ({children}) => {
     const dishIsInBasket = ids.includes(dish.id);
     if (dishIsInBasket) {
       console.log('Is dish is in Basket?:', dishIsInBasket);
+      // emptyed the basketDishes array
+      if (basketDishes.length === 1) {
+        if (quantity === 0) setBasketDishes([]);
+      }
       // Increase Qty
       DataStore.save(
         BasketDish.copyOf(basketDishToUpdate, updated => {
@@ -95,6 +99,7 @@ const BasketContextProvider = ({children}) => {
         setRestaurantInfos,
         restaurantInfos,
         basket,
+        setBasket,
         basketDishes,
         totalPrice,
         setBasketDishes,

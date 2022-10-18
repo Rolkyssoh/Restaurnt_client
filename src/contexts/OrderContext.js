@@ -8,20 +8,35 @@ const orderContext = createContext();
 
 const OrderContextProvider = ({children}) => {
   const {dbUser} = useAuthContext();
-  const {restaurantInfos, totalPrice, basketDishes, basket} =
+  const {restaurantInfos, totalPrice, basketDishes, basket, setBasket} =
     useBasketContext();
 
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    DataStore.query(Order, o => o.userID('eq', dbUser?.id)).then(setOrders);
+    DataStore.query(Order, o => o.userID('eq', dbUser?.id)).then(test => {
+      console.log('result set orders:', test);
+      console.log('result set orders user:', dbUser);
+      setOrders(test);
+    });
+    console.log('on set le orders ici!!!');
   }, [dbUser]);
 
   const createOrder = async () => {
     // create the order
+    console.log('dans le createOrder');
+    // const newOrder = await DataStore.save(
+    //   new Order({
+    //     userId: dbUser.id,
+    //     Restaurant: restaurantInfos,
+    //     status: 'NEW',
+    //     total: totalPrice,
+    //   }),
+    // );
+
     const newOrder = await DataStore.save(
       new Order({
-        userId: dbUser.id,
+        userID: dbUser.id,
         Restaurant: restaurantInfos,
         status: 'NEW',
         total: totalPrice,
@@ -43,6 +58,7 @@ const OrderContextProvider = ({children}) => {
 
     // Delete basket
     await DataStore.delete(basket);
+    setBasket(null);
 
     setOrders([...orders, newOrder]);
 

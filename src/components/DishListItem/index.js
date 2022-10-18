@@ -8,9 +8,13 @@ import {useBasketContext} from '../../contexts/BasketContext';
 export const DishListItem = ({dish}) => {
   const navigation = useNavigation();
   const {quantity} = useDishContext();
-  const {basketDishes} = useBasketContext();
+  const {basketDishes, basket} = useBasketContext();
 
   const [dishQty, setDishQty] = useState(0);
+
+  useEffect(() => {
+    if (basket === null) setDishQty(0);
+  }, [basket]);
 
   useEffect(() => {
     console.log({basketDishes});

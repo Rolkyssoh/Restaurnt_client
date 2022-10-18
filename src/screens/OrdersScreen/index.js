@@ -16,6 +16,10 @@ export const OrdersScreen = () => {
     setFilteredOrders(filtering);
   }, [searchTerm]);
 
+  useEffect(() => {
+    console.log({orders});
+  }, []);
+
   const filterOrdersByTerm = term => {
     return orders.filter(_ => `${_.status} `.indexOf(term) !== -1);
   };

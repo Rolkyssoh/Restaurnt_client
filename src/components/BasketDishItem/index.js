@@ -5,14 +5,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDishContext} from '../../contexts/DishContext';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {useNavigation} from '@react-navigation/native';
+import {useOrderContext} from '../../contexts/OrderContext';
 
 export const BasketDishItem = ({basketDish}) => {
   const {onMinus, onPlus, setQuantity} = useDishContext();
   const {basketDishes, addDishToBasket} = useBasketContext();
+  const {orders} = useOrderContext();
   const navigation = useNavigation();
 
   const [qtyIncreased, setQtyIncreased] = useState(0);
-  const [qtyDecreased, setQtyDecreased] = useState(0);
+  const [showHandlerQtyBtn, setShowHandlerQtyBtn] = useState(true);
 
   const increaseNumberOfDishes = async id => {
     const basketDish = basketDishes.find(_ => _.Dish.id === id);
@@ -28,11 +30,6 @@ export const BasketDishItem = ({basketDish}) => {
   const decreaseNumberOfDishes = async id => {
     const theBasketDish = basketDishes.find(_ => _.Dish.id === id);
     if (!theBasketDish) throw new Error('Dish not found!');
-    // let quantity;
-    // if (qtyDecreased) {
-    //   if (qtyDecreased >= 1) quantity = qtyDecreased - 1;
-    // } else if (theBasketDish.quantity >= 1)
-    //   quantity = theBasketDish.quantity - 1;
     const quantity = qtyIncreased
       ? qtyIncreased - 1
       : theBasketDish.quantity - 1;
@@ -46,18 +43,32 @@ export const BasketDishItem = ({basketDish}) => {
     setQtyIncreased(quantity);
     await Promise.resolve();
   };
+  console.log('details du basketDish:', basketDish);
+  console.log('le orders dans basketDishItem:', orders);
+
+  useEffect(() => {
+    orders.map(_ => {
+      console.log('order in map:', _);
+      if (_.id === basketDish.orderID) {
+        console.log('dish dans le order désormais!!!');
+        setShowHandlerQtyBtn(false);
+      }
+    });
+  }, [basketDish]);
 
   return (
     <>
       {basketDish.quantity > 0 && (
         <View style={styles.container}>
-          <AntDesign
-            name="pluscircleo"
-            size={25}
-            color="#3fc060"
-            onPress={() => increaseNumberOfDishes(basketDish.Dish.id)}
-            style={{marginRight: 5}}
-          />
+          {showHandlerQtyBtn && (
+            <AntDesign
+              name="pluscircleo"
+              size={25}
+              color="#3fc060"
+              onPress={() => increaseNumberOfDishes(basketDish.Dish.id)}
+              // style={{marginRight: 5}}
+            />
+          )}
           <View style={styles.quantityContainer}>
             <Text>{basketDish.quantity}</Text>
           </View>
@@ -67,16 +78,19 @@ export const BasketDishItem = ({basketDish}) => {
               marginLeft: 'auto',
               color: '#000',
               paddingLeft: 2,
+              marginRight: 7,
             }}>
             ${basketDish.Dish?.price}
           </Text>
-          <AntDesign
-            name="minuscircleo"
-            size={25}
-            color="red"
-            onPress={() => decreaseNumberOfDishes(basketDish.Dish.id)}
-            style={{marginLeft: 5}}
-          />
+          {showHandlerQtyBtn && (
+            <AntDesign
+              name="minuscircleo"
+              size={25}
+              color="red"
+              onPress={() => decreaseNumberOfDishes(basketDish.Dish.id)}
+              // style={{marginLeft: 5}}
+            />
+          )}
         </View>
       )}
     </>
@@ -102,5 +116,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: 3,
+    marginLeft: 7,
   },
 });

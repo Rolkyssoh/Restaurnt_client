@@ -8,7 +8,7 @@ import {User} from '../../models';
 export const ProfileScreen = () => {
   const {dbUser, sub, setDbUser} = useAuthContext();
 
-  const [name, setName] = useState(dbUser.name ?? '');
+  const [name, setName] = useState(dbUser?.name ?? '');
   const [address, setAdress] = useState(dbUser.address ?? '');
   const [lat, setLat] = useState(dbUser.lat + ' ' ?? '0');
   const [lng, setLng] = useState(dbUser.lng + ' ' ?? '0');

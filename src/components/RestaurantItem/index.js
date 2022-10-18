@@ -2,6 +2,7 @@ import {View, StyleSheet, Pressable} from 'react-native';
 import React from 'react';
 import {Image, Text} from '@rneui/base';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
 export const RestaurantItem = ({restaurant}) => {
@@ -23,15 +24,15 @@ export const RestaurantItem = ({restaurant}) => {
             }}>
             {/* DeliveryFee */}
             <View style={styles.fee}>
-              <Fontisto name="motorcycle" size={15} color="grey" />
-              <Text style={{color: 'grey'}}>
+              <MaterialIcons name="delivery-dining" size={20} color="grey" />
+              <Text style={{color: '#000'}}>
                 {restaurant.deliveryFee.toFixed(1)} MAD{' '}
               </Text>
             </View>
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={15} color="grey" />
-              <Text style={{color: 'grey'}}>
+              <Fontisto name="clock" size={20} color="grey" />
+              <Text style={{color: '#000'}}>
                 {restaurant.minDeliveryTime} - {restaurant.maxDeliveryTime} min
               </Text>
             </View>

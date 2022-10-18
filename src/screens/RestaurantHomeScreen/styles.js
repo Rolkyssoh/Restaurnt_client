@@ -33,8 +33,8 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   contentSubtitle: {alignItems: 'center'},
-  fee: {color: '#525252', fontSize: 15, marginRight: 15},
-  time: {color: '#525252', fontSize: 15},
+  fee: {color: '#000', fontSize: 15, marginRight: 15},
+  time: {color: '#000', fontSize: 15},
   menuTitle: {
     marginVertical: 15,
     fontSize: 18,

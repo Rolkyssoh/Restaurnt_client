@@ -4,6 +4,7 @@ import styles from './styles';
 import {Image} from '@rneui/base';
 import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SearchBar} from '@rneui/themed';
 
 const Header = ({restaurant, searchTerm, setTerm}) => {
@@ -14,13 +15,13 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
         <Text style={styles.name}>{restaurant.name}</Text>
         <View style={styles.subtitleCotainer}>
           <View style={styles.contentSubtitle}>
-            <Fontisto name="clock" size={15} color="grey" />
+            <MaterialIcons name="delivery-dining" size={20} color="grey" />
             <Text style={styles.fee}>
               {restaurant.deliveryFee.toFixed(1)} MAD
             </Text>
           </View>
           <View style={styles.contentSubtitle}>
-            <Fontisto name="clock" size={15} color="grey" />
+            <Fontisto name="clock" size={20} color="grey" />
             <Text style={styles.time}>
               {restaurant.minDeliveryTime}-{restaurant.maxDeliveryTime} min
             </Text>

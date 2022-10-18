@@ -6,6 +6,15 @@ import {useNavigation} from '@react-navigation/native';
 export const OrderListItem = ({order}) => {
   const navigation = useNavigation();
 
+  // const OrderStatus = {
+  //   NEW: 'NEW',
+  //   COOKING: 'COOKING',
+  //   READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+  //   PICKED_UP: 'PICKED_UP',
+  //   COMPLETED: 'COMPLETED',
+  //   ACCEPTED: 'ACCEPTED',
+  // };
+
   return (
     <Pressable
       style={styles.container}
@@ -16,7 +25,12 @@ export const OrderListItem = ({order}) => {
         <Text style={{marginVertical: 5, color: '#000'}}>
           3 items &#8226; $38.45
         </Text>
-        <Text style={{color: '#000'}}>2 days ago &#8226; {order.status}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={{color: '#000'}}>2 days ago &#8226; </Text>
+          {order.status === 'NEW' && (
+            <Text style={{color: 'green', fontWeight: 'bold'}}>NOUVELLE</Text>
+          )}
+        </View>
       </View>
     </Pressable>
   );

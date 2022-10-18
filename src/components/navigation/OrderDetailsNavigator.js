@@ -4,7 +4,7 @@ import {OrderDetailsScreen, PositionOrderDeliveryScreen} from '../../screens';
 const Tab = createMaterialTopTabNavigator();
 
 export const OrderDetailsNavigator = ({route}) => {
-  const id = route?.params.id;
+  const id = route?.params?.id;
 
   return (
     <Tab.Navigator>
