@@ -1,11 +1,11 @@
 import {View, StyleSheet, Pressable} from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import {Image, Text} from '@rneui/base';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
-export const RestaurantItem = ({restaurant}) => {
+const RestaurantItem = ({restaurant}) => {
   const navigation = useNavigation();
 
   return (
@@ -45,6 +45,8 @@ export const RestaurantItem = ({restaurant}) => {
     </Pressable>
   );
 };
+
+export default memo(RestaurantItem);
 
 const styles = StyleSheet.create({
   restaurantItemContainer: {

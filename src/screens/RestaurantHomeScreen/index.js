@@ -62,7 +62,9 @@ export const RestaurantHomeScreen = () => {
           fetchDishes(id);
         }
       });
-      return () => subscription.unsubscribe();
+      console.log('subscription is going one!!!');
+      // return () => subscription.unsubscribe();
+      return () => clearInterval(subscription);
     }
   }, []);
 
