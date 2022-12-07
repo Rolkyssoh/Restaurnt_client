@@ -2,8 +2,9 @@ import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {DataStore} from 'aws-amplify';
+import {API, graphqlOperation} from 'aws-amplify';
 import {Courier, Order} from '../../models';
+import {getCourier, getOrder, listCouriers} from '../../graphql/queries';
 
 export const PositionOrderDeliveryScreen = ({id}) => {
   const mapRef = useRef(null);
@@ -11,24 +12,35 @@ export const PositionOrderDeliveryScreen = ({id}) => {
   const [courier, setCourier] = useState(null);
 
   useEffect(() => {
-    DataStore.query(Order, id).then(setOrder);
+    // DataStore.query(Order, id).then(setOrder);
+    API.graphql(graphqlOperation(getOrder, {id})).then(response => {
+      console.log('the current user orders:,', response.data.getOrder);
+      setOrder(response.data.getOrder);
+    });
   }, []);
 
   useEffect(() => {
     if (!order) {
       return;
     }
-    const subscription = DataStore.observe(Order, order.id).subscribe(msg => {
-      if (msg.opType === 'UPDATE') {
-        setOrder(msg.element);
-      }
-    });
-    return () => subscription.unsubscribe();
+    // const subscription = DataStore.observe(Order, order.id).subscribe(msg => {
+    //   if (msg.opType === 'UPDATE') {
+    //     setOrder(msg.element);
+    //   }
+    // });
+    // return () => subscription.unsubscribe();
   }, [order]);
 
   useEffect(() => {
     if (order?.orderCourierId) {
-      DataStore.query(Courier, order.orderCourierId).then(setCourier);
+      // DataStore.query(Courier, order.orderCourierId).then(setCourier);
+
+      API.graphql(
+        graphqlOperation(getCourier, {id: order.orderCourierId}),
+      ).then(result => {
+        console.log('the current courier:', result.data.getCourier);
+        setCourier(result.data.getCourier);
+      });
     }
   }, [order?.orderCourierId]);
 
@@ -47,14 +59,14 @@ export const PositionOrderDeliveryScreen = ({id}) => {
     if (!courier) {
       return;
     }
-    const subscription = DataStore.observe(Courier, courier.id).subscribe(
-      msg => {
-        if (msg.opType === 'UPDATE') {
-          setCourier(msg.element);
-        }
-      },
-    );
-    return () => subscription.unsubscribe();
+    // const subscription = DataStore.observe(Courier, courier.id).subscribe(
+    //   msg => {
+    //     if (msg.opType === 'UPDATE') {
+    //       setCourier(msg.element);
+    //     }
+    //   },
+    // );
+    // return () => subscription.unsubscribe();
   }, [courier]);
 
   return (

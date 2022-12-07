@@ -2,11 +2,12 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Image} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
-import {useDishContext} from '../../contexts/DishContext';
-import {useBasketContext} from '../../contexts/BasketContext';
+import {useDishContext} from '../../../contexts/DishContext';
+import {useBasketContext} from '../../../contexts/BasketContext';
 
-export const DishListItem = ({dish}) => {
+export const IngredientListItem = ({ingredient}) => {
   const navigation = useNavigation();
+  const {quantity} = useDishContext();
   const {basketDishes, basket} = useBasketContext();
 
   const [dishQty, setDishQty] = useState(0);
@@ -16,28 +17,38 @@ export const DishListItem = ({dish}) => {
   }, [basket]);
 
   useEffect(() => {
-    console.log('le basket dish dans DishlistItem:', basketDishes);
+    console.log('le basketDishe dans ingredientListitem:', basketDishes);
     basketDishes.map(_ => {
-      if (_.Dish?.id === dish.id) {
-        setDishQty(_.quantity);
+      if (_.Ingredient?.id === ingredient.id) {
+        console.log('dans le if!! IngredientListItem');
+        _.data
+          ? setDishQty(_.data.createBasketDish.quantity)
+          : setDishQty(_.quantity);
       }
+      console.log({_});
     });
   }, [basketDishes]);
+
+  useEffect(() => {}, [dishQty]);
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('Dish', {id: dish.id})}>
+      onPress={() =>
+        navigation.navigate('IngredientDetails', {id: ingredient.id})
+      }>
       <View style={{flex: 1}}>
-        <Text style={styles.name}>{dish.name}</Text>
+        <Text style={styles.name}>{ingredient.name}</Text>
         <Text style={styles.description} numberOfLines={1}>
-          {dish.description}
+          {ingredient.description}
         </Text>
-        <Text style={styles.price}>${dish.price}</Text>
-        {dishQty != 0 && <Text style={styles.quantity}>{dishQty}x</Text>}
+        <Text style={styles.price}>{ingredient.price}Dh/kg</Text>
+        {dishQty != 0 && (
+          <Text style={styles.quantity}>{dishQty.toFixed(1)}x</Text>
+        )}
       </View>
       <Image
-        source={{uri: dish.image}}
+        source={{uri: ingredient.image}}
         style={styles.image}
         resizeMode="cover"
       />

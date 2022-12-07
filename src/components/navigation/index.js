@@ -4,9 +4,11 @@ import {
   BasketScreen,
   DishDetailsSCreen,
   HomeScreen,
+  IngredientDetailsSCreen,
   OrdersScreen,
   ProfileScreen,
   RestaurantHomeScreen,
+  ShopeHomeScreen,
 } from '../../screens';
 import {OrderDetailsNavigator} from './OrderDetailsNavigator';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -57,12 +59,13 @@ const HomeTabsRoutes = () => {
         }}
       />
       <Tab.Screen
-        name="Commande(s)"
+        name="orderList"
         component={OrdersStackNavigator}
         options={{
           tabBarIcon: ({color}) => (
             <MaterialIcons name="list-alt" size={24} color={color} />
           ),
+          title: 'Commande(s)',
         }}
       />
       <Tab.Screen
@@ -93,9 +96,20 @@ const HomeStackNavigator = () => {
       />
       <HomeStackRoutes.Screen name="Dish" component={DishDetailsSCreen} />
       <HomeStackRoutes.Screen
+        name="IngredientDetails"
+        component={IngredientDetailsSCreen}
+      />
+      <HomeStackRoutes.Screen
         name="Basket"
         component={BasketScreen}
         options={{title: 'Panier'}}
+      />
+
+      {/* shop */}
+      <HomeStackRoutes.Screen
+        name="Shop"
+        component={ShopeHomeScreen}
+        options={{headerShown: false}}
       />
     </HomeStackRoutes.Navigator>
   );

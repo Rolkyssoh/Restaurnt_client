@@ -1,53 +1,90 @@
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Input} from '@rneui/themed';
-import {Auth, DataStore} from 'aws-amplify';
+import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {User} from '../../models';
+import {createUser, updateUser} from '../../graphql/mutations';
 
 export const ProfileScreen = () => {
   const {dbUser, sub, setDbUser} = useAuthContext();
 
   const [name, setName] = useState(dbUser?.name ?? '');
-  const [address, setAdress] = useState(dbUser.address ?? '');
-  const [lat, setLat] = useState(dbUser.lat + ' ' ?? '0');
-  const [lng, setLng] = useState(dbUser.lng + ' ' ?? '0');
+  const [address, setAdress] = useState(dbUser?.address ?? '');
+  const [lat, setLat] = useState(dbUser?.lat + ' ' ?? '0');
+  const [lng, setLng] = useState(dbUser?.lng + ' ' ?? '0');
 
   const onSave = async () => {
     if (dbUser) {
-      await updateUser();
+      // await updateUser();
+      await editExistedUser();
     } else {
-      await createUser();
+      await addNewUser();
     }
   };
 
-  const createUser = async () => {
+  // const createUser = async () => {
+  //   try {
+  //     const user = await DataStore.save(
+  //       new User({
+  //         name,
+  //         address,
+  //         lat: parseFloat(lat),
+  //         lng: parseFloat(lng),
+  //         sub,
+  //       }),
+  //     );
+  //     setDbUser(user);
+  //   } catch (e) {
+  //     Alert.alert('Error', e.message);
+  //   }
+  // };
+  const addNewUser = async () => {
     try {
-      const user = await DataStore.save(
-        new User({
-          name,
-          address,
-          lat: parseFloat(lat),
-          lng: parseFloat(lng),
-          sub,
+      const user = API.graphql(
+        graphqlOperation(createUser, {
+          input: {
+            name,
+            address,
+            lat: parseFloat(lat),
+            lng: parseFloat(lng),
+            sub,
+          },
         }),
       );
-      setDbUser(user);
+      setDbUser(user.data.createUser);
     } catch (e) {
       Alert.alert('Error', e.message);
     }
   };
 
-  const updateUser = async () => {
-    const user = await DataStore.save(
-      User.copyOf(dbUser, updated => {
-        (updated.name = name),
-          (updated.address = address),
-          (updated.lat = parseFloat(lat)),
-          (lng = parseFloat(lng));
+  // const updateUser = async () => {
+  //   const user = await DataStore.save(
+  //     User.copyOf(dbUser, updated => {
+  //       (updated.name = name),
+  //         (updated.address = address),
+  //         (updated.lat = parseFloat(lat)),
+  //         (lng = parseFloat(lng));
+  //     }),
+  //   );
+  //   setDbUser(user);
+  // };
+
+  const editExistedUser = async () => {
+    const updatedUser = await API.graphql(
+      graphqlOperation(updateUser, {
+        input: {
+          name,
+          address,
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+          id: dbUser.id,
+          _version: dbUser._version,
+        },
       }),
     );
-    setDbUser(user);
+    console.log('the updated user:', updatedUser);
+    setDbUser(updatedUser.data.updateUser);
   };
 
   return (

@@ -13,20 +13,28 @@ const OrderStatus = {
   "READY_FOR_PICKUP": "READY_FOR_PICKUP",
   "PICKED_UP": "PICKED_UP",
   "COMPLETED": "COMPLETED",
-  "ACCEPTED": "ACCEPTED"
+  "NEWVALUE": "NEWVALUE",
+  "DECLINED_BY_STRUCTURE": "DECLINED_BY_STRUCTURE"
 };
 
-const { Courier, Basket, BasketDish, Dish, OrderDish, Order, Restaurant, User } = initSchema(schema);
+const StructureType = {
+  "RESTAURANT": "RESTAURANT",
+  "SHOP": "SHOP"
+};
+
+const { Courier, OrderDish, Dish, Ingredient, Order, Structure, Basket, BasketDish, User } = initSchema(schema);
 
 export {
   Courier,
+  OrderDish,
+  Dish,
+  Ingredient,
+  Order,
+  Structure,
   Basket,
   BasketDish,
-  Dish,
-  OrderDish,
-  Order,
-  Restaurant,
   User,
   TransportationModes,
-  OrderStatus
+  OrderStatus,
+  StructureType
 };

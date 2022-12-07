@@ -1,25 +1,28 @@
 import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import RestaurantItem from '../../../components/RestaurantItem';
-import {DataStore} from 'aws-amplify';
-import {Restaurant} from '../../../models';
-import {SearchBar, Text} from '@rneui/themed';
+import {API, graphqlOperation} from 'aws-amplify';
+import {StructureType} from '../../../models';
+import {Text} from '@rneui/themed';
+import {listStructures} from '../../../graphql/queries';
 
-const RestaurantHome = () => {
+const RestaurantHome = ({search}) => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    DataStore.query(Restaurant).then(result => setRestaurants(result));
+    API.graphql(graphqlOperation(listStructures)).then(result => {
+      const listRestaurants = result.data.listStructures.items.filter(
+        _ => _.type === StructureType.RESTAURANT && !_._deleted,
+      );
+      setRestaurants(listRestaurants);
+    });
   }, []);
 
   useEffect(() => {
-    const filtering = searchTerm
-      ? filterRestaurantByTerm(searchTerm)
-      : restaurants;
+    const filtering = search ? filterRestaurantByTerm(search) : restaurants;
     setFilteredRestaurants(filtering);
-  }, [searchTerm, restaurants]);
+  }, [search, restaurants]);
 
   const filterRestaurantByTerm = term => {
     return restaurants.filter(_ => `${_.name} `.indexOf(term) !== -1);
@@ -37,14 +40,6 @@ const RestaurantHome = () => {
 
   return (
     <View style={{flex: 1, marginBottom: 45}}>
-      <SearchBar
-        placeholder="Que recherchez vous?"
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={{height: 35, backgroundColor: 'lightgrey'}}
-        value={searchTerm}
-        onChangeText={test => setSearchTerm(test)}
-        onClear={() => setSearchTerm('')}
-      />
       <View style={styles.homeContainer}>
         {filteredRestaurants.length <= 0 && (
           <Text
@@ -68,16 +63,6 @@ const RestaurantHome = () => {
 };
 
 const styles = StyleSheet.create({
-  searchBarContainer: {
-    borderColor: 'lightgrey',
-    borderTopColor: 'lightgrey',
-    borderBottomColor: 'lightgrey',
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   homeContainer: {
     height: '100%',
     marginHorizontal: 10,

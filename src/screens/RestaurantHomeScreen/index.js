@@ -1,24 +1,27 @@
 import {View, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
-import {Divider, Image} from '@rneui/base';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import Header from './Header';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {DishListItem} from '../../components';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button, Text} from '@rneui/themed';
-import {DataStore} from 'aws-amplify';
-import {Dish, Restaurant} from '../../models';
+import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
-import {useDishContext} from '../../contexts/DishContext';
+import {getStructure} from '../../graphql/queries';
+import {onCreateDish} from '../../graphql/subscriptions';
 
 export const RestaurantHomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {setRestaurantInfos, basket, basketDishes, setBasketDishes} =
-    useBasketContext();
-  const {quantity} = useDishContext();
+  const {
+    setRestaurantInfos,
+    restaurantInfos,
+    setShopInfos,
+    shopInfos,
+    basket,
+    basketDishes,
+  } = useBasketContext();
 
   const [dishes, setDishes] = useState([]);
   const [filteredDishes, setFilteredDishes] = useState([]);
@@ -27,19 +30,18 @@ export const RestaurantHomeScreen = () => {
 
   const id = route.params?.id;
 
-  // useEffect(() => {
-  //   if (basketDishes.length === 1) {
-  //     console.log('the once basket:', basketDishes[0]);
-  //     if (basketDishes[0].quantity === 0) {
-  //       setBasketDishes([]);
-  //     }
-  //   }
-  // }, [quantity]);
-  // useEffect(() => {}, [basketDishes.length]);
+  useEffect(() => {
+    console.log('le basket dish dans restau home:', basketDishes);
+  }, [basketDishes]);
 
   const fetchDishes = idRestau => {
-    DataStore.query(Dish, dish => dish.restaurantID('eq', idRestau)).then(
-      setDishes,
+    API.graphql(graphqlOperation(listDishesByRestaurant, {id: idRestau})).then(
+      resp => {
+        const dishList = resp.data.getStructure.Dishes.items.filter(
+          _ => !_._deleted,
+        );
+        setDishes(dishList);
+      },
     );
   };
 
@@ -47,9 +49,12 @@ export const RestaurantHomeScreen = () => {
     if (!id) {
       return;
     }
-    setRestaurantInfos(null);
+    if (restaurantInfos) setRestaurantInfos(null);
+    if (shopInfos) setShopInfos(null);
     // fetch the restaurant with the id
-    DataStore.query(Restaurant, id).then(setRestaurant);
+    API.graphql(graphqlOperation(getStructure, {id})).then(restau =>
+      setRestaurant(restau.data.getStructure),
+    );
 
     fetchDishes(id);
   }, [id]);
@@ -57,16 +62,22 @@ export const RestaurantHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the home restau
-      const subscription = DataStore.observe(Dish).subscribe(msg => {
-        if (msg.opType === 'UPDATE') {
+      const subscription = API.graphql(
+        graphqlOperation(onCreateDish, {
+          filter: {structureID: {eq: id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
           fetchDishes(id);
-        }
+          console.log('le wath onCreateDish:', value);
+        },
+        error: err => {
+          console.warn(err);
+        },
       });
-      console.log('subscription is going one!!!');
-      // return () => subscription.unsubscribe();
-      return () => clearInterval(subscription);
+      return () => subscription.unsubscribe();
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     setRestaurantInfos(restaurant);
@@ -127,3 +138,27 @@ export const RestaurantHomeScreen = () => {
     </View>
   );
 };
+
+export const listDishesByRestaurant = /* GraphQL */ `
+  query GetStructure($id: ID!) {
+    getStructure(id: $id) {
+      Dishes {
+        items {
+          id
+          name
+          image
+          description
+          price
+          structureID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;

@@ -1,10 +1,18 @@
 import {View, Text, Pressable, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import {OrderDish} from '../../models';
+
+dayjs.extend(relativeTime);
 
 export const OrderListItem = ({order}) => {
   const navigation = useNavigation();
+
+  const [totalQty, setTotalQty] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
 
   // const OrderStatus = {
   //   NEW: 'NEW',
@@ -15,20 +23,51 @@ export const OrderListItem = ({order}) => {
   //   ACCEPTED: 'ACCEPTED',
   // };
 
+  useEffect(() => {
+    if (order.orderDishes !== null) {
+      const theTotalQty = order.OrderDishes.items.reduce(
+        (sum, orderDish) => sum + orderDish.quantity,
+        0,
+      );
+      const theTotalPrice = order.OrderDishes.items.reduce(
+        (sum, orderDish) =>
+          orderDish.Dish
+            ? sum + orderDish.quantity * orderDish.Dish.price
+            : orderDish.Ingredient
+            ? sum + orderDish.quantity * orderDish.Ingredient.price
+            : null,
+        order.Structure.deliveryFee,
+      );
+      setTotalQty(theTotalQty);
+      setTotalPrice(theTotalPrice);
+    }
+  }, [order]);
+
+  // useEffect(() => {}, [totalPrice]);
+
   return (
     <Pressable
       style={styles.container}
       onPress={() => navigation.navigate('Order', {id: order.id})}>
-      <Image source={{uri: order.Restaurant.image}} style={styles.image} />
+      <Image source={{uri: order.Structure?.image}} style={styles.image} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{order.Restaurant.name}</Text>
+        <Text style={styles.name}>{order.Structure?.name}</Text>
         <Text style={{marginVertical: 5, color: '#000'}}>
-          3 items &#8226; $38.45
+          {`${
+            order.Structure.type === 'RESTAURANT'
+              ? totalQty + ' items'
+              : totalQty?.toFixed(1) + ' kg'
+          }`}
+          &#8226; {totalPrice?.toFixed(2)} MAD
         </Text>
         <View style={{flexDirection: 'row'}}>
-          <Text style={{color: '#000'}}>2 days ago &#8226; </Text>
+          <Text style={{color: '#000'}}>
+            {dayjs(order.createdAt).fromNow(true)} &#8226;{' '}
+          </Text>
           {order.status === 'NEW' && (
-            <Text style={{color: 'green', fontWeight: 'bold'}}>NOUVELLE</Text>
+            <Text style={{color: 'green', fontWeight: 'bold'}}>
+              {order.status}
+            </Text>
           )}
         </View>
       </View>

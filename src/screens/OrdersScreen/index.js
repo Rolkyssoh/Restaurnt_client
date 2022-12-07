@@ -10,15 +10,12 @@ export const OrdersScreen = () => {
   const [filterdOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
+    console.log('le orderssss: ', orders);
     const filtering = searchTerm
       ? filterOrdersByTerm(searchTerm.toUpperCase())
       : orders;
     setFilteredOrders(filtering);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    console.log({orders});
-  }, []);
+  }, [searchTerm, orders]);
 
   const filterOrdersByTerm = term => {
     return orders.filter(_ => `${_.status} `.indexOf(term) !== -1);

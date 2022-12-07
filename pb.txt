@@ -1,0 +1,4 @@
+amplify remove api
+amplify push
+amplify add api
+amplify push

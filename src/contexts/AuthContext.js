@@ -1,5 +1,6 @@
-import {Auth, DataStore} from 'aws-amplify';
+import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
+import {listUsers} from '../graphql/queries';
 import {User} from '../models';
 
 const AuthContext = createContext();
@@ -21,8 +22,15 @@ const AuthContextProvider = ({children}) => {
       return;
     }
 
-    DataStore.query(User, user => user.sub('eq', sub)).then(users => {
-      setDbUser(users[0]);
+    // DataStore.query(User, user => user.sub('eq', sub)).then(users => {
+    //   setDbUser(users[0]);
+    //   setLoading(false);
+    // });
+    API.graphql(graphqlOperation(listUsers)).then(result => {
+      const theCurrentUser = result.data.listUsers.items.filter(
+        _ => _.sub === sub,
+      );
+      setDbUser(theCurrentUser[0]);
       setLoading(false);
     });
   }, [sub]);

@@ -1,0 +1,108 @@
+enum TransportationModes {
+  DRIVING
+  BICYCLING
+}
+
+type Courier @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  sub: String!
+  lat: String!
+  lng: Float!
+  tranportationMode: TransportationModes
+}
+
+type OrderDish @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  quantity: Float!
+  orderID: ID! @index(name: "byOrder")
+  Dish: Dish @hasOne
+  Ingredient: Ingredient @hasOne
+}
+
+enum OrderStatus {
+  NEW
+  COOKING
+  READY_FOR_PICKUP
+  PICKED_UP
+  COMPLETED
+  NEWVALUE
+  DECLINED_BY_STRUCTURE
+}
+
+type Order @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  status: OrderStatus
+  userID: ID! @index(name: "byUser")
+  OrderDishes: [OrderDish] @hasMany(indexName: "byOrder", fields: ["id"])
+  Structure: Structure @hasOne
+  Courier: Courier @hasOne
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  sub: String!
+  name: String!
+  address: String!
+  lat: Float!
+  lng: Float!
+  Baskets: [Basket] @hasMany(indexName: "byUser", fields: ["id"])
+  Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type BasketDish @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  quantity: Float!
+  basketID: ID! @index(name: "byBasket")
+  Dish: Dish @hasOne
+  Ingredient: Ingredient @hasOne
+}
+
+type Basket @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  structureID: ID! @index(name: "byStructure")
+  BasketDishes: [BasketDish] @hasMany(indexName: "byBasket", fields: ["id"])
+  userID: ID! @index(name: "byUser")
+}
+
+type Ingredient @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  image: String!
+  description: String
+  price: Float!
+  structureID: ID! @index(name: "byStructure")
+}
+
+type Dish @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  image: String!
+  description: String
+  price: Float!
+  structureID: ID! @index(name: "byStructure")
+}
+
+enum StructureType {
+  RESTAURANT
+  SHOP
+}
+
+type Structure @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  image: String!
+  deliveryFee: Float!
+  minDeliveryTim: Int!
+  maxDeliveryTime: Int!
+  rating: Float
+  address: String!
+  lat: Float!
+  lng: Float!
+  type: StructureType
+  adminSub: String
+  Dishes: [Dish] @hasMany(indexName: "byStructure", fields: ["id"])
+  Ingredients: [Ingredient] @hasMany(indexName: "byStructure", fields: ["id"])
+  Baskets: [Basket] @hasMany(indexName: "byStructure", fields: ["id"])
+}
+ 

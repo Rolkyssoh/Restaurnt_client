@@ -5,55 +5,56 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
-import {useDishContext} from '../../contexts/DishContext';
-import {getDish} from '../../graphql/queries';
+import {useIngredientContext} from '../../contexts/IngredientContext';
+import {getIngredient} from '../../graphql/queries';
 
-export const DishDetailsSCreen = () => {
+export const IngredientDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {addDishToBasket, basketDishes, loading} = useBasketContext();
-  const {onMinus, onPlus, quantity, setQuantity} = useDishContext();
+  const {addIngredientToBasket, basketDishes} = useBasketContext();
+  const {onMinus, onPlus, quantity, setQuantity} = useIngredientContext();
 
   const id = route.params?.id;
 
-  const [dish, setDish] = useState(null);
+  const [ingredient, setIngredient] = useState(null);
 
   useEffect(() => {
     if (id)
-      API.graphql(graphqlOperation(getDish, {id})).then(resp => {
-        setDish(resp.data.getDish);
-        console.log('the dish in the details:', resp);
-      });
+      API.graphql(graphqlOperation(getIngredient, {id})).then(resp =>
+        setIngredient(resp.data.getIngredient),
+      );
   }, [id]);
 
   useEffect(() => {
-    if (dish) {
-      const currentDish = basketDishes.find(_ => _.Dish?.id === dish.id);
-      if (currentDish) {
-        setQuantity(currentDish.quantity);
-      } else {
-        setQuantity(0);
-      }
+    console.log({ingredient});
+    if (ingredient) {
+      basketDishes.map(_ => {
+        if (_.Ingredient.id === ingredient.id) {
+          setQuantity(_.quantity);
+        } else {
+          setQuantity(0);
+        }
+      });
     }
-  }, [dish]);
+  }, [ingredient]);
 
   const onAddToBasket = async () => {
-    await addDishToBasket(dish, quantity);
+    await addIngredientToBasket(ingredient, quantity);
     navigation.goBack();
   };
 
   const getTotalPrice = () => {
-    return (dish.price * quantity).toFixed(2);
+    return (ingredient.price * quantity).toFixed(2);
   };
 
-  if (!dish) {
+  if (!ingredient) {
     return <ActivityIndicator size="large" color="black" />;
   }
 
   return (
     <View style={styles.constainerScreen}>
-      <Text style={styles.name}>{dish.name}</Text>
-      <Text style={styles.description}>{dish.description}</Text>
+      <Text style={styles.name}>{ingredient.name}</Text>
+      <Text style={styles.description}>{ingredient.description}</Text>
       <Divider color="lightgrey" width={2} />
       <View style={styles.row}>
         <AntDesign
@@ -62,17 +63,17 @@ export const DishDetailsSCreen = () => {
           color="#000"
           onPress={onMinus}
         />
-        <Text style={styles.quantity}>{quantity}</Text>
+        <Text style={styles.quantity}>{quantity.toFixed(1)}</Text>
         <AntDesign name="pluscircleo" size={60} color="#000" onPress={onPlus} />
       </View>
-      {quantity > 0 && (
+      {quantity >= 0.3 && (
         <Button
-          title={`Ajouter ${quantity} plat(s) au Panier (${getTotalPrice()})MAD`}
+          title={`Ajouter ${quantity.toFixed(
+            1,
+          )} kg(s) au Panier (${getTotalPrice()})MAD`}
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.styleButton}
           onPress={onAddToBasket}
-          disabled={loading}
-          loading={loading}
         />
       )}
     </View>

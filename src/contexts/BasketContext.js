@@ -1,5 +1,11 @@
-import {DataStore} from 'aws-amplify';
+import {API, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
+import {
+  createBasket,
+  createBasketDish,
+  updateBasketDish,
+} from '../graphql/mutations';
+import {listBasketDishes, listBaskets} from '../graphql/queries';
 import {Basket, BasketDish} from '../models';
 import {useAuthContext} from './AuthContext';
 import {useDishContext} from './DishContext';
@@ -11,98 +17,244 @@ const BasketContextProvider = ({children}) => {
   const {setQuantity, quantity} = useDishContext();
 
   const [restaurantInfos, setRestaurantInfos] = useState(null);
+  const [shopInfos, setShopInfos] = useState(null);
   const [basket, setBasket] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
   const [basketDishes, setBasketDishes] = useState([]);
-
-  const totalPrice = basketDishes.reduce(
-    (sum, basketDish) =>
-      basketDish.Dish != null &&
-      sum + basketDish.quantity * basketDish.Dish.price,
-    restaurantInfos?.deliveryFee,
-  );
-
-  // useEffect(() => {
-  //   if (basketDishes.length <= 1) {
-  //     console.log('the once basket:', basketDishes[0]);
-  //     if (basketDishes[0] && basketDishes[0].quantity === 0) {
-  //       setBasketDishes([]);
-  //     }
-  //   }
-  // }, [quantity]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    DataStore.query(Basket, b =>
-      b.restaurantID('eq', restaurantInfos?.id).userID('eq', dbUser?.id),
-    ).then(baskets => setBasket(baskets[0]));
+    const thePrice = restaurantInfos
+      ? basketDishes.reduce(
+          (sum, basketDish) =>
+            basketDish.Dish != null &&
+            sum + basketDish.quantity * basketDish.Dish.price,
+          restaurantInfos.deliveryFee,
+        )
+      : basketDishes.reduce(
+          (sum, basketIngredient) =>
+            basketIngredient.Ingredient != null &&
+            sum + basketIngredient.quantity * basketIngredient.Ingredient.price,
+          shopInfos?.deliveryFee,
+        );
+    setTotalPrice(thePrice);
+  }, [basketDishes]);
 
-    console.log({restaurantInfos});
+  // FOR RESTAURANT
+  useEffect(() => {
+    if (restaurantInfos)
+      API.graphql(
+        graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
+      ).then(result => {
+        const basketList = result.data.getStructure.Baskets.items.filter(
+          _ => !_._deleted && _.userID === dbUser?.id,
+        );
+        console.log('le response basket:', basketList);
+        setBasket(basketList[0]);
+      });
   }, [dbUser, restaurantInfos]);
 
+  // FOR INGREDIENT
   useEffect(() => {
-    DataStore.query(BasketDish, bd => bd.basketID('eq', basket?.id)).then(
-      currentBasketDishes => {
-        console.log({currentBasketDishes});
-        if (currentBasketDishes.length === 1) {
-          if (currentBasketDishes[0].quantity === 0) setBasketDishes([]);
-        } else {
-          setBasketDishes(currentBasketDishes);
-        }
-      },
-    );
-  }, [basket]);
+    if (shopInfos)
+      API.graphql(
+        graphqlOperation(listBasketsByStructure, {
+          id: shopInfos?.id,
+        }),
+      ).then(result => {
+        const basketList = result.data.getStructure.Baskets.items.filter(
+          _ => !_._deleted && _.userID === dbUser?.id,
+        );
+        setBasket(basketList[0]);
+        console.log('le basket shoppp:', basketList[0]);
+      });
+  }, [dbUser, shopInfos]);
 
-  const addDishToBasket = async (dish, quantity) => {
-    // get the existing basket or create a new one
-    let theBasket = basket ?? (await createNewBasket());
-
-    console.log('Quantity in AddDishToBasket:', quantity);
-
-    const basketDishToUpdate = basketDishes.find(_ => _.Dish.id === dish.id);
-    const ids = basketDishes.map(_ => _.Dish.id);
-    const dishIsInBasket = ids.includes(dish.id);
-    if (dishIsInBasket) {
-      console.log('Is dish is in Basket?:', dishIsInBasket);
-      // emptyed the basketDishes array
-      if (basketDishes.length === 1) {
-        if (quantity === 0) setBasketDishes([]);
+  useEffect(() => {
+    // API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
+    //   const basketDishesByBasketId = resp.data.listBasketDishes.items.filter(
+    //     _ => !_._deleted && _.basketID === basket?.id,
+    //   );
+    //   setBasketDishes(basketDishesByBasketId);
+    // });
+    console.log('le basket dans basketContext:', basket);
+    const existBd = basket?.BasketDishes?.items.filter(_ => !_._deleted);
+    if (basket && restaurantInfos) {
+      if (basket.structureID === restaurantInfos.id && !basket._deleted) {
+        setBasketDishes(existBd);
       }
-      // Increase Qty
-      DataStore.save(
-        BasketDish.copyOf(basketDishToUpdate, updated => {
-          updated.quantity = quantity;
+    } else if (basket && shopInfos) {
+      if (basket.structureID === shopInfos.id && !basket._deleted) {
+        setBasketDishes(existBd);
+      }
+    }
+  }, [basket, restaurantInfos, shopInfos]);
+
+  // FOR DISH
+  const addDishToBasket = async (dish, quantity) => {
+    setLoading(true);
+    // get the existing basket or create a new one
+    let theBasket = basket ?? (await createRestaurantNewBasket());
+
+    const basketDishToUpdate = basketDishes.find(_ => _.Dish?.id === dish?.id);
+    const ids = basketDishes.map(_ => _.Dish?.id);
+    const dishIsInBasket = ids.includes(dish?.id);
+
+    if (basketDishToUpdate) {
+      // emptyed the basketDishes array
+      // if (basketDishes.length === 1 && quantity === 0) {
+      //   setBasketDishes([]);
+      // }
+      // // Increase Qty
+      await API.graphql(
+        graphqlOperation(updateBasketDish, {
+          input: {
+            _version: basketDishToUpdate._version,
+            quantity,
+            id: basketDishToUpdate.id,
+          },
         }),
       );
-      await DataStore.query(BasketDish, bd =>
-        bd.basketID('eq', basket?.id),
-      ).then(setBasketDishes);
+
+      await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
+        const basketDishesByBasketId = resp.data.listBasketDishes.items.filter(
+          _ => !_._deleted && _.basketID === basket?.id,
+        );
+        if (basketDishesByBasketId)
+          API.graphql(
+            graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
+          ).then(result => {
+            const basketList = result.data.getStructure.Baskets.items.filter(
+              _ => !_._deleted && _.userID === dbUser?.id,
+            );
+            console.log('le response basket:', basketList);
+            setBasket(basketList[0]);
+          });
+        setBasketDishes(basketDishesByBasketId);
+        setLoading(false);
+      });
     } else {
-      // create a BasketDish item and save to Datastore
-      const newDish = await DataStore.save(
-        new BasketDish({quantity, Dish: dish, basketID: theBasket.id}),
+      //  create a BasketDish item and save
+      const newDish = await API.graphql(
+        graphqlOperation(createBasketDish, {
+          input: {
+            quantity,
+            basketID: theBasket.data
+              ? theBasket.data.createBasket.id
+              : theBasket.id,
+            basketDishDishId: dish?.id,
+          },
+          Dish: dish,
+        }),
       );
-      setBasketDishes([...basketDishes, newDish]);
+
+      if (basketDishes.length === 0) {
+        setBasketDishes([newDish.data.createBasketDish]);
+        setLoading(false);
+      } else {
+        setBasketDishes([newDish.data.createBasketDish, ...basketDishes]);
+        setLoading(false);
+      }
     }
   };
 
-  const createNewBasket = async () => {
-    const newBasket = await DataStore.save(
-      new Basket({userID: dbUser.id, restaurantID: restaurantInfos.id}),
+  const createRestaurantNewBasket = async () => {
+    const newBasket = await API.graphql(
+      graphqlOperation(createBasket, {
+        input: {
+          userID: dbUser.id,
+          structureID: restaurantInfos.id,
+        },
+      }),
     );
     setBasket(newBasket);
     return newBasket;
+  };
+
+  // FoR INGREDIENT
+  const addIngredientToBasket = async (ingredient, quantity) => {
+    console.log('the added:', basket);
+    // get the existing basket or create a new one
+    let theBasket = basket ?? (await createNewShopBasket());
+
+    const basketIngredientToUpdate = basketDishes.find(
+      _ => _.Ingredient?.id === ingredient?.id,
+    );
+    console.log({basketIngredientToUpdate});
+    const ids = basketDishes.map(_ => _.Ingredient.id);
+    const ingredientIsInBasket = ids.includes(ingredient.id);
+    if (ingredientIsInBasket) {
+      console.log('Is dish is in Basket?:', ingredientIsInBasket);
+      // emptyed the basketDishes array
+      if (basketDishes.length === 1) {
+        if (quantity === 0.2) setBasketDishes([]);
+      }
+
+      API.graphql(
+        graphqlOperation(updateBasketDish, {
+          input: {
+            _version: basketIngredientToUpdate._version,
+            quantity,
+            id: basketIngredientToUpdate.id,
+          },
+        }),
+      );
+
+      await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
+        const basketIngredientsByBasketId =
+          resp.data.listBasketDishes.items.filter(
+            _ => !_._deleted && _.basketID === basket?.id,
+          );
+        setBasketDishes(basketIngredientsByBasketId);
+      });
+    } else {
+      const newIngredient = await API.graphql(
+        graphqlOperation(createBasketDish, {
+          input: {
+            quantity,
+            basketID: theBasket.data
+              ? theBasket.data.createBasket.id
+              : theBasket.id,
+            basketDishIngredientId: ingredient?.id,
+          },
+          Ingredient: ingredient,
+        }),
+      );
+
+      setBasketDishes([newIngredient.data.createBasketDish, ...basketDishes]);
+    }
+  };
+
+  const createNewShopBasket = async () => {
+    console.log({shopInfos});
+    const newShopBasket = await API.graphql(
+      graphqlOperation(createBasket, {
+        input: {
+          userID: dbUser.id,
+          structureID: shopInfos.id,
+        },
+      }),
+    );
+    console.log('le new basket créeee:', newShopBasket);
+    setBasket(newShopBasket);
+    return newShopBasket;
   };
 
   return (
     <BasketContext.Provider
       value={{
         addDishToBasket,
+        addIngredientToBasket,
         setRestaurantInfos,
+        setShopInfos,
+        shopInfos,
         restaurantInfos,
         basket,
         setBasket,
         basketDishes,
         totalPrice,
         setBasketDishes,
+        loading,
       }}>
       {children}
     </BasketContext.Provider>
@@ -112,3 +264,66 @@ const BasketContextProvider = ({children}) => {
 export default BasketContextProvider;
 
 export const useBasketContext = () => useContext(BasketContext);
+
+export const listBasketsByStructure = /* GraphQL */ `
+  query GetStructure($id: ID!) {
+    getStructure(id: $id) {
+      Baskets {
+        items {
+          id
+          structureID
+          userID
+          BasketDishes {
+            items {
+              id
+              quantity
+              basketID
+              createdAt
+              updatedAt
+              _version
+              _deleted
+              _lastChangedAt
+              basketDishDishId
+              basketDishIngredientId
+              Dish {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+              Ingredient {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+            }
+            nextToken
+            startedAt
+          }
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;

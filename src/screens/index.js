@@ -9,6 +9,7 @@ export * from './PositionOrderDeliveryScreen';
 // Shop
 // export * from './HomeScreen/ShopHome';
 export * from './ShopHomeScreen';
+export * from './IngredientDetailsSreen';
 
 // Restaurant
 // export * from './HomeScreen/RestaurantHome';

@@ -1,22 +1,24 @@
-import {View, StyleSheet, Pressable} from 'react-native';
-import React, {memo} from 'react';
-import {Image, Text} from '@rneui/base';
+import {View, Text, Pressable, StyleSheet} from 'react-native';
+import React, {memo, useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {Image} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
 
-const RestaurantItem = ({restaurant}) => {
+const ShopItem = ({shop}) => {
   const navigation = useNavigation();
 
+  const onPress = () => {
+    navigation.navigate('Shop', {ShopId: shop.id});
+  };
+
   return (
-    <Pressable
-      style={styles.restaurantItemContainer}
-      onPress={() => navigation.navigate('Restaurant', {id: restaurant.id})}>
-      <Image source={{uri: restaurant.image}} style={styles.image} />
+    <Pressable onPress={onPress} style={styles.shopItemContainer}>
+      <Image source={{uri: shop.image}} style={styles.image} />
 
       <View style={styles.row}>
         <View>
-          <Text style={styles.name}>{restaurant.name}</Text>
+          <Text style={styles.name}>{shop.name}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -26,30 +28,30 @@ const RestaurantItem = ({restaurant}) => {
             <View style={styles.fee}>
               <MaterialIcons name="delivery-dining" size={20} color="grey" />
               <Text style={{color: '#000'}}>
-                {restaurant.deliveryFee.toFixed(1)} MAD{' '}
+                {shop.deliveryFee.toFixed(1)} MAD
               </Text>
             </View>
             {/* DiliveryTime */}
             <View style={styles.time}>
               <Fontisto name="clock" size={20} color="grey" />
               <Text style={{color: '#000'}}>
-                {restaurant.minDeliveryTime} - {restaurant.maxDeliveryTime} min
+                {shop.minDeliveryTime} - {shop.maxDeliveryTime} min
               </Text>
             </View>
           </View>
         </View>
         <View style={styles.rating}>
-          <Text>{restaurant.rating.toFixed(1)}</Text>
+          <Text style={{fontSize: 11, fontWeight: 'bold'}}>
+            {shop.rating.toFixed(1)}
+          </Text>
         </View>
       </View>
     </Pressable>
   );
 };
 
-export default memo(RestaurantItem);
-
 const styles = StyleSheet.create({
-  restaurantItemContainer: {
+  shopItemContainer: {
     marginVertical: 8,
 
     borderWidth: 1,
@@ -87,3 +89,5 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
+
+export default memo(ShopItem);

@@ -1,32 +1,41 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SearchBar} from '@rneui/themed';
+import {API, graphqlOperation} from 'aws-amplify';
+import {StructureType} from '../../../models';
+import ShopItem from '../../../components/shop/ShopItem';
+import {listStructures} from '../../../graphql/queries';
 
-const ShopHome = () => {
+const ShopHome = ({search}) => {
   const [shops, setShops] = useState([]);
   const [filterdShop, setFilteredShop] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const filtering = searchTerm ? filterShopByTerm(searchTerm) : shops;
+    API.graphql(graphqlOperation(listStructures)).then(result => {
+      const listShops = result.data.listStructures.items.filter(
+        _ => _.type === StructureType.SHOP && !_._deleted,
+      );
+      setShops(listShops);
+    });
+  }, []);
+
+  useEffect(() => {
+    const filtering = search ? filterShopByTerm(search) : shops;
     setFilteredShop(filtering);
-  }, [searchTerm, shops]);
+  }, [search, shops]);
 
   const filterShopByTerm = term => {
     return shops.filter(_ => `${_.name} `.indexOf(term) !== -1);
   };
 
   return (
-    <View style={{backgroundColor: 'green', flex: 1}}>
-      <SearchBar
-        placeholder="Recherche"
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={{height: 35, backgroundColor: 'lightgrey'}}
-        value={searchTerm}
-        onChangeText={e => setSearchTerm(e)}
-        onClear={() => setSearchTerm('')}
-      />
-      <Text>Shop Home</Text>
+    <View style={{backgroundColor: '#fff', flex: 1, marginBottom: 45}}>
+      <View style={styles.shopHomeContainer}>
+        <FlatList
+          data={filterdShop}
+          renderItem={({item}) => <ShopItem shop={item} />}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };
@@ -41,6 +50,11 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  shopHomeContainer: {
+    height: '100%',
+    marginHorizontal: 10,
+    marginBottom: 10,
   },
 });
 

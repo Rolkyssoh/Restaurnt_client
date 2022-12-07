@@ -11,16 +11,19 @@ import {BasketDishItem} from '../../components';
 import {useOrderContext} from '../../contexts/OrderContext';
 
 const OrderDetailsHeader = ({order}) => {
+  // console.log('the order in orderDetails:', order);
   return (
     <View>
       <View style={styles.screenContainer}>
         <Image
-          source={{uri: order.Restaurant.image}}
+          source={{uri: order.Structure.image}}
           style={styles.image}
           resizeMode="cover"
         />
+
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{order.Restaurant.name}</Text>
+          <Text style={styles.title}>{order.Structure.name}</Text>
+
           <Text style={styles.subtitle}>
             {order.status} &#8226; 2 days ago{' '}
           </Text>
@@ -32,11 +35,14 @@ const OrderDetailsHeader = ({order}) => {
 };
 
 export const OrderDetailsScreen = ({id}) => {
-  const {getOrder} = useOrderContext();
+  const {getOrderById} = useOrderContext();
   const [order, setOrder] = useState();
 
   useEffect(() => {
-    getOrder(id).then(setOrder);
+    getOrderById(id).then(theOrder => {
+      setOrder(theOrder);
+      console.log({theOrder});
+    });
   }, []);
 
   if (!order) {

@@ -1,81 +1,190 @@
-import {DataStore} from 'aws-amplify';
+import {useNavigation} from '@react-navigation/native';
+import {API, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
-import {Order, OrderDish} from '../models';
+import {createOrder, createOrderDish, deleteBasket} from '../graphql/mutations';
+import {getOrder, listOrderDishes, listOrders} from '../graphql/queries';
 import {useAuthContext} from './AuthContext';
 import {useBasketContext} from './BasketContext';
 
 const orderContext = createContext();
 
 const OrderContextProvider = ({children}) => {
+  const navigation = useNavigation();
   const {dbUser} = useAuthContext();
-  const {restaurantInfos, totalPrice, basketDishes, basket, setBasket} =
-    useBasketContext();
+  const {
+    restaurantInfos,
+    shopInfos,
+    totalPrice,
+    basketDishes,
+    basket,
+    setBasket,
+  } = useBasketContext();
 
   const [orders, setOrders] = useState([]);
+  const [orderLoading, setOrderLoading] = useState(false);
 
   useEffect(() => {
-    DataStore.query(Order, o => o.userID('eq', dbUser?.id)).then(test => {
-      console.log('result set orders:', test);
-      console.log('result set orders user:', dbUser);
-      setOrders(test);
-    });
-    console.log('on set le orders ici!!!');
+    if (dbUser?.id)
+      API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
+        resp => {
+          // const ordersList = resp.data.listOrders.items.filter(_ => !_._deleted);
+          // setOrders(ordersList);
+          const userIsOrders = resp.data.getUser.Orders.items.filter(
+            _ => !_._deleted,
+          );
+          console.log('get orderssss:', userIsOrders);
+          setOrders(userIsOrders);
+        },
+      );
   }, [dbUser]);
 
-  const createOrder = async () => {
+  // NEW ORDER FOR DISHES
+  const createNewOrder = async () => {
+    setOrderLoading(true);
     // create the order
-    console.log('dans le createOrder');
-    // const newOrder = await DataStore.save(
-    //   new Order({
-    //     userId: dbUser.id,
-    //     Restaurant: restaurantInfos,
-    //     status: 'NEW',
-    //     total: totalPrice,
-    //   }),
-    // );
-
-    const newOrder = await DataStore.save(
-      new Order({
-        userID: dbUser.id,
-        Restaurant: restaurantInfos,
-        status: 'NEW',
-        total: totalPrice,
+    const newOrder = await API.graphql(
+      graphqlOperation(createOrder, {
+        input: {
+          userID: dbUser.id,
+          orderStructureId: restaurantInfos.id,
+          status: 'NEW',
+        },
+        Structure: restaurantInfos,
       }),
     );
 
+    console.log('le new order dans orderContext:', newOrder.data.createOrder);
+
     // add all basketDishes to the order
     await Promise.all(
-      basketDishes.map(basketDish =>
-        DataStore.save(
-          new OrderDish({
-            quantity: basketDish.quantity,
-            orderID: newOrder.id,
+      basketDishes.map(basketDish => {
+        API.graphql(
+          graphqlOperation(createOrderDish, {
+            input: {
+              quantity: basketDish.quantity,
+              orderID: newOrder.data.createOrder.id,
+              orderDishDishId: basketDish.Dish.id,
+            },
             Dish: basketDish.Dish,
           }),
-        ),
-      ),
+        );
+      }),
     );
 
-    // Delete basket
-    await DataStore.delete(basket);
-    setBasket(null);
+    // get the new created order with all details
+    const theCompltedNewOrder = await API.graphql(
+      graphqlOperation(getOrder, {id: newOrder.data.createOrder.id}),
+    );
 
-    setOrders([...orders, newOrder]);
+    console.log({theCompltedNewOrder});
+
+    console.log('le basket dans orderContext:', basket);
+
+    if (theCompltedNewOrder) {
+      setOrderLoading(false);
+      // Delete basket
+      API.graphql(
+        graphqlOperation(deleteBasket, {
+          input: {
+            _version: basket.data
+              ? basket.data.createBasket._version
+              : basket._version,
+            id: basket.data ? basket.data.createBasket.id : basket.id,
+          },
+        }),
+      );
+    }
+
+    setBasket(null);
+    setOrders([theCompltedNewOrder.data.getOrder, ...orders]);
 
     return newOrder;
   };
 
-  const getOrder = async id => {
-    const order = await DataStore.query(Order, id);
-    const orderDishes = await DataStore.query(OrderDish, od =>
-      od.orderID('eq', id),
+  // NEW ORDER FOR INGREDIENT
+  const createIngredientOrder = async () => {
+    console.log('dbUser dans create Ingredint:', dbUser);
+    // create the order
+    const newIngredientOrder = await API.graphql(
+      graphqlOperation(createOrder, {
+        input: {
+          userID: dbUser.id,
+          orderStructureId: shopInfos.id,
+          status: 'NEW',
+        },
+        Structure: shopInfos,
+      }),
     );
 
-    return {...order, dishes: orderDishes};
+    console.log({newIngredientOrder});
+    console.log({basket});
+
+    // add all basketDishes to the order
+    await Promise.all(
+      basketDishes.map(basketIngredient => {
+        API.graphql(
+          graphqlOperation(createOrderDish, {
+            input: {
+              quantity: basketIngredient.quantity,
+              orderID: newIngredientOrder.data.createOrder.id,
+              orderDishIngredientId: basketIngredient.Ingredient.id,
+            },
+            Ingredient: basketIngredient.Ingredient,
+          }),
+        );
+      }),
+    );
+
+    // get the new created order with all details
+    const theCompltedNewOrder = await API.graphql(
+      graphqlOperation(getOrder, {id: newIngredientOrder.data.createOrder.id}),
+    );
+
+    console.log({theCompltedNewOrder});
+
+    // Delete basket
+    await API.graphql(
+      graphqlOperation(deleteBasket, {
+        input: {
+          _version: basket._version,
+          id: basket.data ? basket.data.createBasket.id : basket.id,
+        },
+      }),
+    );
+    setBasket(null);
+    const ingredientOrderDestruct = newIngredientOrder.data.createOrder;
+    setOrders([ingredientOrderDestruct, ...orders]);
+
+    // navigation.navigate('orderList');
+
+    return ingredientOrderDestruct;
+  };
+
+  const getOrderById = async id => {
+    const order = await API.graphql(graphqlOperation(getOrder, {id}));
+    const theGetOrder = order.data.getOrder;
+
+    const orderDishesByOrderId = await API.graphql(
+      graphqlOperation(listOrderDishesByOrderId, {id}),
+    );
+    const notDeletedDishes =
+      orderDishesByOrderId.data.getOrder.OrderDishes.items.filter(
+        _ => !_._deleted,
+      );
+
+    return {...theGetOrder, dishes: notDeletedDishes};
   };
 
   return (
-    <orderContext.Provider value={{createOrder, orders, getOrder, setOrders}}>
+    <orderContext.Provider
+      value={{
+        createNewOrder,
+        createIngredientOrder,
+        orders,
+        getOrderById,
+        setOrders,
+        orderLoading,
+      }}>
       {children}
     </orderContext.Provider>
   );
@@ -84,3 +193,187 @@ const OrderContextProvider = ({children}) => {
 export default OrderContextProvider;
 
 export const useOrderContext = () => useContext(orderContext);
+
+export const listOrdersByDbUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      Orders {
+        items {
+          id
+          status
+          userID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          orderStructureId
+          orderCourierId
+          OrderDishes {
+            items {
+              id
+              quantity
+              createdAt
+              updatedAt
+              _deleted
+              Dish {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+              Ingredient {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+            }
+            nextToken
+            startedAt
+          }
+          Structure {
+            id
+            name
+            image
+            deliveryFee
+            minDeliveryTim
+            maxDeliveryTime
+            rating
+            address
+            lat
+            lng
+            type
+            adminSub
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+
+export const listOrderDishesByOrderId = /* GraphQL */ `
+  query GetOrder($id: ID!) {
+    getOrder(id: $id) {
+      OrderDishes {
+        items {
+          id
+          quantity
+          orderID
+          Dish {
+            id
+            name
+            image
+            description
+            price
+            structureID
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+          Ingredient {
+            id
+            name
+            image
+            description
+            price
+            structureID
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          orderDishDishId
+          orderDishIngredientId
+        }
+        nextToken
+        startedAt
+      }
+      Structure {
+        id
+        name
+        image
+        deliveryFee
+        minDeliveryTim
+        maxDeliveryTime
+        rating
+        address
+        lat
+        lng
+        type
+        adminSub
+        Dishes {
+          nextToken
+          startedAt
+        }
+        Ingredients {
+          nextToken
+          startedAt
+        }
+        Baskets {
+          nextToken
+          startedAt
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      Courier {
+        id
+        name
+        sub
+        lat
+        lng
+        tranportationMode
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      orderStructureId
+      orderCourierId
+    }
+  }
+`;
