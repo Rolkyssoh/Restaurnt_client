@@ -1,4 +1,4 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Text} from '@rneui/themed';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -9,48 +9,59 @@ import {useOrderContext} from '../../contexts/OrderContext';
 
 export const BasketIngredientItem = ({basketDish}) => {
   const {onMinus, onPlus, setQuantity} = useDishContext();
-  const {basketDishes, addDishToBasket} = useBasketContext();
-  const {orders} = useOrderContext();
+  const {basketDishes, addIngredientToBasket, loading} = useBasketContext();
+  const {orders, orderLoading} = useOrderContext();
   const navigation = useNavigation();
 
   const [qtyIncreased, setQtyIncreased] = useState(0);
   const [showHandlerQtyBtn, setShowHandlerQtyBtn] = useState(true);
+  const [currentAction, setCurrentAction] = useState('');
 
-  const increaseNumberOfKg = async id => {
+  const increaseNumberOfKg = async (id, action) => {
+    setCurrentAction(action);
     const basketIngredient = basketDishes.find(_ => _.Ingredient.id === id);
     console.log('in stock:', basketDish.quantity);
     if (!basketIngredient) throw new Error('Dish not found');
     const quantity = qtyIncreased
       ? qtyIncreased + 0.1
       : basketIngredient.quantity + 0.1;
-    console.log({quantity, qtyIncreased, basketIngredient});
-    addDishToBasket(basketIngredient.Ingredient, quantity);
+
+    await addIngredientToBasket(
+      basketIngredient.Ingredient,
+      quantity.toFixed(1),
+    );
     setQtyIncreased(quantity);
+    if (!loading) setCurrentAction('');
     await Promise.resolve();
   };
 
-  const decreaseNumberOfDishes = async id => {
+  const decreaseNumberOfDishes = async (id, action) => {
+    setCurrentAction(action);
     const theBasketIngredient = basketDishes.find(_ => _.Ingredient.id === id);
     if (!theBasketIngredient) throw new Error('Dish not found!');
+    console.log('qty in stock:', qtyIncreased);
+    console.log('qty in bd:', theBasketIngredient.quantity);
     const quantity = qtyIncreased
-      ? qtyIncreased - 1
-      : theBasketIngredient.quantity - 1;
-    console.log('quantity removed:', quantity);
+      ? qtyIncreased - 0.1
+      : theBasketIngredient.quantity - 0.1;
     if (quantity >= 0)
-      addDishToBasket(theBasketIngredient.Ingredient, quantity);
+      await addIngredientToBasket(
+        theBasketIngredient.Ingredient,
+        quantity.toFixed(1),
+      );
     if (basketDishes.length === 1) {
-      if (quantity === 0) {
+      if (quantity < 0.1) {
         navigation.goBack();
       }
     }
     setQtyIncreased(quantity);
+    if (!loading) setCurrentAction('');
     await Promise.resolve();
   };
 
   useEffect(() => {
     orders.map(_ => {
       if (_.id === basketDish.orderID) {
-        console.log('dish dans le order désormais!!!');
         setShowHandlerQtyBtn(false);
       }
     });
@@ -58,21 +69,36 @@ export const BasketIngredientItem = ({basketDish}) => {
 
   return (
     <>
-      {basketDish.quantity > 0.2 && (
+      {basketDish.quantity >= 0.1 && (
         <View style={styles.container}>
-          {showHandlerQtyBtn && (
-            <AntDesign
-              name="pluscircleo"
-              size={25}
-              color="#3fc060"
-              onPress={() => increaseNumberOfKg(basketDish.Ingredient.id)}
-              // style={{marginRight: 5}}
-            />
-          )}
+          {showHandlerQtyBtn &&
+            (loading && currentAction === 'isIncreasing' ? (
+              <ActivityIndicator size={'small'} color="lightgray" />
+            ) : (
+              <AntDesign
+                name="pluscircleo"
+                size={25}
+                color={
+                  currentAction === 'isDecreasing' || orderLoading
+                    ? 'lightgray'
+                    : '#3fc060'
+                }
+                onPress={() =>
+                  loading || orderLoading
+                    ? console.log('RASS!!!')
+                    : increaseNumberOfKg(
+                        basketDish.Ingredient.id,
+                        'isIncreasing',
+                      )
+                }
+              />
+            ))}
           <View style={styles.quantityContainer}>
             <Text>{basketDish.quantity.toFixed(1)}</Text>
           </View>
-          <Text style={styles.dishName}>{basketDish.Ingredient.name}</Text>
+          <Text style={styles.dishName}>
+            {basketDish.Ingredient != null && basketDish.Ingredient?.name}
+          </Text>
           <Text
             style={{
               marginLeft: 'auto',
@@ -82,15 +108,28 @@ export const BasketIngredientItem = ({basketDish}) => {
             }}>
             ${basketDish.Ingredient?.price}
           </Text>
-          {showHandlerQtyBtn && (
-            <AntDesign
-              name="minuscircleo"
-              size={25}
-              color="red"
-              onPress={() => decreaseNumberOfDishes(basketDish.Ingredient.id)}
-              // style={{marginLeft: 5}}
-            />
-          )}
+          {showHandlerQtyBtn &&
+            (loading && currentAction === 'isDecreasing' ? (
+              <ActivityIndicator size={'small'} color="lightgray" />
+            ) : (
+              <AntDesign
+                name="minuscircleo"
+                size={25}
+                color={
+                  currentAction === 'isIncreasing' || orderLoading
+                    ? 'lightgray'
+                    : 'red'
+                }
+                onPress={() =>
+                  loading || orderLoading
+                    ? console.log('Wait small!!!')
+                    : decreaseNumberOfDishes(
+                        basketDish.Ingredient.id,
+                        'isDecreasing',
+                      )
+                }
+              />
+            ))}
         </View>
       )}
     </>

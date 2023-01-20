@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {createOrder, createOrderDish, deleteBasket} from '../graphql/mutations';
-import {getOrder, listOrderDishes, listOrders} from '../graphql/queries';
+import {getOrder} from '../graphql/queries';
 import {useAuthContext} from './AuthContext';
 import {useBasketContext} from './BasketContext';
 
@@ -53,8 +53,6 @@ const OrderContextProvider = ({children}) => {
       }),
     );
 
-    console.log('le new order dans orderContext:', newOrder.data.createOrder);
-
     // add all basketDishes to the order
     await Promise.all(
       basketDishes.map(basketDish => {
@@ -103,7 +101,7 @@ const OrderContextProvider = ({children}) => {
 
   // NEW ORDER FOR INGREDIENT
   const createIngredientOrder = async () => {
-    console.log('dbUser dans create Ingredint:', dbUser);
+    setOrderLoading(true);
     // create the order
     const newIngredientOrder = await API.graphql(
       graphqlOperation(createOrder, {
@@ -115,9 +113,6 @@ const OrderContextProvider = ({children}) => {
         Structure: shopInfos,
       }),
     );
-
-    console.log({newIngredientOrder});
-    console.log({basket});
 
     // add all basketDishes to the order
     await Promise.all(
@@ -142,22 +137,25 @@ const OrderContextProvider = ({children}) => {
 
     console.log({theCompltedNewOrder});
 
-    // Delete basket
-    await API.graphql(
-      graphqlOperation(deleteBasket, {
-        input: {
-          _version: basket._version,
-          id: basket.data ? basket.data.createBasket.id : basket.id,
-        },
-      }),
-    );
+    if (theCompltedNewOrder) {
+      setOrderLoading(false);
+      // Delete basket
+      await API.graphql(
+        graphqlOperation(deleteBasket, {
+          input: {
+            _version: basket.dat
+              ? basket.data.createBasket._version
+              : basket._version,
+            id: basket.data ? basket.data.createBasket.id : basket.id,
+          },
+        }),
+      );
+    }
     setBasket(null);
-    const ingredientOrderDestruct = newIngredientOrder.data.createOrder;
-    setOrders([ingredientOrderDestruct, ...orders]);
-
+    setOrders([newIngredientOrder.data.createOrder, ...orders]);
     // navigation.navigate('orderList');
 
-    return ingredientOrderDestruct;
+    return newIngredientOrder;
   };
 
   const getOrderById = async id => {

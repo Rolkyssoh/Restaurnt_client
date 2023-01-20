@@ -7,7 +7,8 @@
  */
 import {enableLatestRenderer} from 'react-native-maps';
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {RootNavigator} from './src/components';
 import {Amplify} from 'aws-amplify';
@@ -28,7 +29,7 @@ enableLatestRenderer();
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <NavigationContainer>
         <AuthContextProvider>
           <BasketContextProvider>
@@ -42,7 +43,7 @@ const App = () => {
           </BasketContextProvider>
         </AuthContextProvider>
       </NavigationContainer>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

@@ -5,10 +5,14 @@ import ShopHome from './ShopHome';
 import {View, Text, StyleSheet} from 'react-native';
 import {SearchBar} from '@rneui/themed';
 
-const Tab = createMaterialTopTabNavigator();
+const TabTop = createMaterialTopTabNavigator();
 
-export const HomeScreen = ({navigation}) => {
+export const HomeScreen = ({navigation, route}) => {
   const [searchTerm, setSearchTerm] = useState('');
+  useEffect(() => {
+    console.log('the routes:', route);
+    console.log('the navigation:', navigation);
+  }, []);
 
   return (
     <>
@@ -20,19 +24,19 @@ export const HomeScreen = ({navigation}) => {
         onChangeText={e => setSearchTerm(e)}
         onClear={() => setSearchTerm('')}
       />
-      <Tab.Navigator
+      <TabTop.Navigator
         screenOptions={{
-          tabBarLabelStyle: {fontSize: 10, fontWeight: 'bold'},
-          tabBarIndicatorStyle: {opacity: 0},
+          tabTopBarLabelStyle: {fontSize: 10, fontWeight: 'bold'},
+          tabTopBarIndicatorStyle: {opacity: 0},
         }}>
-        <Tab.Screen name="RestaurantHome" options={{title: 'Restaurants'}}>
+        <TabTop.Screen name="RestaurantHome" options={{title: 'Restaurants'}}>
           {() => <RestaurantHome search={searchTerm} />}
-        </Tab.Screen>
+        </TabTop.Screen>
 
-        <Tab.Screen name="ShopHome" options={{title: 'Boutiques'}}>
+        <TabTop.Screen name="ShopHome" options={{title: 'Boutiques'}}>
           {() => <ShopHome search={searchTerm} />}
-        </Tab.Screen>
-      </Tab.Navigator>
+        </TabTop.Screen>
+      </TabTop.Navigator>
     </>
   );
 };

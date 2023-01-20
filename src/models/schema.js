@@ -27,7 +27,7 @@ export const schema = {
                 "lat": {
                     "name": "lat",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Float",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -44,7 +44,7 @@ export const schema = {
                     "type": {
                         "enum": "TransportationModes"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "createdAt": {
@@ -106,13 +106,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "orderID": {
-                    "name": "orderID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "Dish": {
                     "name": "Dish",
                     "isArray": false,
@@ -148,6 +141,13 @@ export const schema = {
                             "orderDishIngredientId"
                         ]
                     }
+                },
+                "orderID": {
+                    "name": "orderID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1030,6 +1030,15 @@ export const schema = {
                         ]
                     }
                 },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "UserType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1074,6 +1083,14 @@ export const schema = {
         }
     },
     "enums": {
+        "UserType": {
+            "name": "UserType",
+            "values": [
+                "CUSTOMER",
+                "DRIVER",
+                "ADMIN"
+            ]
+        },
         "TransportationModes": {
             "name": "TransportationModes",
             "values": [
@@ -1089,7 +1106,7 @@ export const schema = {
                 "READY_FOR_PICKUP",
                 "PICKED_UP",
                 "COMPLETED",
-                "NEWVALUE",
+                "ACCEPTED",
                 "DECLINED_BY_STRUCTURE"
             ]
         },
@@ -1103,5 +1120,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "c17a8cdebae0924ce093af026c910f99"
+    "version": "e643e8530c60873bc6d39a77a25053d4"
 };

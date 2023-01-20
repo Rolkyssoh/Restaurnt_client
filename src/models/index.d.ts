@@ -2,6 +2,12 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
+export enum UserType {
+  CUSTOMER = "CUSTOMER",
+  DRIVER = "DRIVER",
+  ADMIN = "ADMIN"
+}
+
 export enum TransportationModes {
   DRIVING = "DRIVING",
   BICYCLING = "BICYCLING"
@@ -13,7 +19,7 @@ export enum OrderStatus {
   READY_FOR_PICKUP = "READY_FOR_PICKUP",
   PICKED_UP = "PICKED_UP",
   COMPLETED = "COMPLETED",
-  NEWVALUE = "NEWVALUE",
+  ACCEPTED = "ACCEPTED",
   DECLINED_BY_STRUCTURE = "DECLINED_BY_STRUCTURE"
 }
 
@@ -32,9 +38,9 @@ type EagerCourier = {
   readonly id: string;
   readonly name: string;
   readonly sub: string;
-  readonly lat: string;
+  readonly lat: number;
   readonly lng: number;
-  readonly tranportationMode?: TransportationModes | keyof typeof TransportationModes | null;
+  readonly tranportationMode: TransportationModes | keyof typeof TransportationModes;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -47,9 +53,9 @@ type LazyCourier = {
   readonly id: string;
   readonly name: string;
   readonly sub: string;
-  readonly lat: string;
+  readonly lat: number;
   readonly lng: number;
-  readonly tranportationMode?: TransportationModes | keyof typeof TransportationModes | null;
+  readonly tranportationMode: TransportationModes | keyof typeof TransportationModes;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -67,9 +73,9 @@ type EagerOrderDish = {
   };
   readonly id: string;
   readonly quantity: number;
-  readonly orderID: string;
   readonly Dish?: Dish | null;
   readonly Ingredient?: Ingredient | null;
+  readonly orderID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly orderDishDishId?: string | null;
@@ -83,9 +89,9 @@ type LazyOrderDish = {
   };
   readonly id: string;
   readonly quantity: number;
-  readonly orderID: string;
   readonly Dish: AsyncItem<Dish | undefined>;
   readonly Ingredient: AsyncItem<Ingredient | undefined>;
+  readonly orderID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly orderDishDishId?: string | null;
@@ -347,6 +353,7 @@ type EagerUser = {
   readonly lng: number;
   readonly Baskets?: (Basket | null)[] | null;
   readonly Orders?: (Order | null)[] | null;
+  readonly type: UserType | keyof typeof UserType;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -364,6 +371,7 @@ type LazyUser = {
   readonly lng: number;
   readonly Baskets: AsyncCollection<Basket>;
   readonly Orders: AsyncCollection<Order>;
+  readonly type: UserType | keyof typeof UserType;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

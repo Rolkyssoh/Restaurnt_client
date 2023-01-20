@@ -59,7 +59,6 @@ export const onCreateOrderDish = /* GraphQL */ `
     onCreateOrderDish(filter: $filter) {
       id
       quantity
-      orderID
       Dish {
         id
         name
@@ -86,6 +85,7 @@ export const onCreateOrderDish = /* GraphQL */ `
         _deleted
         _lastChangedAt
       }
+      orderID
       createdAt
       updatedAt
       _version
@@ -103,7 +103,6 @@ export const onUpdateOrderDish = /* GraphQL */ `
     onUpdateOrderDish(filter: $filter) {
       id
       quantity
-      orderID
       Dish {
         id
         name
@@ -130,6 +129,7 @@ export const onUpdateOrderDish = /* GraphQL */ `
         _deleted
         _lastChangedAt
       }
+      orderID
       createdAt
       updatedAt
       _version
@@ -147,7 +147,6 @@ export const onDeleteOrderDish = /* GraphQL */ `
     onDeleteOrderDish(filter: $filter) {
       id
       quantity
-      orderID
       Dish {
         id
         name
@@ -174,6 +173,7 @@ export const onDeleteOrderDish = /* GraphQL */ `
         _deleted
         _lastChangedAt
       }
+      orderID
       createdAt
       updatedAt
       _version
@@ -451,6 +451,7 @@ export const onCreateUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      type
       createdAt
       updatedAt
       _version
@@ -498,6 +499,7 @@ export const onUpdateUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      type
       createdAt
       updatedAt
       _version
@@ -545,6 +547,7 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      type
       createdAt
       updatedAt
       _version

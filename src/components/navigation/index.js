@@ -15,15 +15,84 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useAuthContext} from '../../contexts/AuthContext';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
+import {Text} from '@rneui/themed';
+import {UserType} from '../../models';
+import {useEffect} from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+const TabTop = createMaterialTopTabNavigator();
 
 const Stack = createNativeStackNavigator();
-const Tab = createMaterialBottomTabNavigator();
 const HomeStackRoutes = createNativeStackNavigator();
-const OrdersStackRoutes = createNativeStackNavigator();
+
+const NotAuthorize = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Text style={{color: '#000'}} h4>
+        Vous n'êtes pas Authorisé à accéder ici!
+      </Text>
+    </View>
+  );
+};
+
+const TabBottom = createMaterialBottomTabNavigator();
+export const HomeTabsRoutes = () => {
+  return (
+    <TabBottom.Navigator barStyle={{backgroundColor: '#fff'}}>
+      <TabTop.Screen
+        name="Accueil"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Foundation name="home" size={24} color={color} />
+          ),
+        }}
+      />
+      <TabBottom.Screen
+        // name="orderList"
+        name="Orders"
+        component={OrdersScreen}
+        listeners={({navigation, route}) => ({
+          tabPress: e => {
+            // Prevent default action
+            e.preventDefault();
+
+            // Do something with the `navigation` object
+            navigation.navigate('Orders');
+          },
+        })}
+        options={{
+          tabBarIcon: ({color}) => (
+            <MaterialIcons name="list-alt" size={24} color={color} />
+          ),
+          title: 'Commande(s)',
+        }}
+      />
+      <TabTop.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <FontAwesome5 name="user-alt" size={24} color={color} />
+          ),
+        }}
+      />
+    </TabBottom.Navigator>
+  );
+};
 
 export const RootNavigator = () => {
   const {dbUser, loading} = useAuthContext();
+
+  useEffect(() => {
+    console.log('le dbUser dans root nav:', dbUser);
+  }, [dbUser]);
 
   if (loading) {
     return (
@@ -38,7 +107,12 @@ export const RootNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {dbUser ? (
-        <Stack.Screen name="HomeTabs" component={HomeTabsRoutes} />
+        dbUser.type === UserType.CUSTOMER ? (
+          // <Stack.Screen name="HomeTabs" component={HomeTabsRoutes} />
+          <Stack.Screen name="HomeStack" component={HomeStackNavigator} />
+        ) : (
+          <Stack.Screen name="NotFound" component={NotAuthorize} />
+        )
       ) : (
         <Stack.Screen name="Profile" component={ProfileScreen} />
       )}
@@ -46,53 +120,23 @@ export const RootNavigator = () => {
   );
 };
 
-const HomeTabsRoutes = () => {
-  return (
-    <Tab.Navigator barStyle={{backgroundColor: '#fff'}}>
-      <Tab.Screen
-        name="Accueil"
-        component={HomeStackNavigator}
-        options={{
-          tabBarIcon: ({color}) => (
-            <Foundation name="home" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="orderList"
-        component={OrdersStackNavigator}
-        options={{
-          tabBarIcon: ({color}) => (
-            <MaterialIcons name="list-alt" size={24} color={color} />
-          ),
-          title: 'Commande(s)',
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesome5 name="user-alt" size={24} color={color} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
-
 const HomeStackNavigator = () => {
   return (
     <HomeStackRoutes.Navigator>
-      <HomeStackRoutes.Screen
+      {/* <HomeStackRoutes.Screen
         name="Restaurants"
         component={HomeScreen}
         options={{headerShown: false}}
+      /> */}
+      <HomeStackRoutes.Screen
+        name="HomeTabs"
+        component={HomeTabsRoutes}
+        // options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen
         name="Restaurant"
         component={RestaurantHomeScreen}
-        options={{headerShown: false}}
+        // options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen name="Dish" component={DishDetailsSCreen} />
       <HomeStackRoutes.Screen
@@ -105,28 +149,12 @@ const HomeStackNavigator = () => {
         options={{title: 'Panier'}}
       />
 
-      {/* shop */}
       <HomeStackRoutes.Screen
         name="Shop"
         component={ShopeHomeScreen}
-        options={{headerShown: false}}
+        // options={{headerShown: false}}
       />
+      <HomeStackRoutes.Screen name="Order" component={OrderDetailsNavigator} />
     </HomeStackRoutes.Navigator>
-  );
-};
-
-const OrdersStackNavigator = () => {
-  return (
-    <OrdersStackRoutes.Navigator>
-      <OrdersStackRoutes.Screen
-        name="Orders"
-        component={OrdersScreen}
-        options={{headerShown: false}}
-      />
-      <OrdersStackRoutes.Screen
-        name="Order"
-        component={OrderDetailsNavigator}
-      />
-    </OrdersStackRoutes.Navigator>
   );
 };

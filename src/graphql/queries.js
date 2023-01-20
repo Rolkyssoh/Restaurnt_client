@@ -79,7 +79,6 @@ export const getOrderDish = /* GraphQL */ `
     getOrderDish(id: $id) {
       id
       quantity
-      orderID
       Dish {
         id
         name
@@ -106,6 +105,7 @@ export const getOrderDish = /* GraphQL */ `
         _deleted
         _lastChangedAt
       }
+      orderID
       createdAt
       updatedAt
       _version
@@ -126,7 +126,6 @@ export const listOrderDishes = /* GraphQL */ `
       items {
         id
         quantity
-        orderID
         Dish {
           id
           name
@@ -153,6 +152,7 @@ export const listOrderDishes = /* GraphQL */ `
           _deleted
           _lastChangedAt
         }
+        orderID
         createdAt
         updatedAt
         _version
@@ -182,7 +182,6 @@ export const syncOrderDishes = /* GraphQL */ `
       items {
         id
         quantity
-        orderID
         Dish {
           id
           name
@@ -209,6 +208,7 @@ export const syncOrderDishes = /* GraphQL */ `
           _deleted
           _lastChangedAt
         }
+        orderID
         createdAt
         updatedAt
         _version
@@ -240,7 +240,6 @@ export const orderDishesByOrderID = /* GraphQL */ `
       items {
         id
         quantity
-        orderID
         Dish {
           id
           name
@@ -267,6 +266,7 @@ export const orderDishesByOrderID = /* GraphQL */ `
           _deleted
           _lastChangedAt
         }
+        orderID
         createdAt
         updatedAt
         _version
@@ -589,6 +589,7 @@ export const getUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      type
       createdAt
       updatedAt
       _version
@@ -619,6 +620,7 @@ export const listUsers = /* GraphQL */ `
           nextToken
           startedAt
         }
+        type
         createdAt
         updatedAt
         _version
@@ -658,6 +660,7 @@ export const syncUsers = /* GraphQL */ `
           nextToken
           startedAt
         }
+        type
         createdAt
         updatedAt
         _version

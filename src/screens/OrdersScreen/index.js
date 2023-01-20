@@ -10,11 +10,11 @@ export const OrdersScreen = () => {
   const [filterdOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
-    console.log('le orderssss: ', orders);
     const filtering = searchTerm
       ? filterOrdersByTerm(searchTerm.toUpperCase())
       : orders;
     setFilteredOrders(filtering);
+    console.log('le ordersss:', filtering);
   }, [searchTerm, orders]);
 
   const filterOrdersByTerm = term => {
@@ -22,7 +22,7 @@ export const OrdersScreen = () => {
   };
 
   return (
-    <View style={{flex: 1, marginBottom: 40}}>
+    <View style={{flex: 1, marginBottom: 40, paddingTop: 15}}>
       <SearchBar
         placeholder="Filtrez en fontion du status"
         containerStyle={styles.searchBarContainer}

@@ -24,6 +24,7 @@ export const OrderListItem = ({order}) => {
   // };
 
   useEffect(() => {
+    console.log({order});
     if (order.orderDishes !== null) {
       const theTotalQty = order.OrderDishes.items.reduce(
         (sum, orderDish) => sum + orderDish.quantity,
@@ -56,7 +57,7 @@ export const OrderListItem = ({order}) => {
           {`${
             order.Structure.type === 'RESTAURANT'
               ? totalQty + ' items'
-              : totalQty?.toFixed(1) + ' kg'
+              : totalQty?.toFixed(1) + ' g'
           }`}
           &#8226; {totalPrice?.toFixed(2)} MAD
         </Text>

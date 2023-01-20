@@ -10,6 +10,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {IngredientListItem} from '../../components/shop/IngredientListItem';
 import {getStructure} from '../../graphql/queries';
+import {onCreateIngredient} from '../../graphql/subscriptions';
 
 export const ShopeHomeScreen = () => {
   const route = useRoute();
@@ -40,11 +41,27 @@ export const ShopeHomeScreen = () => {
       setShopContent(resp.data.getStructure),
     );
     fetchIngredients(id);
+    console.log('le dish dans shop HOMe:', basketDishes);
   }, [id]);
 
-  // useEffect(() => {
-  //   fetchIngredients(id);
-  // }, [basketDishes]);
+  useEffect(() => {
+    if (id) {
+      // Watch the home restau
+      const subscription = API.graphql(
+        graphqlOperation(onCreateIngredient, {
+          filter: {structureID: {eq: id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
+          fetchIngredients(id);
+        },
+        error: err => {
+          console.warn(err);
+        },
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [id]);
 
   const fetchIngredients = idShop => {
     API.graphql(graphqlOperation(listIngredientsByShop, {id: idShop})).then(
@@ -92,7 +109,11 @@ export const ShopeHomeScreen = () => {
       />
       {basket && (
         <Button
-          title={'Voir Panier ' + basketDishes.length}
+          title={
+            basketDishes.length === 1 && basketDishes[0].quantity === 0
+              ? 'Voir Panier ' + basketDishes[0].quantity
+              : 'Voir Panier ' + basketDishes.length
+          }
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
           onPress={() => navigation.navigate('Basket')}

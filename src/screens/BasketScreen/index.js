@@ -5,7 +5,6 @@ import {BasketDishItem, BasketIngredientItem} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {useOrderContext} from '../../contexts/OrderContext';
-import {useDishContext} from '../../contexts/DishContext';
 
 export const BasketScreen = () => {
   const navigation = useNavigation();
@@ -18,24 +17,25 @@ export const BasketScreen = () => {
     basket,
     loading,
   } = useBasketContext();
-  const {quantity} = useDishContext();
   const {createNewOrder, createIngredientOrder, orderLoading} =
     useOrderContext();
 
   useEffect(() => {
-    if (basket === null) navigation.goBack();
-    console.log('dans le basketscreen gobask()', basket);
+    // if (basket === null) navigation.goBack();
   }, [basket]);
 
   const onCreateOrder = async () => {
     if (restaurantInfos) {
       const newOrder = await createNewOrder();
       setBasketDishes([]);
-      navigation.navigate('orderList');
-    } else if (shopInfos) {
+      // if (newOrder) navigation.navigate('orderList');
+      if (newOrder) navigation.navigate('Orders');
+    }
+    if (shopInfos) {
       const newIngredientOrder = await createIngredientOrder();
       setBasketDishes([]);
-      navigation.navigate('orderList');
+      // if (newIngredientOrder) navigation.navigate('orderList');
+      if (newIngredientOrder) navigation.navigate('Orders');
     }
   };
 
@@ -78,7 +78,7 @@ export const BasketScreen = () => {
           style={{marginTop: 'auto', marginBottom: 0}}
         />
 
-        {basketDishes.length > 0 && (
+        {basketDishes.length > 0 && basketDishes[0].quantity > 0 && (
           <Button
             title={'Créer commande ' + totalPrice.toFixed(2) + ' MAD'}
             // title={'test'}

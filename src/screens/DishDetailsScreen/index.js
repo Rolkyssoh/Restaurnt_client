@@ -22,7 +22,6 @@ export const DishDetailsSCreen = () => {
     if (id)
       API.graphql(graphqlOperation(getDish, {id})).then(resp => {
         setDish(resp.data.getDish);
-        console.log('the dish in the details:', resp);
       });
   }, [id]);
 
@@ -59,11 +58,16 @@ export const DishDetailsSCreen = () => {
         <AntDesign
           name="minuscircleo"
           size={60}
-          color="#000"
-          onPress={onMinus}
+          color={loading ? 'lightgrey' : '#000'}
+          onPress={loading ? console.log('Wait until loading end!!') : onMinus}
         />
         <Text style={styles.quantity}>{quantity}</Text>
-        <AntDesign name="pluscircleo" size={60} color="#000" onPress={onPlus} />
+        <AntDesign
+          name="pluscircleo"
+          size={60}
+          color={loading ? 'lightgrey' : '#000'}
+          onPress={loading ? console.log('Wait until loading end!!') : onPlus}
+        />
       </View>
       {quantity > 0 && (
         <Button

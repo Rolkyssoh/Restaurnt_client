@@ -4,14 +4,15 @@ import {createContext, useContext} from 'react';
 const IngredientContext = createContext({});
 
 const IngredientContextProvider = ({children}) => {
-  const [quantity, setQuantity] = useState(0.3);
+  const [quantity, setQuantity] = useState(0.0);
 
   const onMinus = () => {
-    if (quantity > 0.3) setQuantity(quantity - 0.1);
+    if (quantity > 0) setQuantity(quantity - 0.1);
   };
 
   const onPlus = () => {
-    setQuantity(quantity + 0.1);
+    let i = quantity + 0.1;
+    setQuantity(i);
   };
 
   return (

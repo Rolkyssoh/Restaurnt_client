@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Input} from '@rneui/themed';
 import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
-import {User} from '../../models';
+import {User, UserType} from '../../models';
 import {createUser, updateUser} from '../../graphql/mutations';
 
 export const ProfileScreen = () => {
@@ -41,7 +41,7 @@ export const ProfileScreen = () => {
   // };
   const addNewUser = async () => {
     try {
-      const user = API.graphql(
+      const user = await API.graphql(
         graphqlOperation(createUser, {
           input: {
             name,
@@ -49,10 +49,11 @@ export const ProfileScreen = () => {
             lat: parseFloat(lat),
             lng: parseFloat(lng),
             sub,
+            type: UserType.CUSTOMER,
           },
         }),
       );
-      setDbUser(user.data.createUser);
+      user.data.createUser._deleted === null && setDbUser(user.data.createUser);
     } catch (e) {
       Alert.alert('Error', e.message);
     }

@@ -129,7 +129,11 @@ export const RestaurantHomeScreen = () => {
       />
       {basket && (
         <Button
-          title={'Voir Panier ' + basketDishes.length}
+          title={
+            basketDishes.length === 1 && basketDishes[0].quantity === 0
+              ? 'Voir Panier ' + 0
+              : 'Voir Panier ' + basketDishes.length
+          }
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
           onPress={() => navigation.navigate('Basket')}

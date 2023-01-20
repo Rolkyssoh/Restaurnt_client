@@ -7,29 +7,26 @@ import {useBasketContext} from '../../../contexts/BasketContext';
 
 export const IngredientListItem = ({ingredient}) => {
   const navigation = useNavigation();
-  const {quantity} = useDishContext();
   const {basketDishes, basket} = useBasketContext();
 
-  const [dishQty, setDishQty] = useState(0);
+  const [ingredientQty, setIngredientQty] = useState(0);
 
   useEffect(() => {
-    if (basket === null) setDishQty(0);
+    if (basket === null) setIngredientQty(0);
   }, [basket]);
 
   useEffect(() => {
-    console.log('le basketDishe dans ingredientListitem:', basketDishes);
-    basketDishes.map(_ => {
-      if (_.Ingredient?.id === ingredient.id) {
-        console.log('dans le if!! IngredientListItem');
-        _.data
-          ? setDishQty(_.data.createBasketDish.quantity)
-          : setDishQty(_.quantity);
-      }
-      console.log({_});
-    });
+    const theCurrentIngredient = basketDishes.find(
+      _ => _.Ingredient?.id === ingredient.id,
+    );
+    if (theCurrentIngredient) {
+      // theCurrentIngredient.data
+      //   ? setIngredientQty(theCurrentIngredient.data.createBasketDish.quantity) :
+      setIngredientQty(theCurrentIngredient.quantity);
+    } else {
+      setIngredientQty(0);
+    }
   }, [basketDishes]);
-
-  useEffect(() => {}, [dishQty]);
 
   return (
     <Pressable
@@ -43,8 +40,8 @@ export const IngredientListItem = ({ingredient}) => {
           {ingredient.description}
         </Text>
         <Text style={styles.price}>{ingredient.price}Dh/kg</Text>
-        {dishQty != 0 && (
-          <Text style={styles.quantity}>{dishQty.toFixed(1)}x</Text>
+        {ingredientQty != 0 && (
+          <Text style={styles.quantity}>{ingredientQty}x</Text>
         )}
       </View>
       <Image

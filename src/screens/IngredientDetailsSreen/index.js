@@ -11,7 +11,7 @@ import {getIngredient} from '../../graphql/queries';
 export const IngredientDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {addIngredientToBasket, basketDishes} = useBasketContext();
+  const {addIngredientToBasket, basketDishes, loading} = useBasketContext();
   const {onMinus, onPlus, quantity, setQuantity} = useIngredientContext();
 
   const id = route.params?.id;
@@ -28,18 +28,20 @@ export const IngredientDetailsSCreen = () => {
   useEffect(() => {
     console.log({ingredient});
     if (ingredient) {
-      basketDishes.map(_ => {
-        if (_.Ingredient.id === ingredient.id) {
-          setQuantity(_.quantity);
-        } else {
-          setQuantity(0);
-        }
-      });
+      const currentIngredient = basketDishes.find(
+        _ => _.Ingredient?.id === ingredient.id,
+      );
+
+      if (currentIngredient) {
+        setQuantity(currentIngredient.quantity);
+      } else {
+        setQuantity(0);
+      }
     }
   }, [ingredient]);
 
   const onAddToBasket = async () => {
-    await addIngredientToBasket(ingredient, quantity);
+    await addIngredientToBasket(ingredient, quantity.toFixed(1));
     navigation.goBack();
   };
 
@@ -60,13 +62,18 @@ export const IngredientDetailsSCreen = () => {
         <AntDesign
           name="minuscircleo"
           size={60}
-          color="#000"
-          onPress={onMinus}
+          color={loading ? 'lightgrey' : '#000'}
+          onPress={loading ? console.log('Wait until loading end!!') : onMinus}
         />
         <Text style={styles.quantity}>{quantity.toFixed(1)}</Text>
-        <AntDesign name="pluscircleo" size={60} color="#000" onPress={onPlus} />
+        <AntDesign
+          name="pluscircleo"
+          size={60}
+          color={loading ? 'lightgrey' : '#000'}
+          onPress={loading ? console.log('Wait until loading end!!') : onPlus}
+        />
       </View>
-      {quantity >= 0.3 && (
+      {quantity >= 0.1 && (
         <Button
           title={`Ajouter ${quantity.toFixed(
             1,
@@ -74,6 +81,8 @@ export const IngredientDetailsSCreen = () => {
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.styleButton}
           onPress={onAddToBasket}
+          disabled={loading}
+          loading={loading}
         />
       )}
     </View>

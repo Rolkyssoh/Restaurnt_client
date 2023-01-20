@@ -17,11 +17,13 @@ export const DishListItem = ({dish}) => {
 
   useEffect(() => {
     console.log('le basket dish dans DishlistItem:', basketDishes);
-    basketDishes.map(_ => {
-      if (_.Dish?.id === dish.id) {
-        setDishQty(_.quantity);
-      }
-    });
+    const theCurrentDish = basketDishes.find(_ => _.Dish?.id === dish.id);
+    if (theCurrentDish) {
+      setDishQty(theCurrentDish.quantity);
+    } else {
+      setDishQty(0);
+    }
+    console.log('the quantiy:', theCurrentDish?.quantity);
   }, [basketDishes]);
 
   return (

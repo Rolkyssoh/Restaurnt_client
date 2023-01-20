@@ -1,13 +1,13 @@
 export type AmplifyDependentResourcesAttributes = {
     "api": {
-        "LaTchop": {
+        "LaTchoop": {
             "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
     },
     "auth": {
-        "LaTchop": {
+        "LaTchoop": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",

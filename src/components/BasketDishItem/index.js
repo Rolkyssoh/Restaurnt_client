@@ -26,8 +26,8 @@ export const BasketDishItem = ({basketDish}) => {
     await Promise.resolve();
   };
 
-  const decreaseNumberOfDishes = async id => {
-    setCurrentAction('isDecreasing');
+  const decreaseNumberOfDishes = async (id, action) => {
+    setCurrentAction(action);
     const theBasketDish = basketDishes.find(_ => _.Dish.id === id);
     if (!theBasketDish) throw new Error('Dish not found!');
     const quantity = qtyIncreased
@@ -115,7 +115,7 @@ export const BasketDishItem = ({basketDish}) => {
                 onPress={() =>
                   loading || orderLoading
                     ? console.log('Not Now!!!!!')
-                    : decreaseNumberOfDishes(basketDish.Dish.id)
+                    : decreaseNumberOfDishes(basketDish.Dish.id, 'isDecreasing')
                 }
               />
             ))}

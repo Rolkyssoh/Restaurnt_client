@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "LaTchop",
+  "projectName": "LaTchoop",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
