@@ -10,7 +10,10 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {IngredientListItem} from '../../components/shop/IngredientListItem';
 import {getStructure} from '../../graphql/queries';
-import {onCreateIngredient} from '../../graphql/subscriptions';
+import {
+  onCreateIngredient,
+  onDeleteIngredient,
+} from '../../graphql/subscriptions';
 
 export const ShopeHomeScreen = () => {
   const route = useRoute();
@@ -46,7 +49,7 @@ export const ShopeHomeScreen = () => {
 
   useEffect(() => {
     if (id) {
-      // Watch the home restau
+      // Watch the oncreate ingredients
       const subscription = API.graphql(
         graphqlOperation(onCreateIngredient, {
           filter: {structureID: {eq: id}},
@@ -60,6 +63,26 @@ export const ShopeHomeScreen = () => {
         },
       });
       return () => subscription.unsubscribe();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      // Watch the ondelete ingredient
+      const subscriptionToDeleted = API.graphql(
+        graphqlOperation(onDeleteIngredient, {
+          filter: {structureID: {eq: id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
+          fetchIngredients(id);
+          console.log('le wath onDeleteIngredient:', value);
+        },
+        error: err => {
+          console.warn(err);
+        },
+      });
+      return () => subscriptionToDeleted.unsubscribe();
     }
   }, [id]);
 

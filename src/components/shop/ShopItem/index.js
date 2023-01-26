@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 5,
   },
-  name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5},
+  name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: '#000'},
   fee: {color: 'grey', alignItems: 'center', marginRight: 25},
   time: {color: 'grey', alignItems: 'center'},
   rating: {

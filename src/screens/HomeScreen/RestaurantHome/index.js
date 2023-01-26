@@ -5,24 +5,66 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {StructureType} from '../../../models';
 import {Text} from '@rneui/themed';
 import {listStructures} from '../../../graphql/queries';
+import {
+  onDeleteStructure,
+  onCreateStructure,
+} from '../../../graphql/subscriptions';
 
 const RestaurantHome = ({search}) => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
 
   useEffect(() => {
-    API.graphql(graphqlOperation(listStructures)).then(result => {
-      const listRestaurants = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.RESTAURANT && !_._deleted,
-      );
-      setRestaurants(listRestaurants);
+    fetchRestaurants();
+    watchRestaurantCreation();
+
+    // Watch the restau list for deleting
+    const subscription = API.graphql(
+      graphqlOperation(onDeleteStructure, {}),
+    ).subscribe({
+      next: ({value}) => {
+        console.log('le wath onDeleteSTructure result:', value);
+        if (value.data.onDeleteStructure.type === StructureType.RESTAURANT) {
+          fetchRestaurants();
+        }
+      },
+      error: err => {
+        console.warn(err);
+      },
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
     const filtering = search ? filterRestaurantByTerm(search) : restaurants;
     setFilteredRestaurants(filtering);
   }, [search, restaurants]);
+
+  const watchRestaurantCreation = () => {
+    const subscription = API.graphql(
+      graphqlOperation(onCreateStructure, {}),
+    ).subscribe({
+      next: ({value}) => {
+        console.log('le wath onCreateStructure result in Restaurant:', value);
+        if (value.data.onCreateStructure.type === StructureType.RESTAURANT) {
+          fetchRestaurants();
+        }
+      },
+      error: err => {
+        console.warn(err);
+      },
+    });
+    return () => subscription.unsubscribe();
+  };
+
+  const fetchRestaurants = () => {
+    API.graphql(graphqlOperation(listStructures)).then(result => {
+      const listRestaurants = result.data.listStructures.items.filter(
+        _ => _.type === StructureType.RESTAURANT && !_._deleted,
+      );
+      setRestaurants(listRestaurants);
+    });
+  };
 
   const filterRestaurantByTerm = term => {
     return restaurants.filter(_ => `${_.name} `.indexOf(term) !== -1);
