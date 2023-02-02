@@ -40,6 +40,7 @@ export const OrderListItem = ({order}) => {
         order.Structure.deliveryFee,
       );
       setTotalQty(theTotalQty);
+      console.log({theTotalQty});
       setTotalPrice(theTotalPrice);
     }
   }, [order]);

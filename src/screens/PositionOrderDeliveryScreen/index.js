@@ -5,6 +5,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {API, graphqlOperation} from 'aws-amplify';
 import {Courier, Order} from '../../models';
 import {getCourier, getOrder, listCouriers} from '../../graphql/queries';
+import {onUpdateCourier, onUpdateOrder} from '../../graphql/subscriptions';
 
 export const PositionOrderDeliveryScreen = ({id}) => {
   const mapRef = useRef(null);
@@ -13,10 +14,11 @@ export const PositionOrderDeliveryScreen = ({id}) => {
 
   useEffect(() => {
     // DataStore.query(Order, id).then(setOrder);
-    API.graphql(graphqlOperation(getOrder, {id})).then(response => {
-      console.log('the current user orders:,', response.data.getOrder);
-      setOrder(response.data.getOrder);
-    });
+    if (!id) {
+      return;
+    }
+    getOrderById();
+    observeOrderForCourier();
   }, []);
 
   useEffect(() => {
@@ -67,7 +69,45 @@ export const PositionOrderDeliveryScreen = ({id}) => {
     //   },
     // );
     // return () => subscription.unsubscribe();
+
+    const subscription = API.graphql(
+      graphqlOperation(onUpdateCourier, {
+        filter: {id: {eq: courier.id}},
+      }),
+    ).subscribe({
+      next: ({value}) => {
+        // fetchDishes(id);
+        console.log('le wath onUpdateCourier:', value);
+      },
+      error: err => {
+        console.warn(err);
+      },
+    });
+    return () => subscription.unsubscribe();
   }, [courier]);
+
+  const getOrderById = () => {
+    API.graphql(graphqlOperation(getOrder, {id})).then(response => {
+      console.log('the current user orders:,', response.data.getOrder);
+      setOrder(response.data.getOrder);
+    });
+  };
+  const observeOrderForCourier = () => {
+    const subscription = API.graphql(
+      graphqlOperation(onUpdateOrder, {
+        filter: {id: {eq: id}},
+      }),
+    ).subscribe({
+      next: ({value}) => {
+        getOrderById();
+        console.log('le wath onCreateDish:', value);
+      },
+      error: err => {
+        console.warn(err);
+      },
+    });
+    return () => subscription.unsubscribe();
+  };
 
   return (
     <View style={{backgroundColor: 'lightgrey', height: '100%'}}>

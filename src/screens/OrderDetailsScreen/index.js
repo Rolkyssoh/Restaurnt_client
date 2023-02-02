@@ -9,6 +9,10 @@ import React, {useEffect, useState} from 'react';
 import {Image} from '@rneui/themed';
 import {BasketDishItem} from '../../components';
 import {useOrderContext} from '../../contexts/OrderContext';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const OrderDetailsHeader = ({order}) => {
   // console.log('the order in orderDetails:', order);
@@ -25,7 +29,7 @@ const OrderDetailsHeader = ({order}) => {
           <Text style={styles.title}>{order.Structure.name}</Text>
 
           <Text style={styles.subtitle}>
-            {order.status} &#8226; 2 days ago{' '}
+            {order.status} &#8226; {dayjs(order.createdAt).fromNow(true)}
           </Text>
           <Text style={styles.menuTitle}>Votre Commande</Text>
         </View>
