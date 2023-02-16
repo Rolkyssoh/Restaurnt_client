@@ -45,7 +45,7 @@ const TabBottom = createMaterialBottomTabNavigator();
 export const HomeTabsRoutes = () => {
   return (
     <TabBottom.Navigator barStyle={{backgroundColor: '#fff'}}>
-      <TabTop.Screen
+      <TabBottom.Screen
         name="Accueil"
         component={HomeScreen}
         options={{
@@ -61,10 +61,15 @@ export const HomeTabsRoutes = () => {
         listeners={({navigation, route}) => ({
           tabPress: e => {
             // Prevent default action
+            // const routes = navigation.getState()?.routes;
+            // const prevRoute = routes[routes.length - 2];
+            // console.log({prevRoute});
             e.preventDefault();
+            console.log('the routeee:', route);
 
             // Do something with the `navigation` object
-            navigation.navigate('Orders');
+            // if (prevRoute.name !== 'Orders')
+            navigation.push('HomeTabs', {screen: 'Orders'});
           },
         })}
         options={{
@@ -77,6 +82,12 @@ export const HomeTabsRoutes = () => {
       <TabTop.Screen
         name="Profile"
         component={ProfileScreen}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            e.preventDefault();
+            navigation.push('HomeTabs', {screen: 'Profile'});
+          },
+        })}
         options={{
           tabBarIcon: ({color}) => (
             <FontAwesome5 name="user-alt" size={24} color={color} />
@@ -120,7 +131,10 @@ export const RootNavigator = () => {
   );
 };
 
-const HomeStackNavigator = () => {
+const HomeStackNavigator = props => {
+  useEffect(() => {
+    console.log('lehom stack navvvv:', props);
+  }, []);
   return (
     <HomeStackRoutes.Navigator>
       {/* <HomeStackRoutes.Screen

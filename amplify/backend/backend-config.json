@@ -1,6 +1,6 @@
 {
   "api": {
-    "LaTchoop": {
+    "LaTchop10": {
       "dependsOn": [],
       "output": {
         "authConfig": {
@@ -23,7 +23,7 @@
     }
   },
   "auth": {
-    "LaTchoop": {
+    "LaTchop10": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

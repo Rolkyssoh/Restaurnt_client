@@ -29,13 +29,13 @@ export const BasketScreen = () => {
       const newOrder = await createNewOrder();
       setBasketDishes([]);
       // if (newOrder) navigation.navigate('orderList');
-      if (newOrder) navigation.navigate('Orders');
+      if (newOrder) navigation.navigate('HomeTabs', {screen: 'Orders'});
     }
     if (shopInfos) {
       const newIngredientOrder = await createIngredientOrder();
       setBasketDishes([]);
       // if (newIngredientOrder) navigation.navigate('orderList');
-      if (newIngredientOrder) navigation.navigate('Orders');
+      if (newIngredientOrder) navigation.push('HomeTabs', {screen: 'Orders'});
     }
   };
 

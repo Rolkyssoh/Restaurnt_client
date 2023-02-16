@@ -1,7 +1,7 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "LaTchoop",
+    "apiName": "LaTchop10",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",

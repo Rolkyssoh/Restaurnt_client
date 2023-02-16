@@ -422,7 +422,7 @@ export const schema = {
                     "type": {
                         "enum": "OrderStatus"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "userID": {
@@ -431,22 +431,6 @@ export const schema = {
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
-                },
-                "OrderDishes": {
-                    "name": "OrderDishes",
-                    "isArray": true,
-                    "type": {
-                        "model": "OrderDish"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "orderID"
-                        ]
-                    }
                 },
                 "Structure": {
                     "name": "Structure",
@@ -463,6 +447,22 @@ export const schema = {
                         ],
                         "targetNames": [
                             "orderStructureId"
+                        ]
+                    }
+                },
+                "OrderDishes": {
+                    "name": "OrderDishes",
+                    "isArray": true,
+                    "type": {
+                        "model": "OrderDish"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "orderID"
                         ]
                     }
                 },
@@ -580,8 +580,8 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "minDeliveryTim": {
-                    "name": "minDeliveryTim",
+                "minDeliveryTime": {
+                    "name": "minDeliveryTime",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": true,
@@ -628,7 +628,7 @@ export const schema = {
                     "type": {
                         "enum": "StructureType"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "adminSub": {
@@ -636,6 +636,13 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
+                    "attributes": []
+                },
+                "isActive": {
+                    "name": "isActive",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "Dishes": {
@@ -998,6 +1005,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "UserType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "Baskets": {
                     "name": "Baskets",
                     "isArray": true,
@@ -1029,15 +1045,6 @@ export const schema = {
                             "userID"
                         ]
                     }
-                },
-                "type": {
-                    "name": "type",
-                    "isArray": false,
-                    "type": {
-                        "enum": "UserType"
-                    },
-                    "isRequired": true,
-                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1083,14 +1090,6 @@ export const schema = {
         }
     },
     "enums": {
-        "UserType": {
-            "name": "UserType",
-            "values": [
-                "CUSTOMER",
-                "DRIVER",
-                "ADMIN"
-            ]
-        },
         "TransportationModes": {
             "name": "TransportationModes",
             "values": [
@@ -1116,9 +1115,18 @@ export const schema = {
                 "RESTAURANT",
                 "SHOP"
             ]
+        },
+        "UserType": {
+            "name": "UserType",
+            "values": [
+                "CUSTOMER",
+                "DRIVER",
+                "ADMIN",
+                "RESTORER"
+            ]
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.3.2",
-    "version": "e643e8530c60873bc6d39a77a25053d4"
+    "codegenVersion": "3.3.5",
+    "version": "a60414e210a3170e16643fd877b008d4"
 };

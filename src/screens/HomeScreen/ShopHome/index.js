@@ -7,6 +7,7 @@ import {listStructures} from '../../../graphql/queries';
 import {
   onCreateStructure,
   onDeleteStructure,
+  onUpdateStructure,
 } from '../../../graphql/subscriptions';
 
 const ShopHome = ({search}) => {
@@ -16,6 +17,7 @@ const ShopHome = ({search}) => {
   useEffect(() => {
     fetchShop();
     watchShopCreation();
+    watchShopUpdating();
 
     // Watch the shop list for deleting
     const subscription = API.graphql(
@@ -56,10 +58,27 @@ const ShopHome = ({search}) => {
     return () => subscription.unsubscribe();
   };
 
+  const watchShopUpdating = () => {
+    const subscription = API.graphql(
+      graphqlOperation(onUpdateStructure, {}),
+    ).subscribe({
+      next: ({value}) => {
+        console.log('le wath onUpdateSHOP result in ShopHome:', value);
+        if (value.data.onUpdateStructure.type === StructureType.SHOP) {
+          fetchShop();
+        }
+      },
+      error: err => {
+        console.warn(err);
+      },
+    });
+    return () => subscription.unsubscribe();
+  };
+
   const fetchShop = () => {
     API.graphql(graphqlOperation(listStructures)).then(result => {
       const listShops = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.SHOP && !_._deleted,
+        _ => _.type === StructureType.SHOP && !_._deleted && _.isActive,
       );
       setShops(listShops);
     });

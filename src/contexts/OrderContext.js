@@ -249,7 +249,7 @@ export const listOrdersByDbUser = /* GraphQL */ `
             name
             image
             deliveryFee
-            minDeliveryTim
+            minDeliveryTime
             maxDeliveryTime
             rating
             address
@@ -326,7 +326,7 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
         name
         image
         deliveryFee
-        minDeliveryTim
+        minDeliveryTime
         maxDeliveryTime
         rating
         address

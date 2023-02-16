@@ -3,8 +3,8 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "latcho1b8cc55b",
-    "userPoolName": "LaTchoop",
+    "resourceNameTruncated": "latcho22893680",
+    "userPoolName": "LaTchop10",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -25,10 +25,10 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "LaTcho1b8cc55b_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "LaTcho22893680_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "1b8cc55b",
-    "resourceName": "LaTchoop",
+    "sharedId": "22893680",
+    "resourceName": "LaTchop10",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
     "usernameAttributes": [
@@ -43,4 +43,4 @@
     "usernameCaseSensitive": false,
     "useEnabledMfas": true
   }
-} 
+}

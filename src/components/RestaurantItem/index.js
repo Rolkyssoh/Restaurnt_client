@@ -26,7 +26,7 @@ const RestaurantItem = ({restaurant}) => {
             <View style={styles.fee}>
               <MaterialIcons name="delivery-dining" size={20} color="grey" />
               <Text style={{color: '#000'}}>
-                {restaurant.deliveryFee.toFixed(1)} MAD{' '}
+                {restaurant.deliveryFee?.toFixed(1)} MAD{' '}
               </Text>
             </View>
             {/* DiliveryTime */}
