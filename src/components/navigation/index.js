@@ -166,7 +166,7 @@ const HomeStackNavigator = props => {
       <HomeStackRoutes.Screen
         name="Shop"
         component={ShopeHomeScreen}
-        // options={{headerShown: false}}
+        options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen name="Order" component={OrderDetailsNavigator} />
     </HomeStackRoutes.Navigator>

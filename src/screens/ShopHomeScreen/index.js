@@ -118,7 +118,13 @@ export const ShopeHomeScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        ListHeaderComponent={() => <ShopHeader shop={shopContent} />}
+        ListHeaderComponent={() => (
+          <ShopHeader
+            shop={shopContent}
+            searchTerm={searchTerm}
+            setTerm={setSearchTerm}
+          />
+        )}
         data={filteredIngredients}
         renderItem={({item}) => <IngredientListItem ingredient={item} />}
         showsVerticalScrollIndicator={false}

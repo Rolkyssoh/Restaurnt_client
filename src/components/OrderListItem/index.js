@@ -5,11 +5,18 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {OrderDish} from '../../models';
+import {OrderStatus} from '../../models';
+import {onUpdateOrder} from '../../graphql/subscriptions';
+import {API, graphqlOperation} from 'aws-amplify';
+import {useAuthContext} from '../../contexts/AuthContext';
+import {useOrderContext} from '../../contexts/OrderContext';
 
 dayjs.extend(relativeTime);
 
 export const OrderListItem = ({order}) => {
   const navigation = useNavigation();
+  const {dbUser} = useAuthContext();
+  const {setOrders} = useOrderContext();
 
   const [totalQty, setTotalQty] = useState(null);
   const [totalPrice, setTotalPrice] = useState(null);
@@ -22,6 +29,38 @@ export const OrderListItem = ({order}) => {
   //   COMPLETED: 'COMPLETED',
   //   ACCEPTED: 'ACCEPTED',
   // };
+
+  const fetchOrders = () => {
+    API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
+      resp => {
+        const userIsOrders = resp.data.getUser.Orders.items.filter(
+          _ => !_._deleted,
+        );
+        console.log('get orderssss:', userIsOrders);
+        setOrders(userIsOrders);
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (order.id) {
+      // Watch the onupdate order
+      const subscriptionToUpdated = API.graphql(
+        graphqlOperation(onUpdateOrder, {
+          filter: {id: {eq: order.id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
+          fetchOrders();
+          console.log('le wath onUPdate order:', value);
+        },
+        error: err => {
+          console.warn(err);
+        },
+      });
+      return () => subscriptionToUpdated.unsubscribe();
+    }
+  }, [order.id]);
 
   useEffect(() => {
     console.log({order});
@@ -46,7 +85,21 @@ export const OrderListItem = ({order}) => {
     console.log({totalQty});
   }, [order]);
 
-  // useEffect(() => {}, [totalPrice]);
+  const statusToColor = {
+    [OrderStatus.NEW]: 'green',
+    [OrderStatus.COOKING]: 'orange',
+    [OrderStatus.READY_FOR_PICKUP]: 'red',
+    [OrderStatus.ACCEPTED]: 'purple',
+    [OrderStatus.COMPLETED]: 'skyblue',
+  };
+
+  const englishToFrench = {
+    [OrderStatus.NEW]: 'NOUVEAU',
+    [OrderStatus.COOKING]: 'EN PREPARTION',
+    [OrderStatus.READY_FOR_PICKUP]: 'PRÊT AU RAMASSAGE',
+    [OrderStatus.ACCEPTED]: 'LIVRAISON EN COURS',
+    [OrderStatus.COMPLETED]: 'LIVRÉE',
+  };
 
   return (
     <Pressable
@@ -67,11 +120,15 @@ export const OrderListItem = ({order}) => {
           <Text style={{color: '#000'}}>
             {dayjs(order?.createdAt).fromNow(true)} &#8226;{' '}
           </Text>
-          {order?.status === 'NEW' && (
-            <Text style={{color: 'green', fontWeight: 'bold'}}>
-              {order?.status}
-            </Text>
-          )}
+          {/* {order?.status === 'NEW' && ( */}
+          <Text
+            style={{
+              color: `${statusToColor[order.status]}`,
+              fontWeight: 'bold',
+            }}>
+            {englishToFrench[order.status]}
+          </Text>
+          {/* )} */}
         </View>
       </View>
     </Pressable>
@@ -109,3 +166,87 @@ const styles = StyleSheet.create({
   },
   name: {fontWeight: 'bold', fontSize: 16, color: '#000'},
 });
+
+export const listOrdersByDbUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      Orders {
+        items {
+          id
+          status
+          userID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          orderStructureId
+          orderCourierId
+          OrderDishes {
+            items {
+              id
+              quantity
+              createdAt
+              updatedAt
+              _deleted
+              Dish {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+              Ingredient {
+                id
+                name
+                image
+                description
+                price
+                structureID
+                createdAt
+                updatedAt
+                _version
+                _deleted
+                _lastChangedAt
+              }
+            }
+            nextToken
+            startedAt
+          }
+          Structure {
+            id
+            name
+            image
+            deliveryFee
+            minDeliveryTime
+            maxDeliveryTime
+            rating
+            address
+            lat
+            lng
+            type
+            adminSub
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
