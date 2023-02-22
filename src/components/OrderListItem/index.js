@@ -25,7 +25,7 @@ export const OrderListItem = ({order}) => {
 
   useEffect(() => {
     console.log({order});
-    if (order.orderDishes !== null) {
+    if (order && order.orderDishes !== null) {
       const theTotalQty = order.OrderDishes.items.reduce(
         (sum, orderDish) => sum + orderDish.quantity,
         0,
@@ -43,6 +43,7 @@ export const OrderListItem = ({order}) => {
       console.log({theTotalQty});
       setTotalPrice(theTotalPrice);
     }
+    console.log({totalQty});
   }, [order]);
 
   // useEffect(() => {}, [totalPrice]);
@@ -51,12 +52,12 @@ export const OrderListItem = ({order}) => {
     <Pressable
       style={styles.container}
       onPress={() => navigation.navigate('Order', {id: order.id})}>
-      <Image source={{uri: order.Structure?.image}} style={styles.image} />
+      <Image source={{uri: order?.Structure?.image}} style={styles.image} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{order.Structure?.name}</Text>
+        <Text style={styles.name}>{order?.Structure?.name}</Text>
         <Text style={{marginVertical: 5, color: '#000'}}>
           {`${
-            order.Structure.type === 'RESTAURANT'
+            order?.Structure.type === 'RESTAURANT'
               ? totalQty + ' items'
               : totalQty?.toFixed(1) + ' g'
           }`}
@@ -64,11 +65,11 @@ export const OrderListItem = ({order}) => {
         </Text>
         <View style={{flexDirection: 'row'}}>
           <Text style={{color: '#000'}}>
-            {dayjs(order.createdAt).fromNow(true)} &#8226;{' '}
+            {dayjs(order?.createdAt).fromNow(true)} &#8226;{' '}
           </Text>
-          {order.status === 'NEW' && (
+          {order?.status === 'NEW' && (
             <Text style={{color: 'green', fontWeight: 'bold'}}>
-              {order.status}
+              {order?.status}
             </Text>
           )}
         </View>

@@ -145,12 +145,12 @@ const HomeStackNavigator = props => {
       <HomeStackRoutes.Screen
         name="HomeTabs"
         component={HomeTabsRoutes}
-        // options={{headerShown: false}}
+        options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen
         name="Restaurant"
         component={RestaurantHomeScreen}
-        // options={{headerShown: false}}
+        options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen name="Dish" component={DishDetailsSCreen} />
       <HomeStackRoutes.Screen

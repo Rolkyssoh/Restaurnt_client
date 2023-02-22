@@ -53,6 +53,8 @@ const OrderContextProvider = ({children}) => {
       }),
     );
 
+    console.log('the new created order:', newOrder);
+
     // add all basketDishes to the order
     await Promise.all(
       basketDishes.map(basketDish => {
@@ -69,32 +71,33 @@ const OrderContextProvider = ({children}) => {
       }),
     );
 
-    // get the new created order with all details
-    const theCompltedNewOrder = await API.graphql(
-      graphqlOperation(getOrder, {id: newOrder.data.createOrder.id}),
-    );
-
-    console.log({theCompltedNewOrder});
-
-    console.log('le basket dans orderContext:', basket);
-
-    if (theCompltedNewOrder) {
-      setOrderLoading(false);
-      // Delete basket
-      API.graphql(
-        graphqlOperation(deleteBasket, {
-          input: {
-            _version: basket.data
-              ? basket.data.createBasket._version
-              : basket._version,
-            id: basket.data ? basket.data.createBasket.id : basket.id,
-          },
-        }),
+    if (newOrder) {
+      // get the new created order with all details
+      const theCompltedNewOrder = await API.graphql(
+        graphqlOperation(getOrderByOrderId, {id: newOrder.data.createOrder.id}),
       );
-    }
+      console.log({theCompltedNewOrder});
 
-    setBasket(null);
-    setOrders([theCompltedNewOrder.data.getOrder, ...orders]);
+      console.log('le basket dans orderContext:', basket);
+
+      if (theCompltedNewOrder) {
+        setOrderLoading(false);
+        // Delete basket
+        API.graphql(
+          graphqlOperation(deleteBasket, {
+            input: {
+              _version: basket.data
+                ? basket.data.createBasket._version
+                : basket._version,
+              id: basket.data ? basket.data.createBasket.id : basket.id,
+            },
+          }),
+        );
+      }
+
+      setBasket(null);
+      setOrders([theCompltedNewOrder.data.getOrder, ...orders]);
+    }
 
     return newOrder;
   };
@@ -114,6 +117,8 @@ const OrderContextProvider = ({children}) => {
       }),
     );
 
+    console.log('the new created ingredient  order:', newIngredientOrder);
+
     // add all basketDishes to the order
     await Promise.all(
       basketDishes.map(basketIngredient => {
@@ -131,29 +136,33 @@ const OrderContextProvider = ({children}) => {
     );
 
     // get the new created order with all details
-    const theCompltedNewOrder = await API.graphql(
-      graphqlOperation(getOrder, {id: newIngredientOrder.data.createOrder.id}),
-    );
-
-    console.log({theCompltedNewOrder});
-
-    if (theCompltedNewOrder) {
-      setOrderLoading(false);
-      // Delete basket
-      await API.graphql(
-        graphqlOperation(deleteBasket, {
-          input: {
-            _version: basket.dat
-              ? basket.data.createBasket._version
-              : basket._version,
-            id: basket.data ? basket.data.createBasket.id : basket.id,
-          },
+    if (newIngredientOrder) {
+      const theCompltedNewOrder = await API.graphql(
+        graphqlOperation(getOrderByOrderId, {
+          id: newIngredientOrder.data.createOrder.id,
         }),
       );
+
+      console.log({theCompltedNewOrder});
+
+      if (theCompltedNewOrder) {
+        setOrderLoading(false);
+        // Delete basket
+        await API.graphql(
+          graphqlOperation(deleteBasket, {
+            input: {
+              _version: basket.data
+                ? basket.data.createBasket._version
+                : basket._version,
+              id: basket.data ? basket.data.createBasket.id : basket.id,
+            },
+          }),
+        );
+      }
+      setBasket(null);
+      setOrders([theCompltedNewOrder.data.getOrder, ...orders]);
+      // navigation.navigate('orderList');
     }
-    setBasket(null);
-    setOrders([newIngredientOrder.data.createOrder, ...orders]);
-    // navigation.navigate('orderList');
 
     return newIngredientOrder;
   };
@@ -191,6 +200,110 @@ const OrderContextProvider = ({children}) => {
 export default OrderContextProvider;
 
 export const useOrderContext = () => useContext(orderContext);
+
+export const getOrderByOrderId = /* GraphQL */ `
+  query GetOrder($id: ID!) {
+    getOrder(id: $id) {
+      id
+      status
+      userID
+      Structure {
+        id
+        name
+        image
+        deliveryFee
+        minDeliveryTime
+        maxDeliveryTime
+        rating
+        address
+        lat
+        lng
+        type
+        adminSub
+        isActive
+        Dishes {
+          nextToken
+          startedAt
+        }
+        Ingredients {
+          nextToken
+          startedAt
+        }
+        Baskets {
+          nextToken
+          startedAt
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      OrderDishes {
+        items {
+          id
+          quantity
+          orderID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          orderDishDishId
+          orderDishIngredientId
+          Dish {
+            id
+            name
+            image
+            description
+            price
+            structureID
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+          Ingredient {
+            id
+            name
+            image
+            description
+            price
+            structureID
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        nextToken
+        startedAt
+      }
+      Courier {
+        id
+        name
+        sub
+        lat
+        lng
+        tranportationMode
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      orderStructureId
+      orderCourierId
+    }
+  }
+`;
 
 export const listOrdersByDbUser = /* GraphQL */ `
   query GetUser($id: ID!) {
