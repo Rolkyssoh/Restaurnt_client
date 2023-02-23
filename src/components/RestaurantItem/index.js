@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
 
     borderWidth: 1,
-    borderColor: 'lightgrey',
+    borderColor: 'yellowgreen',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 5,
+    backgroundColor: '#fff',
   },
   name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5},
   fee: {color: 'grey', alignItems: 'center', marginRight: 25},

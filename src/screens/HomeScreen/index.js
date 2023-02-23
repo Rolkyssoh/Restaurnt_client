@@ -28,6 +28,9 @@ export const HomeScreen = ({navigation, route}) => {
         screenOptions={{
           tabTopBarLabelStyle: {fontSize: 10, fontWeight: 'bold'},
           tabTopBarIndicatorStyle: {opacity: 0},
+          tabBarIndicatorStyle: {backgroundColor: 'yellowgreen'},
+          tabBarActiveTintColor: 'yellowgreen',
+          tabBarInactiveTintColor: 'gray',
         }}>
         <TabTop.Screen name="RestaurantHome" options={{title: 'Restaurants'}}>
           {() => <RestaurantHome search={searchTerm} />}

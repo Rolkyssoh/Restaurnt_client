@@ -141,10 +141,10 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'lightgrey',
+    borderColor: 'yellowgreen',
     height: 80,
 
-    shadowColor: '#000',
+    shadowColor: 'yellowgreen',
     shadowOffset: {
       width: 0,
       height: 1,

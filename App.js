@@ -29,7 +29,7 @@ enableLatestRenderer();
 
 const App = () => {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.container}>
       <NavigationContainer>
         <AuthContextProvider>
           <BasketContextProvider>
@@ -48,7 +48,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {backgroundColor: '#fff', flex: 1},
+  container: {backgroundColor: '#d5d5d5', flex: 1},
 });
 
 export default withAuthenticator(App);

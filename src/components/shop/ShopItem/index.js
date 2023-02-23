@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
 
     borderWidth: 1,
-    borderColor: 'lightgrey',
+    borderColor: 'yellowgreen',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
