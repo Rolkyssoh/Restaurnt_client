@@ -20,9 +20,12 @@ import OrderContextProvider from './src/contexts/OrderContext';
 import DishContextProvider from './src/contexts/DishContext';
 import IngredientContextProvider from './src/contexts/IngredientContext';
 
+import {LogBox} from 'react-native';
+
 Amplify.configure({...config, Analytics: {disabled: true}});
 enableLatestRenderer();
 // Amplify.configure(config);
+// LogBox.ignoreAllLogs()
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */

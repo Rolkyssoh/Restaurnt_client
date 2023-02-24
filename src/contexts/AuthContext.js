@@ -2,6 +2,7 @@ import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {listUsers} from '../graphql/queries';
 import {User} from '../models';
+import * as Location from 'expo-location';
 
 const AuthContext = createContext();
 
@@ -9,6 +10,7 @@ const AuthContextProvider = ({children}) => {
   const [authUser, setAuthUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [dbUserLocation, setDbUserLocation] = useState(null);
 
   // the user id
   const sub = authUser?.attributes?.sub;
@@ -21,23 +23,34 @@ const AuthContextProvider = ({children}) => {
     if (!sub) {
       return;
     }
-    console.log({authUser});
 
-    // DataStore.query(User, user => user.sub('eq', sub)).then(users => {
-    //   setDbUser(users[0]);
-    //   setLoading(false);
-    // });
     API.graphql(graphqlOperation(listUsers)).then(result => {
       const theCurrentUser = result.data.listUsers.items.filter(
-        _ => _.sub === sub,
+        _ => _.sub === sub && !_._deleted,
       );
+
+      if (theCurrentUser.length === 0) {
+        (async () => {
+          let {status} = await Location.requestForegroundPermissionsAsync();
+          if (!status === 'granted') {
+            console.warn('Permission to access location was denied');
+            return;
+          }
+          let location = await Location.getCurrentPositionAsync();
+          setDbUserLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          });
+        })();
+      }
       setDbUser(theCurrentUser[0]);
       setLoading(false);
     });
   }, [sub]);
 
   return (
-    <AuthContext.Provider value={{authUser, dbUser, sub, setDbUser, loading}}>
+    <AuthContext.Provider
+      value={{authUser, dbUser, sub, setDbUser, loading, dbUserLocation}}>
       {children}
     </AuthContext.Provider>
   );

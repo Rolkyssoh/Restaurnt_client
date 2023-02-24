@@ -19,7 +19,14 @@ export const HomeScreen = ({navigation, route}) => {
       <SearchBar
         placeholder="Que recherchez vous?"
         containerStyle={styles.searchBarContainer}
-        inputContainerStyle={{height: 35, backgroundColor: 'lightgrey'}}
+        inputContainerStyle={{
+          height: 35,
+          backgroundColor: '#fff',
+          borderRadius: 10,
+        }}
+        inputStyle={{color: '#000'}}
+        placeholderTextColor="#000"
+        searchIcon={{color: '#000'}}
         value={searchTerm}
         onChangeText={e => setSearchTerm(e)}
         onClear={() => setSearchTerm('')}
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'lightgrey',
     borderBottomColor: 'lightgrey',
     borderWidth: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'lightgrey',
     height: 45,
     marginHorizontal: 10,
     marginVertical: 5,

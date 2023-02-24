@@ -43,7 +43,13 @@ export const OrdersScreen = () => {
   };
 
   return (
-    <View style={{flex: 1, marginBottom: 5, paddingTop: 15}}>
+    <View
+      style={{
+        flex: 1,
+        marginBottom: 5,
+        paddingTop: 15,
+        backgroundColor: '#fff',
+      }}>
       <MultiSelect
         containerStyle={{backgroundColor: '#fff'}}
         activeColor="yellowgreen"
@@ -97,27 +103,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  searchBarContainer: {
-    height: 45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderTopColor: 'lightgrey',
-    borderTopWidth: 0.5,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 0.5,
-  },
   dropdown: {
     height: 45,
-    backgroundColor: 'lightgrey',
-    borderBottomColor: 'yellowgreen',
-    borderBottomWidth: 0.5,
+    backgroundColor: 'whitesmoke',
+    borderWidth: 0.5,
+    borderColor: 'yellowgreen',
     marginHorizontal: 10,
-    color: 'yellow',
+    borderRadius: 15,
   },
   placeholderStyle: {
     fontSize: 16,
-    color: '#fff',
+    color: '#000',
   },
   selectedTextStyle: {
     fontSize: 14,
@@ -130,6 +126,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    color: 'yellowgreen',
   },
   icon: {
     marginRight: 5,

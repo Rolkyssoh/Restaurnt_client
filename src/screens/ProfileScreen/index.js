@@ -5,40 +5,31 @@ import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {User, UserType} from '../../models';
 import {createUser, updateUser} from '../../graphql/mutations';
+import * as Location from 'expo-location';
 
 export const ProfileScreen = () => {
-  const {dbUser, sub, setDbUser} = useAuthContext();
+  const {dbUser, sub, setDbUser, dbUserLocation} = useAuthContext();
 
   const [name, setName] = useState(dbUser?.name ?? '');
   const [address, setAdress] = useState(dbUser?.address ?? '');
-  const [lat, setLat] = useState(dbUser?.lat + ' ' ?? '0');
-  const [lng, setLng] = useState(dbUser?.lng + ' ' ?? '0');
+  const [lat, setLat] = useState(dbUser?.lat);
+  const [lng, setLng] = useState(dbUser?.lng);
+
+  useEffect(() => {
+    if (dbUserLocation !== null) {
+      setLat(dbUserLocation.latitude);
+      setLng(dbUserLocation.longitude);
+    }
+  }, [dbUserLocation]);
 
   const onSave = async () => {
     if (dbUser) {
-      // await updateUser();
       await editExistedUser();
     } else {
       await addNewUser();
     }
   };
 
-  // const createUser = async () => {
-  //   try {
-  //     const user = await DataStore.save(
-  //       new User({
-  //         name,
-  //         address,
-  //         lat: parseFloat(lat),
-  //         lng: parseFloat(lng),
-  //         sub,
-  //       }),
-  //     );
-  //     setDbUser(user);
-  //   } catch (e) {
-  //     Alert.alert('Error', e.message);
-  //   }
-  // };
   const addNewUser = async () => {
     try {
       const user = await API.graphql(
@@ -58,18 +49,6 @@ export const ProfileScreen = () => {
       Alert.alert('Error', e.message);
     }
   };
-
-  // const updateUser = async () => {
-  //   const user = await DataStore.save(
-  //     User.copyOf(dbUser, updated => {
-  //       (updated.name = name),
-  //         (updated.address = address),
-  //         (updated.lat = parseFloat(lat)),
-  //         (lng = parseFloat(lng));
-  //     }),
-  //   );
-  //   setDbUser(user);
-  // };
 
   const editExistedUser = async () => {
     const updatedUser = await API.graphql(
@@ -93,8 +72,18 @@ export const ProfileScreen = () => {
       <Text style={styles.title}>Profile</Text>
       <Input value={name} onChangeText={setName} placeholder="Name" />
       <Input value={address} onChangeText={setAdress} placeholder="Adresse" />
-      <Input value={lat} onChangeText={setLat} placeholder="Latitude" />
-      <Input value={lng} onChangeText={setLng} placeholder="Longitude" />
+      <Input
+        value={`${lat}`}
+        onChangeText={setLat}
+        placeholder="Latitude"
+        disabled={lat}
+      />
+      <Input
+        value={`${lng}`}
+        onChangeText={setLng}
+        placeholder="Longitude"
+        disabled={lat}
+      />
 
       <Button title="Sauvegarder" onPress={onSave} />
       <Button title="Déconnexion" type="clear" onPress={() => Auth.signOut()} />
