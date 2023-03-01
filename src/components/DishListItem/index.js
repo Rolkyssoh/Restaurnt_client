@@ -49,11 +49,13 @@ export const DishListItem = ({dish}) => {
 
 const styles = StyleSheet.create({
   container: {
-    // paddingVertical: 10,
-    paddingLeft: 5,
+    padding: 5,
+    paddingLeft: 10,
     margin: 10,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    // borderColor: 'lightgrey',
+    // borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
 
@@ -76,5 +78,5 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginHorizontal: 5,
   },
-  image: {height: 101, aspectRatio: 1},
+  image: {height: 101, aspectRatio: 1, borderRadius: 15},
 });

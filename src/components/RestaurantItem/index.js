@@ -50,10 +50,13 @@ export default memo(RestaurantItem);
 
 const styles = StyleSheet.create({
   restaurantItemContainer: {
+    padding: 4,
+    backgroundColor: '#fff',
     marginVertical: 8,
+    borderRadius: 15,
 
     borderWidth: 1,
-    borderColor: 'yellowgreen',
+    borderColor: '#adff29',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -67,6 +70,9 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     aspectRatio: 4 / 2,
+    // borderRadius: 15,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   row: {
     flexDirection: 'row',
@@ -74,6 +80,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 5,
     backgroundColor: '#fff',
+    borderBottomRightRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5},
   fee: {color: 'grey', alignItems: 'center', marginRight: 25},

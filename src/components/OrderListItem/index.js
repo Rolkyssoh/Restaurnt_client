@@ -139,10 +139,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     margin: 10,
+    padding: 5,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'yellowgreen',
     height: 80,
+    borderRadius: 15,
+    backgroundColor: '#fff',
 
     shadowColor: 'yellowgreen',
     shadowOffset: {
@@ -157,12 +160,14 @@ const styles = StyleSheet.create({
   image: {
     aspectRatio: 1,
     height: '101%',
+    borderRadius: 15,
   },
   detailsContainer: {
-    paddingHorizontal: 5,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    // paddingVertical: 2,
     flex: 1,
     height: '100%',
+    justifyContent: 'center',
   },
   name: {fontWeight: 'bold', fontSize: 16, color: '#000'},
 });

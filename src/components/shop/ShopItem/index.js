@@ -53,9 +53,12 @@ const ShopItem = ({shop}) => {
 const styles = StyleSheet.create({
   shopItemContainer: {
     marginVertical: 8,
+    padding: 4,
+    borderRadius: 15,
+    backgroundColor: '#fff',
 
     borderWidth: 1,
-    borderColor: 'yellowgreen',
+    borderColor: '#adff29',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -69,12 +72,14 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     aspectRatio: 4 / 2,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
   name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: '#000'},
   fee: {color: 'grey', alignItems: 'center', marginRight: 25},
