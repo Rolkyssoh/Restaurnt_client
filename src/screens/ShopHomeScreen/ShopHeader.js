@@ -14,11 +14,21 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
         <Text style={styles.name}>{shop?.name}</Text>
         <View style={styles.subtitleCotainer}>
           <View style={styles.contentSubtitle}>
-            <MaterialIcons name="delivery-dining" size={20} color="grey" />
+            <MaterialIcons
+              name="delivery-dining"
+              size={20}
+              color="yellowgreen"
+            />
             <Text style={styles.fee}>{shop?.deliveryFee.toFixed(1)} MAD</Text>
           </View>
+          <Divider
+            color="lightgrey"
+            width={1}
+            orientation="vertical"
+            style={{marginHorizontal: 12}}
+          />
           <View style={styles.contentSubtitle}>
-            <Fontisto name="clock" size={20} color="grey" />
+            <Fontisto name="clock" size={20} color="yellowgreen" />
             <Text style={styles.time}>
               {shop?.minDeliveryTime}-{shop?.maxDeliveryTime} min
             </Text>
@@ -27,7 +37,11 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
         <SearchBar
           placeholder="Que recherchez vous?"
           containerStyle={styles.searBarContainer}
-          inputContainerStyle={{height: 30, backgroundColor: 'lightgrey'}}
+          inputContainerStyle={{
+            height: 32,
+            backgroundColor: 'whitesmoke',
+            borderRadius: 15,
+          }}
           value={searchTerm}
           onChangeText={val => setTerm(val)}
         />

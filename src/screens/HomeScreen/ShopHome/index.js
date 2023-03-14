@@ -89,7 +89,13 @@ const ShopHome = ({search}) => {
   };
 
   return (
-    <View style={{backgroundColor: '#fff', flex: 1, marginBottom: 45}}>
+    <View
+      style={{
+        backgroundColor: '#fff',
+        flex: 1,
+        marginBottom: 1,
+        backgroundColor: 'whitesmoke',
+      }}>
       <View style={styles.shopHomeContainer}>
         <FlatList
           data={filterdShop}

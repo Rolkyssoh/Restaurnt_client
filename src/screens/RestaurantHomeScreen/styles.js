@@ -18,6 +18,7 @@ export default StyleSheet.create({
   subtitleCotainer: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
+    justifyContent: 'space-evenly',
   },
   searBarContainer: {
     height: 40,
@@ -32,9 +33,12 @@ export default StyleSheet.create({
     borderBottomWidth: 0.5,
     marginTop: 10,
   },
-  contentSubtitle: {alignItems: 'center'},
-  fee: {color: '#000', fontSize: 15, marginRight: 15},
-  time: {color: '#000', fontSize: 15},
+  contentSubtitle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fee: {color: '#000', fontSize: 10, alignSelf: 'flex-end'},
+  time: {color: '#000', fontSize: 10, alignSelf: 'flex-end'},
   menuTitle: {
     marginVertical: 15,
     fontSize: 18,

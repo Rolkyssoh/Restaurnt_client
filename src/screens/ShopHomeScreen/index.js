@@ -4,7 +4,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 
 import styles from '../RestaurantHomeScreen/styles';
 import {useBasketContext} from '../../contexts/BasketContext';
-import {Button} from '@rneui/themed';
+import {Button, Text} from '@rneui/themed';
 import ShopHeader from './ShopHeader';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -129,6 +129,23 @@ export const ShopeHomeScreen = () => {
         renderItem={({item}) => <IngredientListItem ingredient={item} />}
         showsVerticalScrollIndicator={false}
       />
+      {/* For empty filtered dishes array */}
+      {filteredIngredients.length === 0 && (
+        <View
+          style={{
+            flex: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            h3
+            style={{
+              color: 'lightgrey',
+            }}>
+            Aucun Ingrédient trouvé
+          </Text>
+        </View>
+      )}
       <IonIcons
         onPress={() => navigation.goBack()}
         name="arrow-back-circle"

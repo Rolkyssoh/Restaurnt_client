@@ -1,7 +1,8 @@
-import {View, Text, Pressable, StyleSheet} from 'react-native';
 import React, {memo, useEffect} from 'react';
+import {View, Pressable, StyleSheet} from 'react-native';
+import {Image, Text} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
-import {Image} from '@rneui/themed';
+import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -26,15 +27,25 @@ const ShopItem = ({shop}) => {
             }}>
             {/* DeliveryFee */}
             <View style={styles.fee}>
-              <MaterialIcons name="delivery-dining" size={20} color="grey" />
-              <Text style={{color: '#000'}}>
+              <MaterialIcons
+                name="delivery-dining"
+                size={20}
+                color="yellowgreen"
+              />
+              <Text style={{color: '#000', fontSize: 10}}>
                 {shop.deliveryFee.toFixed(1)} MAD
               </Text>
             </View>
+            <Divider
+              color="lightgrey"
+              width={1}
+              orientation="vertical"
+              style={{marginHorizontal: 10}}
+            />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="grey" />
-              <Text style={{color: '#000'}}>
+              <Fontisto name="clock" size={20} color="yellowgreen" />
+              <Text style={{color: '#000', fontSize: 10}}>
                 {shop.minDeliveryTime} - {shop.maxDeliveryTime} min
               </Text>
             </View>
@@ -82,13 +93,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 15,
   },
   name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: '#000'},
-  fee: {color: 'grey', alignItems: 'center', marginRight: 25},
+  fee: {color: 'grey', alignItems: 'center'},
   time: {color: 'grey', alignItems: 'center'},
   rating: {
     marginLeft: 'auto',
     backgroundColor: 'lightgrey',
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,

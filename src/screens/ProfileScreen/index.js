@@ -5,7 +5,6 @@ import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {User, UserType} from '../../models';
 import {createUser, updateUser} from '../../graphql/mutations';
-import * as Location from 'expo-location';
 
 export const ProfileScreen = () => {
   const {dbUser, sub, setDbUser, dbUserLocation} = useAuthContext();
@@ -69,7 +68,7 @@ export const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>Mes Infos</Text>
       <Input value={name} onChangeText={setName} placeholder="Name" />
       <Input value={address} onChangeText={setAdress} placeholder="Adresse" />
       <Input
@@ -86,7 +85,6 @@ export const ProfileScreen = () => {
       />
 
       <Button title="Sauvegarder" onPress={onSave} />
-      <Button title="Déconnexion" type="clear" onPress={() => Auth.signOut()} />
     </View>
   );
 };

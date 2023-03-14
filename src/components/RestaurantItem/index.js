@@ -4,6 +4,7 @@ import {Image, Text} from '@rneui/base';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import {Divider} from '@rneui/themed';
 
 const RestaurantItem = ({restaurant}) => {
   const navigation = useNavigation();
@@ -24,22 +25,34 @@ const RestaurantItem = ({restaurant}) => {
             }}>
             {/* DeliveryFee */}
             <View style={styles.fee}>
-              <MaterialIcons name="delivery-dining" size={20} color="grey" />
-              <Text style={{color: '#000'}}>
+              <MaterialIcons
+                name="delivery-dining"
+                size={20}
+                color="yellowgreen"
+              />
+              <Text style={{color: '#000', fontSize: 10}}>
                 {restaurant.deliveryFee?.toFixed(1)} MAD{' '}
               </Text>
             </View>
+            <Divider
+              color="lightgrey"
+              width={1}
+              orientation="vertical"
+              style={{marginHorizontal: 10}}
+            />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="grey" />
-              <Text style={{color: '#000'}}>
+              <Fontisto name="clock" size={20} color="yellowgreen" />
+              <Text style={{color: '#000', fontSize: 10}}>
                 {restaurant.minDeliveryTime} - {restaurant.maxDeliveryTime} min
               </Text>
             </View>
           </View>
         </View>
         <View style={styles.rating}>
-          <Text>{restaurant.rating.toFixed(1)}</Text>
+          <Text style={{fontSize: 11, fontWeight: 'bold'}}>
+            {restaurant.rating.toFixed(1)}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -84,13 +97,13 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
   },
   name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5},
-  fee: {color: 'grey', alignItems: 'center', marginRight: 25},
+  fee: {color: 'grey', alignItems: 'center'},
   time: {color: 'grey', alignItems: 'center'},
   rating: {
     marginLeft: 'auto',
     backgroundColor: 'lightgrey',
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,

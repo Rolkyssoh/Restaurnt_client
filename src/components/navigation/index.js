@@ -9,11 +9,12 @@ import {
   ProfileScreen,
   RestaurantHomeScreen,
   ShopeHomeScreen,
+  UserAccountScreen,
 } from '../../screens';
 import {OrderDetailsNavigator} from './OrderDetailsNavigator';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {ActivityIndicator, View} from 'react-native';
 import {Text} from '@rneui/themed';
@@ -80,17 +81,17 @@ export const HomeTabsRoutes = () => {
         }}
       />
       <TabTop.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="Compte"
+        component={UserAccountScreen}
         listeners={({navigation}) => ({
           tabPress: e => {
             e.preventDefault();
-            navigation.push('HomeTabs', {screen: 'Profile'});
+            navigation.push('HomeTabs', {screen: 'Compte'});
           },
         })}
         options={{
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="user-alt" size={24} color={color} />
+            <Entypo name="user" size={24} color={color} />
           ),
         }}
       />
@@ -152,7 +153,11 @@ const HomeStackNavigator = props => {
         component={RestaurantHomeScreen}
         options={{headerShown: false}}
       />
-      <HomeStackRoutes.Screen name="Dish" component={DishDetailsSCreen} />
+      <HomeStackRoutes.Screen
+        name="Dish"
+        component={DishDetailsSCreen}
+        options={{title: 'Détail du plat'}}
+      />
       <HomeStackRoutes.Screen
         name="IngredientDetails"
         component={IngredientDetailsSCreen}
@@ -169,6 +174,15 @@ const HomeStackNavigator = props => {
         options={{headerShown: false}}
       />
       <HomeStackRoutes.Screen name="Order" component={OrderDetailsNavigator} />
+      <HomeStackRoutes.Screen
+        name="Profile"
+        component={ProfileScreen}
+        // options={{headerShown: false}}
+      />
+      {/* <HomeStackRoutes.Screen
+        name="UserAccount"
+        component={UserAccountScreen}
+      /> */}
     </HomeStackRoutes.Navigator>
   );
 };

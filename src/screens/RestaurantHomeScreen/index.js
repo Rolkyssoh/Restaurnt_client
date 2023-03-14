@@ -134,11 +134,20 @@ export const RestaurantHomeScreen = () => {
       />
       {/* For empty filtered dishes array */}
       {filteredDishes.length === 0 && (
-        <Text
-          h3
-          style={{color: 'lightgrey', alignSelf: 'center', marginBottom: 40}}>
-          Aucun plat trouvé
-        </Text>
+        <View
+          style={{
+            flex: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            h3
+            style={{
+              color: 'lightgrey',
+            }}>
+            Aucun plat trouvé
+          </Text>
+        </View>
       )}
       <IonIcons
         onPress={() => navigation.goBack()}
