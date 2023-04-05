@@ -1,13 +1,40 @@
-import React, {memo, useEffect} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, Pressable, StyleSheet} from 'react-native';
 import {Image, Text} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
 import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AWS from 'aws-sdk';
+
+const S3_BUCKET = 'la-tchop-test-2-encours132818-staging';
+const REGION = 'us-east-1';
+
+AWS.config.update({
+  accessKeyId: 'AKIAXPDYJX65M2ZLEVFP',
+  secretAccessKey: '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',
+});
 
 const ShopItem = ({shop}) => {
   const navigation = useNavigation();
+  const [shopPicture, setShopPicture] = useState();
+  const s3 = new AWS.S3();
+
+  useEffect(() => {
+    if (shop.image) {
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: `${shop.image}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setShopPicture(data.toString());
+        }
+      });
+    }
+  }, [shop.image]);
 
   const onPress = () => {
     navigation.navigate('Shop', {ShopId: shop.id});
@@ -15,7 +42,7 @@ const ShopItem = ({shop}) => {
 
   return (
     <Pressable onPress={onPress} style={styles.shopItemContainer}>
-      <Image source={{uri: shop.image}} style={styles.image} />
+      <Image source={{uri: shopPicture}} style={styles.image} />
 
       <View style={styles.row}>
         <View>

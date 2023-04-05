@@ -21,6 +21,7 @@ import {Text} from '@rneui/themed';
 import {UserType} from '../../models';
 import {useEffect} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {Auth} from 'aws-amplify';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -28,6 +29,9 @@ const Stack = createNativeStackNavigator();
 const HomeStackRoutes = createNativeStackNavigator();
 
 const NotAuthorize = () => {
+  // useEffect(() => {
+  //   Auth.signOut();
+  // }, {});
   return (
     <View
       style={{

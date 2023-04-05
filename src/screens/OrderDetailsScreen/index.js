@@ -11,16 +11,43 @@ import {BasketDishItem} from '../../components';
 import {useOrderContext} from '../../contexts/OrderContext';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import AWS from 'aws-sdk';
+
+const S3_BUCKET = 'la-tchop-test-2-encours132818-staging';
+const REGION = 'us-east-1';
+
+AWS.config.update({
+  accessKeyId: 'AKIAXPDYJX65M2ZLEVFP',
+  secretAccessKey: '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',
+});
 
 dayjs.extend(relativeTime);
 
 const OrderDetailsHeader = ({order}) => {
-  // console.log('the order in orderDetails:', order);
+  const [structurePicture, setStructurePicture] = useState();
+  const s3 = new AWS.S3();
+
+  useEffect(() => {
+    if (order.Structure) {
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: `${order.Structure.image}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setStructurePicture(data.toString());
+        }
+      });
+    }
+  }, [order]);
+
   return (
     <View>
       <View style={styles.screenContainer}>
         <Image
-          source={{uri: order.Structure.image}}
+          source={{uri: structurePicture}}
           style={styles.image}
           resizeMode="cover"
         />

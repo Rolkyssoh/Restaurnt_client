@@ -10,6 +10,15 @@ import {onUpdateOrder} from '../../graphql/subscriptions';
 import {API, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {useOrderContext} from '../../contexts/OrderContext';
+import AWS from 'aws-sdk';
+
+const S3_BUCKET = 'la-tchop-test-2-encours132818-staging';
+const REGION = 'us-east-1';
+
+AWS.config.update({
+  accessKeyId: 'AKIAXPDYJX65M2ZLEVFP',
+  secretAccessKey: '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',
+});
 
 dayjs.extend(relativeTime);
 
@@ -20,6 +29,8 @@ export const OrderListItem = ({order}) => {
 
   const [totalQty, setTotalQty] = useState(null);
   const [totalPrice, setTotalPrice] = useState(null);
+  const [structurePictureInOrder, setStructurePictureInOrder] = useState();
+  const s3 = new AWS.S3();
 
   // const OrderStatus = {
   //   NEW: 'NEW',
@@ -63,7 +74,6 @@ export const OrderListItem = ({order}) => {
   }, [order.id]);
 
   useEffect(() => {
-    console.log({order});
     if (order && order.orderDishes !== null) {
       const theTotalQty = order.OrderDishes.items.reduce(
         (sum, orderDish) => sum + orderDish.quantity,
@@ -79,11 +89,28 @@ export const OrderListItem = ({order}) => {
         order.Structure.deliveryFee,
       );
       setTotalQty(theTotalQty);
-      console.log({theTotalQty});
       setTotalPrice(theTotalPrice);
     }
-    console.log({totalQty});
   }, [order]);
+
+  useEffect(() => {
+    //Get structure image from order
+    if (order.Structure) {
+      console.log('the structure in order:', order.Structure);
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: `${order.Structure.image}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setStructurePictureInOrder(data);
+          console.log('the result data:', data);
+        }
+      });
+    }
+  }, []);
 
   const statusToColor = {
     [OrderStatus.NEW]: 'green',
@@ -101,11 +128,21 @@ export const OrderListItem = ({order}) => {
     [OrderStatus.COMPLETED]: 'LIVRÉE',
   };
 
+  useEffect(() => {
+    console.log({structurePictureInOrder});
+  }, [structurePictureInOrder]);
+
   return (
     <Pressable
       style={styles.container}
       onPress={() => navigation.navigate('Order', {id: order.id})}>
-      <Image source={{uri: order?.Structure?.image}} style={styles.image} />
+      <Image
+        source={{
+          uri: structurePictureInOrder,
+        }}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{order?.Structure?.name}</Text>
         <Text style={{marginVertical: 5, color: '#000'}}>
@@ -161,6 +198,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     height: '101%',
     borderRadius: 15,
+    // backgroundColor: 'red',
   },
   detailsContainer: {
     paddingHorizontal: 8,
