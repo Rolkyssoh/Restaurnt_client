@@ -7,13 +7,16 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SearchBar} from '@rneui/themed';
 import AWS from 'aws-sdk';
-
-const S3_BUCKET = 'la-tchop-test-2-encours132818-staging';
-const REGION = 'us-east-1';
+import {
+  REACT_APP_S3_ACCESS_KEY_ID,
+  REACT_APP_S3_SECRET_ACCESS_KEY,
+  S3_BUCKET,
+  REGION,
+} from '@env';
 
 AWS.config.update({
-  accessKeyId: 'AKIAXPDYJX65M2ZLEVFP',
-  secretAccessKey: '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',
+  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 const Header = ({restaurant, searchTerm, setTerm}) => {
@@ -31,7 +34,6 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
           console.log('we have some error:', err, err.stack);
         } else {
           setStructureImg(data.toString());
-          console.log('the result data:', data);
         }
       });
     }
