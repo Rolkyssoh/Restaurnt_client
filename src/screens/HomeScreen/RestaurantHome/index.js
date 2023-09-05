@@ -86,7 +86,7 @@ const RestaurantHome = ({search}) => {
   };
 
   const filterRestaurantByTerm = term => {
-    return restaurants.filter(_ => `${_.name} `.indexOf(term) !== -1);
+    return restaurants.filter(_ => `${_.name.toLowerCase()} `.indexOf(term) !== -1);
   };
 
   if (!restaurants) {

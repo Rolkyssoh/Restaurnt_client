@@ -40,11 +40,11 @@ export const HomeScreen = ({navigation, route}) => {
           tabBarInactiveTintColor: 'gray',
         }}>
         <TabTop.Screen name="RestaurantHome" options={{title: 'Restaurants'}}>
-          {() => <RestaurantHome search={searchTerm} />}
+          {() => <RestaurantHome search={searchTerm.toLowerCase()} />}
         </TabTop.Screen>
 
         <TabTop.Screen name="ShopHome" options={{title: 'Boutiques'}}>
-          {() => <ShopHome search={searchTerm} />}
+          {() => <ShopHome search={searchTerm.toLowerCase()} />}
         </TabTop.Screen>
       </TabTop.Navigator>
     </>

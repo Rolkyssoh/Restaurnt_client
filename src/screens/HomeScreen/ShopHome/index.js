@@ -85,7 +85,7 @@ const ShopHome = ({search}) => {
   };
 
   const filterShopByTerm = term => {
-    return shops.filter(_ => `${_.name} `.indexOf(term) !== -1);
+    return shops.filter(_ => `${_.name.toLowerCase()} `.indexOf(term) !== -1);
   };
 
   return (
