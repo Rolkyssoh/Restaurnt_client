@@ -164,6 +164,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        manifestPlaceholders = [G_API_KEY:"${System.getenv("GOOGLE_MAPS_APIKEY")}"]
 
         if (isNewArchitectureEnabled()) {
             // We configure the CMake build only if you decide to opt-in for the New Architecture.

@@ -29,9 +29,12 @@ const Stack = createNativeStackNavigator();
 const HomeStackRoutes = createNativeStackNavigator();
 
 const NotAuthorize = () => {
-  // useEffect(() => {
-  //   Auth.signOut();
-  // }, {});
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("Retardée d'une seconde.");
+      Auth.signOut();
+    }, 3000);
+  }, []);
   return (
     <View
       style={{
