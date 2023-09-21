@@ -66,7 +66,7 @@ export const BasketDishItem = ({basketDish}) => {
                 color={
                   currentAction === 'isDecreasing' || orderLoading
                     ? 'lightgray'
-                    : '#3fc060'
+                    : '#249689'
                 }
                 increaseNumberOfDishes
                 onPress={() =>
@@ -110,7 +110,7 @@ export const BasketDishItem = ({basketDish}) => {
                 color={
                   currentAction === 'isIncreasing' || orderLoading
                     ? 'lightgray'
-                    : 'red'
+                    : '#FF5963'
                 }
                 onPress={() =>
                   loading || orderLoading
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 15,
+    paddingHorizontal:10
   },
   dishName: {
     fontWeight: '600',

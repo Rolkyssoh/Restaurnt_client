@@ -54,6 +54,7 @@ export const BasketScreen = () => {
           marginTop: 20,
           fontSize: 19,
           color: '#000',
+          padding:10
         }}>
         Vos choix
       </Text>
@@ -80,7 +81,8 @@ export const BasketScreen = () => {
 
         {basketDishes.length > 0 && basketDishes[0].quantity > 0 && (
           <Button
-            title={'Créer commande ' + totalPrice.toFixed(2) + ' MAD'}
+            titleStyle={{fontSize:20, fontWeight:'300', marginBottom:15}}
+            title={'Commander: ' + totalPrice.toFixed(2) + ' MAD'}
             // title={'test'}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.button}
@@ -97,17 +99,18 @@ export const BasketScreen = () => {
 const styles = StyleSheet.create({
   containerStyle: {
     height: '100%',
-    paddingVertical: 40,
-    padding: 10,
+    paddingTop: 40,
   },
-  retaurantName: {fontWeight: 'bold', color: '#000', fontSize: 20},
+  retaurantName: {fontWeight: 'bold', color: '#000', fontSize: 20, padding:10},
   footerContainer: {
     marginTop: 'auto',
   },
   buttonContainer: {
-    padding: 10,
+    borderTopRightRadius:18,
+    borderTopLeftRadius:18
   },
   button: {
-    backgroundColor: '#000',
+    backgroundColor: '#FF5963',
+    height:100,
   },
 });

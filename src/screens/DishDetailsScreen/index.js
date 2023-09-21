@@ -56,22 +56,24 @@ export const DishDetailsSCreen = () => {
       <Divider color="lightgrey" width={2} />
       <View style={styles.row}>
         <AntDesign
-          name="minuscircleo"
+          name="minuscircle"
           size={60}
-          color={loading ? 'lightgrey' : '#000'}
+          color={loading ? 'lightgrey' : '#249689'}
           onPress={loading ? console.log('Wait until loading end!!') : onMinus}
         />
         <Text style={styles.quantity}>{quantity}</Text>
         <AntDesign
-          name="pluscircleo"
+          name="pluscircle"
           size={60}
-          color={loading ? 'lightgrey' : '#000'}
+          color={loading ? 'lightgrey' : '#249689'}
           onPress={loading ? console.log('Wait until loading end!!') : onPlus}
         />
       </View>
       {quantity > 0 && (
         <Button
-          title={`Ajouter ${quantity} plat(s) au Panier (${getTotalPrice()})MAD`}
+          titleStyle={{ fontSize:18, marginBottom:15}}
+          title={`Ajouter ${quantity} plat(s) au 
+          Panier : ${getTotalPrice()} MAD`}
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.styleButton}
           onPress={onAddToBasket}
@@ -86,7 +88,7 @@ export const DishDetailsSCreen = () => {
 const styles = StyleSheet.create({
   constainerScreen: {
     height: '100%',
-    paddingVertical: 40,
+    paddingTop: 40,
   },
   name: {fontSize: 30, fontWeight: '600', margin: 10, color: '#000'},
   description: {color: 'gray', marginBottom: 5, marginHorizontal: 10},
@@ -100,9 +102,11 @@ const styles = StyleSheet.create({
   quantity: {fontSize: 25, marginHorizontal: 20, color: '#000'},
   buttonContainer: {
     marginTop: 'auto',
-    padding: 20,
+    borderTopRightRadius:18,
+    borderTopLeftRadius:18
   },
   styleButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#FF5963',
+    height:100
   },
 });

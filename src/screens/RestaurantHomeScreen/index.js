@@ -149,15 +149,17 @@ export const RestaurantHomeScreen = () => {
           </Text>
         </View>
       )}
-      <IonIcons
-        onPress={() => navigation.goBack()}
-        name="arrow-back-circle"
-        size={45}
-        color="#fff"
-        style={styles.iconContainer}
-      />
-      {basket && (
+      <View style={styles.iconContainer}>
+        <IonIcons
+          onPress={() => navigation.goBack()}
+          name="arrow-back"
+          size={40}
+          color="#fff"
+        />
+      </View>
+      {basket && basketDishes.length >0 &&(
         <Button
+          titleStyle={{ fontSize:18, fontWeight:'200'}}
           title={
             basketDishes.length === 1 && basketDishes[0].quantity === 0
               ? 'Voir Panier ' + 0
