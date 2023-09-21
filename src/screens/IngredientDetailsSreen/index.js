@@ -7,6 +7,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {useIngredientContext} from '../../contexts/IngredientContext';
 import {getIngredient} from '../../graphql/queries';
+import styles from '../DishDetailsScreen/styles'
 
 export const IngredientDetailsSCreen = () => {
   const navigation = useNavigation();
@@ -60,24 +61,25 @@ export const IngredientDetailsSCreen = () => {
       <Divider color="lightgrey" width={2} />
       <View style={styles.row}>
         <AntDesign
-          name="minuscircleo"
+          name="minuscircle"
           size={60}
-          color={loading ? 'lightgrey' : '#000'}
+          color={loading ? 'lightgrey' : '#249689'}
           onPress={loading ? console.log('Wait until loading end!!') : onMinus}
         />
         <Text style={styles.quantity}>{quantity.toFixed(1)}</Text>
         <AntDesign
-          name="pluscircleo"
+          name="pluscircle"
           size={60}
-          color={loading ? 'lightgrey' : '#000'}
+          color={loading ? 'lightgrey' : '#249689'}
           onPress={loading ? console.log('Wait until loading end!!') : onPlus}
         />
       </View>
       {quantity >= 0.1 && (
         <Button
+          titleStyle={{ fontSize:18, marginBottom:15}}
           title={`Ajouter ${quantity.toFixed(
             1,
-          )} kg(s) au Panier (${getTotalPrice()})MAD`}
+          )} kg(s) au Panier: ${getTotalPrice()} MAD`}
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.styleButton}
           onPress={onAddToBasket}
@@ -88,27 +90,3 @@ export const IngredientDetailsSCreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  constainerScreen: {
-    height: '100%',
-    paddingVertical: 40,
-  },
-  name: {fontSize: 30, fontWeight: '600', margin: 10, color: '#000'},
-  description: {color: 'gray', marginBottom: 5, marginHorizontal: 10},
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    marginTop: 50,
-  },
-  quantity: {fontSize: 25, marginHorizontal: 20, color: '#000'},
-  buttonContainer: {
-    marginTop: 'auto',
-    padding: 20,
-  },
-  styleButton: {
-    backgroundColor: '#000',
-  },
-});

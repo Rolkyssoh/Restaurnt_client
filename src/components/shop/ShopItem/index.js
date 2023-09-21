@@ -12,6 +12,7 @@ import {
   S3_BUCKET,
   REGION,
 } from '@env';
+import styles from '../../RestaurantItem/styles'
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -44,7 +45,7 @@ const ShopItem = ({shop}) => {
   };
 
   return (
-    <Pressable onPress={onPress} style={styles.shopItemContainer}>
+    <Pressable onPress={onPress} style={styles.structureItemContainer}>
       <Image source={{uri: shopPicture}} style={styles.image} />
 
       <View style={styles.row}>
@@ -59,7 +60,7 @@ const ShopItem = ({shop}) => {
             <View style={styles.fee}>
               <MaterialIcons
                 name="delivery-dining"
-                size={20}
+                size={15}
                 color="#FF5963"
               />
               <Text style={{color: '#000', fontSize: 10}}>
@@ -74,7 +75,7 @@ const ShopItem = ({shop}) => {
             />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="#FF5963" />
+              <Fontisto name="clock" size={15} color="#FF5963" />
               <Text style={{color: '#000', fontSize: 10}}>
                 {shop.minDeliveryTime} - {shop.maxDeliveryTime} min
               </Text>
@@ -90,50 +91,5 @@ const ShopItem = ({shop}) => {
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  shopItemContainer: {
-    marginVertical: 8,
-    padding: 4,
-    borderRadius: 15,
-    backgroundColor: '#fff',
-
-    borderWidth: 1,
-    borderColor: '#249689',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-
-    elevation: 1,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 4 / 2,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: '#000'},
-  fee: {color: 'grey', alignItems: 'center'},
-  time: {color: 'grey', alignItems: 'center'},
-  rating: {
-    marginLeft: 'auto',
-    backgroundColor: '#FF5963',
-    width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-  },
-});
 
 export default memo(ShopItem);

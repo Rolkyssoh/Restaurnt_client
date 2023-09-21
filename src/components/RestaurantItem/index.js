@@ -1,7 +1,7 @@
 import {View, StyleSheet, Pressable} from 'react-native';
 import React, {memo, useEffect, useState} from 'react';
 import {Image, Text} from '@rneui/base';
-import Fontisto from 'react-native-vector-icons/Fontisto';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {Divider} from '@rneui/themed';
@@ -12,6 +12,7 @@ import {
   S3_BUCKET,
   REGION,
 } from '@env';
+import styles from './styles'
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -41,7 +42,7 @@ const RestaurantItem = ({restaurant}) => {
 
   return (
     <Pressable
-      style={styles.restaurantItemContainer}
+      style={styles.structureItemContainer}
       onPress={() => navigation.navigate('Restaurant', {id: restaurant.id})}>
       <Image source={{uri: structurePicture}} style={styles.image} />
 
@@ -57,7 +58,7 @@ const RestaurantItem = ({restaurant}) => {
             <View style={styles.fee}>
               <MaterialIcons
                 name="delivery-dining"
-                size={20}
+                size={15}
                 color="#FF5963"
               />
               <Text style={{color: '#000', fontSize: 10}}>
@@ -72,7 +73,7 @@ const RestaurantItem = ({restaurant}) => {
             />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="#FF5963" />
+              <SimpleLineIcons name="clock" size={15} color="#FF5963" />
               <Text style={{color: '#000', fontSize: 10}}>
                 {restaurant.minDeliveryTime} - {restaurant.maxDeliveryTime} min
               </Text>
@@ -90,52 +91,3 @@ const RestaurantItem = ({restaurant}) => {
 };
 
 export default memo(RestaurantItem);
-
-const styles = StyleSheet.create({
-  restaurantItemContainer: {
-    padding: 4,
-    backgroundColor: '#fff',
-    marginVertical: 8,
-    borderRadius: 15,
-
-    borderWidth: 1,
-    borderColor: '#249689',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-
-    elevation: 1,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 4 / 2,
-    // borderRadius: 15,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    backgroundColor: '#fff',
-    borderBottomRightRadius: 15,
-    borderBottomLeftRadius: 15,
-  },
-  name: {fontSize: 18, fontWeight: 'bold', marginBottom: 5},
-  fee: {color: 'grey', alignItems: 'center'},
-  time: {color: 'grey', alignItems: 'center'},
-  rating: {
-    marginLeft: 'auto',
-    backgroundColor: '#FF5963',
-    width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-  },
-});

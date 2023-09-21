@@ -148,12 +148,12 @@ export const ShopeHomeScreen = () => {
       )}
       <IonIcons
         onPress={() => navigation.goBack()}
-        name="arrow-back-circle"
+        name="arrow-back"
         size={45}
         color="#fff"
         style={styles.iconContainer}
       />
-      {basket && (
+      {basket && basketDishes.length && (
         <Button
           title={
             basketDishes.length === 1 && basketDishes[0].quantity === 0
