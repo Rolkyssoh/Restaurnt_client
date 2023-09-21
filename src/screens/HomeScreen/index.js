@@ -4,6 +4,7 @@ import RestaurantHome from './RestaurantHome';
 import ShopHome from './ShopHome';
 import {View, Text, StyleSheet} from 'react-native';
 import {SearchBar} from '@rneui/themed';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -15,14 +16,14 @@ export const HomeScreen = ({navigation, route}) => {
   }, []);
 
   return (
-    <>
+    <View style={{flex:1, backgroundColor:'#249689'}}>
       <SearchBar
         placeholder="Que recherchez vous?"
         containerStyle={styles.searchBarContainer}
         inputContainerStyle={{
-          height: 35,
+          height: 43,
           backgroundColor: '#fff',
-          borderRadius: 10,
+          borderRadius: 20,
         }}
         inputStyle={{color: '#000'}}
         placeholderTextColor="#000"
@@ -33,34 +34,48 @@ export const HomeScreen = ({navigation, route}) => {
       />
       <TabTop.Navigator
         screenOptions={{
-          tabTopBarLabelStyle: {fontSize: 10, fontWeight: 'bold'},
+          tabBarStyle:{ borderTopLeftRadius:40},
+          tabTopBarLabelStyle: {fontSize: 20, fontWeight: 'bold'},
           tabTopBarIndicatorStyle: {opacity: 0},
-          tabBarIndicatorStyle: {backgroundColor: 'yellowgreen'},
-          tabBarActiveTintColor: 'yellowgreen',
+          tabBarIndicatorStyle: {backgroundColor: '#249689'},
+          tabBarActiveTintColor: '#249689',
           tabBarInactiveTintColor: 'gray',
+          tabBarItemStyle:{flexDirection:'row' },
         }}>
-        <TabTop.Screen name="RestaurantHome" options={{title: 'Restaurants'}}>
+        <TabTop.Screen 
+          name="RestaurantHome"
+          options={{
+            title: 'Restaurants',
+            tabBarShowIcon:true,
+            tabBarIcon: ({focused }) => (<MaterialIcons name="restaurant-menu" size={20} color={ focused ? "#249689" : "gray"} />)
+          }}
+        >
           {() => <RestaurantHome search={searchTerm.toLowerCase()} />}
         </TabTop.Screen>
 
-        <TabTop.Screen name="ShopHome" options={{title: 'Boutiques'}}>
+        <TabTop.Screen 
+          name="ShopHome" 
+          options={{
+            title: 'Boutiques',
+            tabBarShowIcon:true,
+            tabBarIcon: ({focused }) => (<MaterialIcons name="shopping-cart" size={20} color={ focused ? "#249689" : "gray"} />)
+          }}
+        >
           {() => <ShopHome search={searchTerm.toLowerCase()} />}
         </TabTop.Screen>
       </TabTop.Navigator>
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    borderColor: 'lightgrey',
-    borderTopColor: 'lightgrey',
-    borderBottomColor: 'lightgrey',
-    borderWidth: 1,
-    backgroundColor: 'whitesmoke',
+    borderColor: 'transparent',
+    borderRadius:25,
+    backgroundColor: 'white',
     height: 45,
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

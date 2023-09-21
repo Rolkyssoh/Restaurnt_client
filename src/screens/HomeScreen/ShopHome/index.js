@@ -94,7 +94,6 @@ const ShopHome = ({search}) => {
         backgroundColor: '#fff',
         flex: 1,
         marginBottom: 1,
-        backgroundColor: 'whitesmoke',
       }}>
       <View style={styles.shopHomeContainer}>
         <FlatList
@@ -108,16 +107,6 @@ const ShopHome = ({search}) => {
 };
 
 const styles = StyleSheet.create({
-  searchBarContainer: {
-    borderColor: 'lightgrey',
-    borderTopColor: 'lightgrey',
-    borderBottomColor: 'lightgrey',
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   shopHomeContainer: {
     height: '100%',
     marginHorizontal: 10,

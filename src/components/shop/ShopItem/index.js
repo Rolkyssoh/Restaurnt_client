@@ -60,7 +60,7 @@ const ShopItem = ({shop}) => {
               <MaterialIcons
                 name="delivery-dining"
                 size={20}
-                color="yellowgreen"
+                color="#FF5963"
               />
               <Text style={{color: '#000', fontSize: 10}}>
                 {shop.deliveryFee.toFixed(1)} MAD
@@ -74,7 +74,7 @@ const ShopItem = ({shop}) => {
             />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="yellowgreen" />
+              <Fontisto name="clock" size={20} color="#FF5963" />
               <Text style={{color: '#000', fontSize: 10}}>
                 {shop.minDeliveryTime} - {shop.maxDeliveryTime} min
               </Text>
@@ -82,7 +82,7 @@ const ShopItem = ({shop}) => {
           </View>
         </View>
         <View style={styles.rating}>
-          <Text style={{fontSize: 11, fontWeight: 'bold'}}>
+          <Text style={{fontSize: 11, fontWeight: 'bold', color:'#fff'}}>
             {shop.rating.toFixed(1)}
           </Text>
         </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
 
     borderWidth: 1,
-    borderColor: '#adff29',
+    borderColor: '#249689',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -127,9 +127,9 @@ const styles = StyleSheet.create({
   time: {color: 'grey', alignItems: 'center'},
   rating: {
     marginLeft: 'auto',
-    backgroundColor: 'lightgrey',
-    width: 25,
-    height: 25,
+    backgroundColor: '#FF5963',
+    width: 30,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,

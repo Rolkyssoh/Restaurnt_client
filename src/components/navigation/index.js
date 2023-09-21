@@ -52,7 +52,7 @@ const NotAuthorize = () => {
 const TabBottom = createMaterialBottomTabNavigator();
 export const HomeTabsRoutes = () => {
   return (
-    <TabBottom.Navigator barStyle={{backgroundColor: '#fff'}}>
+    <TabBottom.Navigator barStyle={{backgroundColor: '#249689'}}>
       <TabBottom.Screen
         name="Accueil"
         component={HomeScreen}

@@ -32,7 +32,7 @@ export const ProfileScreen = () => {
   const addNewUser = async () => {
     try {
       const user = await API.graphql(
-        graphqlOperation(createUser, {
+        graphqlOperation(createUser, { 
           input: {
             name,
             address,

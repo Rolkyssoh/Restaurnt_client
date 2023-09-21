@@ -58,7 +58,7 @@ const RestaurantItem = ({restaurant}) => {
               <MaterialIcons
                 name="delivery-dining"
                 size={20}
-                color="yellowgreen"
+                color="#FF5963"
               />
               <Text style={{color: '#000', fontSize: 10}}>
                 {restaurant.deliveryFee?.toFixed(1)} MAD{' '}
@@ -72,7 +72,7 @@ const RestaurantItem = ({restaurant}) => {
             />
             {/* DiliveryTime */}
             <View style={styles.time}>
-              <Fontisto name="clock" size={20} color="yellowgreen" />
+              <Fontisto name="clock" size={20} color="#FF5963" />
               <Text style={{color: '#000', fontSize: 10}}>
                 {restaurant.minDeliveryTime} - {restaurant.maxDeliveryTime} min
               </Text>
@@ -80,7 +80,7 @@ const RestaurantItem = ({restaurant}) => {
           </View>
         </View>
         <View style={styles.rating}>
-          <Text style={{fontSize: 11, fontWeight: 'bold'}}>
+          <Text style={{fontSize: 11, fontWeight: 'bold', color:'#fff'}}>
             {restaurant.rating.toFixed(1)}
           </Text>
         </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
 
     borderWidth: 1,
-    borderColor: '#adff29',
+    borderColor: '#249689',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -131,9 +131,9 @@ const styles = StyleSheet.create({
   time: {color: 'grey', alignItems: 'center'},
   rating: {
     marginLeft: 'auto',
-    backgroundColor: 'lightgrey',
-    width: 25,
-    height: 25,
+    backgroundColor: '#FF5963',
+    width: 30,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,

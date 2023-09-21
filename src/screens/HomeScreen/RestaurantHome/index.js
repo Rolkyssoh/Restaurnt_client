@@ -100,7 +100,7 @@ const RestaurantHome = ({search}) => {
   }
 
   return (
-    <View style={{flex: 1, marginBottom: 1, backgroundColor: 'whitesmoke'}}>
+    <View style={{flex: 1, marginBottom: 1, backgroundColor: 'white'}}>
       <View style={styles.homeContainer}>
         {filteredRestaurants.length <= 0 && (
           <Text

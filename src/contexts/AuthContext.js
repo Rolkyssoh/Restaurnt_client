@@ -44,7 +44,7 @@ const AuthContextProvider = ({children}) => {
         })();
       }
       setDbUser(theCurrentUser[0]);
-      setLoading(false);
+            setLoading(false);
     });
   }, [sub]);
 
