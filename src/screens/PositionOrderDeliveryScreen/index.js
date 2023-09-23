@@ -6,6 +6,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {Courier, Order} from '../../models';
 import {getCourier, getOrder, listCouriers} from '../../graphql/queries';
 import {onUpdateCourier, onUpdateOrder} from '../../graphql/subscriptions';
+import { englishToFrench } from '../../translation';
 
 export const PositionOrderDeliveryScreen = ({id}) => {
   const mapRef = useRef(null);
@@ -111,7 +112,9 @@ export const PositionOrderDeliveryScreen = ({id}) => {
 
   return (
     <View style={{backgroundColor: 'lightgrey', height: '100%'}}>
-      <Text>Status: {order?.status || 'Chargement...'}</Text>
+      <View style={{backgroundColor:'#FF5963', alignItems:'center'}}>
+        <Text style={{color:'#fff', fontWeight:'bold'}}>{ englishToFrench[order?.status] || 'Chargement...'}</Text>
+      </View>
       <MapView
         style={styles.map}
         ref={mapRef}

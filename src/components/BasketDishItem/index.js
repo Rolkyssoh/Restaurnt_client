@@ -78,9 +78,9 @@ export const BasketDishItem = ({basketDish}) => {
             ))}
           <View style={styles.quantityContainer}>
             {basketDish.Dish != null ? (
-              <Text>{basketDish.quantity}</Text>
+              <Text style={styles.quantiyText}>{basketDish.quantity}</Text>
             ) : (
-              <Text>{basketDish.quantity?.toFixed(1)}</Text>
+              <Text style={styles.quantiyText}>{basketDish.quantity?.toFixed(1)}</Text>
             )}
           </View>
           <Text style={styles.dishName}>
@@ -89,12 +89,7 @@ export const BasketDishItem = ({basketDish}) => {
               : basketDish.Ingredient.name}
           </Text>
           <Text
-            style={{
-              marginLeft: 'auto',
-              color: '#000',
-              paddingLeft: 2,
-              marginRight: 7,
-            }}>
+            style={styles.dishPrice}>
             {basketDish.Dish != null
               ? basketDish.Dish?.price
               : basketDish.Ingredient.price}{' '}
@@ -133,18 +128,28 @@ const styles = StyleSheet.create({
     paddingHorizontal:10
   },
   dishName: {
-    fontWeight: '600',
+    fontWeight: '500',
+    fontSize:13,
     color: '#000',
     fontFamily: 'Nunito-Bold',
     flexWrap: 'wrap',
     paddingHorizontal: 2,
     marginHorizontal: 5,
   },
+  dishPrice:{
+    marginLeft: 'auto',
+    color: '#000',
+    paddingLeft: 2,
+    marginRight: 7,
+    fontSize:12,
+    fontWeight:'700'
+  },
   quantityContainer: {
-    backgroundColor: 'lightgray',
+    backgroundColor: '#249689',
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: 3,
     marginLeft: 7,
   },
+  quantiyText:{color:'#fff', fontSize:15, fontWeight:'bold'}
 });

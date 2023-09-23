@@ -18,6 +18,7 @@ import {
   S3_BUCKET,
   REGION,
 } from '@env';
+import { englishToFrench } from '../../translation';
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -123,14 +124,6 @@ export const OrderListItem = ({order}) => {
     [OrderStatus.COMPLETED]: 'skyblue',
   };
 
-  const englishToFrench = {
-    [OrderStatus.NEW]: 'NOUVEAU',
-    [OrderStatus.COOKING]: 'EN PREPARTION',
-    [OrderStatus.READY_FOR_PICKUP]: 'PRÊT AU RAMASSAGE',
-    [OrderStatus.ACCEPTED]: 'LIVRAISON EN COURS',
-    [OrderStatus.COMPLETED]: 'LIVRÉE',
-  };
-
   useEffect(() => {
     console.log({structurePictureInOrder});
   }, [structurePictureInOrder]);
@@ -158,7 +151,7 @@ export const OrderListItem = ({order}) => {
                 color: `${statusToColor[order.status]}`,
                 fontWeight: 'bold',
               }}>
-              {englishToFrench[order.status]}
+              { englishToFrench[order.status]}
             </Text>
         </View>
         <View style={{marginRight:5, justifyContent:'space-around'}}>

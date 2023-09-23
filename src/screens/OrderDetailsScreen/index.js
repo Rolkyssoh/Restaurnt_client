@@ -18,6 +18,7 @@ import {
   S3_BUCKET,
   REGION,
 } from '@env';
+import { englishToFrench } from '../../translation';
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -58,9 +59,15 @@ const OrderDetailsHeader = ({order}) => {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{order.Structure.name}</Text>
 
-          <Text style={styles.subtitle}>
-            {order.status} &#8226; {dayjs(order.createdAt).fromNow(true)}
-          </Text>
+          <View style={{flexDirection:'row', alignItems:'center'}}>
+            <Text style={styles.subtitleStatus}>
+              {englishToFrench[order.status]} &#8226;{' '}
+            </Text>
+            <Text style={styles.subtitleDate}>
+              {dayjs(order.createdAt).fromNow(true)}
+            </Text>
+          </View>
+
           <Text style={styles.menuTitle}>Votre Commande</Text>
         </View>
       </View>
@@ -98,7 +105,16 @@ const styles = StyleSheet.create({
   contentContainer: {margin: 10},
   image: {width: '100%', aspectRatio: 4 / 2},
   title: {fontSize: 30, fontWeight: '600', marginVertical: 10, color: '#000'},
-  subtitle: {color: '#525252', fontSize: 15},
+  subtitleStatus: {
+    color:'#249689', 
+    fontSize:15, 
+    fontWeight:'300'
+  },
+  subtitleDate: {
+    color: '#525252', 
+    fontSize: 12,
+    fontWeight:'300'
+  },
   iconContainer: {
     position: 'absolute',
     top: 30,
@@ -107,6 +123,7 @@ const styles = StyleSheet.create({
   menuTitle: {
     marginVertical: 15,
     fontSize: 18,
+    fontWeight:'300',
     letterSpacing: 0.7,
     color: '#000',
   },
