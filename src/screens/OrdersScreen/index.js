@@ -4,7 +4,8 @@ import {OrderListItem} from '../../components';
 import {useOrderContext} from '../../contexts/OrderContext';
 import {Text} from '@rneui/themed';
 import {MultiSelect, Dropdown} from 'react-native-element-dropdown';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {OrderStatus} from '../../models';
 
 const data = [
@@ -44,19 +45,19 @@ export const OrdersScreen = () => {
 
   return (
     <View
-      style={{
-        flex: 1,
-        marginBottom: 5,
-        paddingTop: 15,
-        backgroundColor: '#fff',
-      }}>
+      style={styles.mainContainer}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Commandes</Text>
+        <Text style={styles.headerSubtitle}>Liste de nouvelles et anciennes commandes</Text>
+      </View>
       <MultiSelect
         containerStyle={{backgroundColor: '#fff'}}
-        activeColor="yellowgreen"
+        activeColor="#249689"
         itemTextStyle={{color: '#000'}}
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
+        selectedStyle={styles.selectedStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         search
@@ -71,16 +72,32 @@ export const OrdersScreen = () => {
           setSelected(item);
         }}
         renderLeftIcon={() => (
-          <AntDesign
+          <MaterialCommunityIcons
             style={styles.icon}
             color="black"
-            name="Safety"
-            size={20}
+            name="filter-outline"
+            size={22}
           />
         )}
-        selectedStyle={styles.selectedStyle}
+        renderRightIcon={() => (
+          <View style={{flexDirection:'column', marginHorizontal:10}}>
+            <Ionicons
+              style={{top:5}}
+              color="black"
+              name="chevron-up"
+              size={20}
+            />
+            <Ionicons
+              style={{bottom:5}}
+              color="black"
+              name="chevron-down"
+              size={20}
+            />
+          </View>
+        )}
+        
       />
-      <View style={styles.container}>
+      <View style={styles.containerScroll}>
         <FlatList
           data={filterdOrders}
           renderItem={({item}) => <OrderListItem order={item} />}
@@ -99,17 +116,49 @@ export const OrdersScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer:{
     flex: 1,
-    backgroundColor: '#fff',
+    marginBottom: 5,
+    backgroundColor: 'whitesmoke',
+  },
+  header:{
+    backgroundColor:'#249689',
+    height:120,
+    justifyContent:'center',
+    paddingHorizontal:20,
+    marginBottom:18
+  },
+  headerTitle:{
+    color:'#fff',
+    fontSize:30,
+    fontWeight:'bold',
+    marginVertical:10
+  },
+  headerSubtitle:{
+    color:'#fff',
+    fontSize:12,
+    fontWeight:'bold'
+  },
+  containerScroll: {
+    flex: 1,
+    backgroundColor: 'whitesmoke',
   },
   dropdown: {
-    height: 45,
-    backgroundColor: 'whitesmoke',
-    borderWidth: 0.5,
-    borderColor: 'yellowgreen',
+    height: 50,
+    backgroundColor: '#fff',
     marginHorizontal: 10,
-    borderRadius: 15,
+    marginBottom:23,
+    borderRadius: 25,
+
+    shadowColor: "#000",
+    shadowOffset: {
+    	width: 0,
+    	height: 1,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 10,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -117,7 +166,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 14,
-    color: 'yellowgreen',
+    color: '#fff',
   },
   iconStyle: {
     width: 20,
@@ -126,12 +175,15 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-    color: 'yellowgreen',
+    color: '#249689',
+    fontWeight:'bold'
   },
   icon: {
     marginRight: 5,
+    marginLeft:10
   },
   selectedStyle: {
     borderRadius: 12,
+    backgroundColor:'#249689'
   },
 });

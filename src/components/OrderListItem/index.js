@@ -10,6 +10,7 @@ import {onUpdateOrder} from '../../graphql/subscriptions';
 import {API, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {useOrderContext} from '../../contexts/OrderContext';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AWS from 'aws-sdk';
 import {
   REACT_APP_S3_ACCESS_KEY_ID,
@@ -115,7 +116,7 @@ export const OrderListItem = ({order}) => {
   }, []);
 
   const statusToColor = {
-    [OrderStatus.NEW]: 'green',
+    [OrderStatus.NEW]: '#249689',
     [OrderStatus.COOKING]: 'orange',
     [OrderStatus.READY_FOR_PICKUP]: 'red',
     [OrderStatus.ACCEPTED]: 'purple',
@@ -146,28 +147,37 @@ export const OrderListItem = ({order}) => {
         resizeMode="cover"
       />
       <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{order?.Structure?.name}</Text>
-        <Text style={{marginVertical: 5, color: '#000'}}>
-          {`${
-            order?.Structure.type === 'RESTAURANT'
-              ? totalQty + ' items'
-              : totalQty?.toFixed(1) + ' g'
-          }`}
-          &#8226; {totalPrice?.toFixed(2)} MAD
-        </Text>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={{color: '#000'}}>
-            {dayjs(order?.createdAt).fromNow(true)} &#8226;{' '}
+        <View style={{marginLeft:10, justifyContent:'space-around'}}>
+            <Text style={styles.name}>{order?.Structure?.name}</Text>
+        
+            <Text style={styles.textDetails}>
+              {dayjs(order?.createdAt).fromNow(true)}
+            </Text>
+            <Text
+              style={{
+                color: `${statusToColor[order.status]}`,
+                fontWeight: 'bold',
+              }}>
+              {englishToFrench[order.status]}
+            </Text>
+        </View>
+        <View style={{marginRight:5, justifyContent:'space-around'}}>
+          <Ionicons
+              style={{alignSelf:'flex-end'}}
+              color="black"
+              name="chevron-forward"
+              size={20}
+          />
+          <Text style={[styles.textDetails, {fontWeight:'500'}]}>
+            {totalPrice?.toFixed(2)} MAD
           </Text>
-          {/* {order?.status === 'NEW' && ( */}
-          <Text
-            style={{
-              color: `${statusToColor[order.status]}`,
-              fontWeight: 'bold',
-            }}>
-            {englishToFrench[order.status]}
+          <Text style={styles.textDetails}>
+            {`${
+              order?.Structure.type === 'RESTAURANT'
+                ? totalQty + ' items'
+                : totalQty?.toFixed(1) + ' g'
+            }`}
           </Text>
-          {/* )} */}
         </View>
       </View>
     </Pressable>
@@ -177,38 +187,36 @@ export const OrderListItem = ({order}) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    margin: 10,
+    marginHorizontal: 10,
+    marginVertical:5,
     padding: 5,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'yellowgreen',
-    height: 80,
-    borderRadius: 15,
+    height: 105,
+    borderRadius: 10,
     backgroundColor: '#fff',
 
-    shadowColor: 'yellowgreen',
+    shadowColor: "#000",
     shadowOffset: {
-      width: 0,
-      height: 1,
+    	width: 0,
+    	height: 3,
     },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
+    shadowOpacity: 0.41,
+    shadowRadius: 4.11,
 
-    elevation: 1,
+    elevation: 7,
   },
   image: {
     aspectRatio: 1,
     height: '101%',
-    borderRadius: 15,
-    // backgroundColor: 'red',
+    borderRadius: 10,
   },
   detailsContainer: {
-    paddingHorizontal: 8,
-    // paddingVertical: 2,
     flex: 1,
-    height: '100%',
-    justifyContent: 'center',
+    height:'100%',
+    flexDirection:'row',
+    justifyContent:'space-between'
   },
+  textDetails:{ color: '#000',fontSize:11, fontWeight:'300'},
   name: {fontWeight: 'bold', fontSize: 16, color: '#000'},
 });
 
