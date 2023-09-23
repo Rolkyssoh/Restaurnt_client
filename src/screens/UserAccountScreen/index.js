@@ -36,12 +36,12 @@ export const UserAccountScreen = () => {
       <View>
         <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Changer le mot de passe</Text>
-          <Ionicons name="chevron-forward" size={20} color="gray" />
+          <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
         <Divider color='#249689' />
         <Pressable onPress={() => navigatin.navigate('Profile')} style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Editer le profil</Text>
-          <Ionicons name="chevron-forward" size={20} color="gray" />
+          <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
       </View>
 
@@ -51,16 +51,16 @@ export const UserAccountScreen = () => {
       <View>
         <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Tutoriel</Text>
-          <Ionicons name="chevron-forward" size={20} color="gray" />
+          <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
         <Divider color='#249689' />
         <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Soumettre un bug</Text>
-          <Ionicons name="chevron-forward" size={20} color="gray" />
+          <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
         <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Soumettre une demande de fonctionnalité</Text>
-          <Ionicons name="chevron-forward" size={20} color="gray" />
+          <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
       </View>
 
