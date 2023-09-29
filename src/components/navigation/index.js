@@ -3,6 +3,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {
   BasketScreen,
   DishDetailsSCreen,
+  EntryScreen,
   HomeScreen,
   IngredientDetailsSCreen,
   OrdersScreen,
@@ -22,7 +23,6 @@ import {UserType} from '../../models';
 import {useEffect} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Auth} from 'aws-amplify';
-import { EntryScreen } from '../EntryScreen';
 
 const TabTop = createMaterialTopTabNavigator();
 

@@ -6,6 +6,7 @@ export * from './OrderDetailsScreen';
 export * from './ProfileScreen';
 export * from './PositionOrderDeliveryScreen';
 export * from './UserAccountScreen';
+export * from './EntryScreen'
 
 // Shop
 // export * from './HomeScreen/ShopHome';
