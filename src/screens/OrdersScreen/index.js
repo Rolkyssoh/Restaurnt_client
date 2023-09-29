@@ -26,18 +26,39 @@ export const OrdersScreen = () => {
   useEffect(() => {
     if (selected.length > 0) {
       selected.map(status => {
-        const result = orders.filter(_ => _.status === status);
-        if (selected.length === 1) {
+        // const result = orders.filter(_ => `${_.status} `.indexOf(status) !== -1)
+        const result = orders.filter(_ => _.status === status)
+        console.log('the resuuulllt::::', result)
+        console.log('the the fiiiltterrrr::::', filterdOrders)
+        if(selected.length === 1){
           setFilteredOrders(result);
         } else {
-          setFilteredOrders([...filterdOrders, ...result]);
+          const arrayEmpty = []
+          // for(let i = 0; i < result.length; i++){
+          //   const isInDisplayItems = filterdOrders.some(_ => _.id !== result[i].id)
+          //   console.log('the boooolean:::', isInDisplayItems)
+          //   if(isInDisplayItems){
+          //     arrayEmpty.push(result[i])
+          //   }
+          // }
+          for(let i=0; i<result.length; i++){
+            const theIndex = filterdOrders.indexOf(result[i])
+            console.log('the indexxxx:::', theIndex)
+            console.log('the eltttt:::', result[i])
+            if(theIndex ===-1){
+              console.log('elt non incluuu:::', result[i])
+              arrayEmpty.push(result[i])
+            }
+          }
+          setFilteredOrders([...arrayEmpty, ...filterdOrders])
+          console.log('le new AAArrray:::', arrayEmpty)
         }
       });
       console.log('le the selected orders:', selected);
     } else {
       setFilteredOrders(orders);
     }
-  }, [selected, orders]);
+  }, [selected.length, orders]);
 
   const filterOrdersByTerm = term => {
     return orders.filter(_ => `${_.status} `.indexOf(term) !== -1);
@@ -67,8 +88,8 @@ export const OrdersScreen = () => {
         placeholder="Filtrez par status"
         searchPlaceholder="Search..."
         value={selected}
-        onFocus={() => console.log('the focusss!')}
         onChange={item => {
+          console.log('on est bien dans le onchage:::::::::', item)
           setSelected(item);
         }}
         renderLeftIcon={() => (
@@ -100,16 +121,17 @@ export const OrdersScreen = () => {
       <View style={styles.containerScroll}>
         <FlatList
           data={filterdOrders}
+          keyExtractor={item => item.id}
           renderItem={({item}) => <OrderListItem order={item} />}
           showsVerticalScrollIndicator={false}
         />
       </View>
       {filterdOrders.length <= 0 && (
-        <Text
-          h3
-          style={{color: 'lightgrey', alignSelf: 'center', marginTop: '50%'}}>
-          Aucune commande trouvée
-        </Text>
+        <View style={{flex: 1, alignItems:'center', marginBottom:100}}>
+          <Text h3 h3Style={{color:'lightgrey'}}>
+            Aucune commande trouvée
+          </Text>
+        </View>
       )}
     </View>
   );
@@ -149,6 +171,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom:23,
     borderRadius: 25,
+    
 
     shadowColor: "#000",
     shadowOffset: {
@@ -176,7 +199,7 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     color: '#249689',
-    fontWeight:'bold'
+    fontWeight:'bold',
   },
   icon: {
     marginRight: 5,
