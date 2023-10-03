@@ -5,11 +5,12 @@
  * @format
  * @flow strict-local
  */
+ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {enableLatestRenderer} from 'react-native-maps';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigationContainerRef} from '@react-navigation/native';
 import {RootNavigator} from './src/components';
 import {Amplify} from 'aws-amplify';
 import config from './src/aws-exports';
@@ -21,6 +22,7 @@ import DishContextProvider from './src/contexts/DishContext';
 import IngredientContextProvider from './src/contexts/IngredientContext';
 
 import {LogBox} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Amplify.configure({...config, Analytics: {disabled: true}});
 enableLatestRenderer();
@@ -31,21 +33,57 @@ enableLatestRenderer();
  * LTI update could not be added via codemod */
 
 const App = () => {
+    const navigationRef = useNavigationContainerRef();
+    const routeNameRef = useRef();
+
+    const setPreviousRouteValue = async (value) => {
+      try {
+        // await AsyncStorage.setItem('my-key', value);
+        await AsyncStorage.setItem('@thePreviousRouteName', value)
+      } catch (e) {
+        // saving error
+        console.log('Error while saving the current, route::', e)
+      }
+    }
+
   return (
     <SafeAreaProvider style={styles.container}>
-      <NavigationContainer>
-        <AuthContextProvider>
-          <BasketContextProvider>
-            <OrderContextProvider>
-              <DishContextProvider>
-                <IngredientContextProvider>
-                  <RootNavigator />
-                </IngredientContextProvider>
-              </DishContextProvider>
-            </OrderContextProvider>
-          </BasketContextProvider>
-        </AuthContextProvider>
-      </NavigationContainer>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() => {
+            routeNameRef.current = navigationRef.getCurrentRoute();
+          }}
+          onStateChange={ async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.getCurrentRoute().name;
+            const trackScreenView = () => {
+              // Your implementation of analytics goes here!
+              previousRouteName != undefined && setPreviousRouteValue(previousRouteName)
+            };
+
+            if (previousRouteName !== currentRouteName) {
+              // Save the current route name for later comparison
+              routeNameRef.current = currentRouteName;
+          
+              // Replace the line below to add the tracker from a mobile analytics SDK
+              trackScreenView(currentRouteName);
+            }
+          }}
+        >
+          <AuthContextProvider>
+            <BasketContextProvider>
+              <OrderContextProvider>
+                <DishContextProvider>
+                  <IngredientContextProvider>
+                    <RootNavigator />
+                  </IngredientContextProvider>
+                </DishContextProvider>
+              </OrderContextProvider>
+            </BasketContextProvider>
+          </AuthContextProvider>
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 };

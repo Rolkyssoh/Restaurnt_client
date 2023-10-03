@@ -1,9 +1,24 @@
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import imgEntry from '../../../assets/images/entry_screen1.jpg';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const EntryScreen = () => {
+    useEffect(() => {
+        async function getPreviousRoute(){
+            try {
+                const previous = await AsyncStorage.getItem('@thePreviousRouteName')
+                if(previous != "Welcome")
+                    await AsyncStorage.setItem('@viewWelomeScreen', 'true')
+            } catch (error) {
+                console.log('Error while getting route in navigation::', error)
+            } 
+        }
+    
+        getPreviousRoute();
+    },[])
+
   return (
     <ImageBackground
         resizeMode='stretch'

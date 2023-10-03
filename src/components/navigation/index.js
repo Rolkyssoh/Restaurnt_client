@@ -11,18 +11,20 @@ import {
   RestaurantHomeScreen,
   ShopeHomeScreen,
   UserAccountScreen,
+  WelcomeScreen,
 } from '../../screens';
 import {OrderDetailsNavigator} from './OrderDetailsNavigator';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useAuthContext} from '../../contexts/AuthContext';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, View, AsyncStorageStatic} from 'react-native';
 import {Text} from '@rneui/themed';
 import {UserType} from '../../models';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Auth} from 'aws-amplify';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -125,6 +127,20 @@ export const RootNavigator = () => {
     );
   }
 
+  // useEffect(() => {
+  //   async function getCurrentAndPreviousRoute(){
+  //     try {
+  //       const previous = await AsyncStorage.getItem('@thePreviousRouteName')
+  //       if(previous != "Welcome")
+  //         await AsyncStorage.setItem('@viewWelomeScreen', true)
+  //     } catch (error) {
+  //       console.log('Error while getting route in navigation::', error)
+  //     } 
+  //   }
+    
+  //   getCurrentAndPreviousRoute();
+  // },[])
+
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {dbUser ? (
@@ -142,9 +158,22 @@ export const RootNavigator = () => {
 };
 
 const HomeStackNavigator = props => {
+  const {authUser} = useAuthContext();
+  const [viewWelcomeScreen, setViewWelcomeScreen] = useState('false')
+
   useEffect(() => {
-    console.log('lehom stack navvvv:', props);
-  }, []);
+    async function getPreviousRoute(){
+      try {
+        const viewWelome = await AsyncStorage.getItem('@viewWelomeScreen')
+        setViewWelcomeScreen(viewWelome)
+      } catch (error) {
+        console.log('Error while getting route in navigation::', error)
+      } 
+    }
+    
+    getPreviousRoute();
+  },[])
+
   return (
     <HomeStackRoutes.Navigator>
       {/* <HomeStackRoutes.Screen
@@ -152,6 +181,11 @@ const HomeStackNavigator = props => {
         component={HomeScreen}
         options={{headerShown: false}}
       /> */}
+      {!authUser && viewWelcomeScreen ==='true' && <HomeStackRoutes.Screen 
+        name='Welcome'
+        component={WelcomeScreen}
+        options={{headerShown: false}}
+      />}
       <HomeStackRoutes.Screen
         name="HomeTabs"
         component={HomeTabsRoutes}
