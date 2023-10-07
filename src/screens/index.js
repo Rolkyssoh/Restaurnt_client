@@ -3,6 +3,7 @@ export * from './DishDetailsScreen';
 export * from './BasketScreen';
 export * from './OrdersScreen';
 export * from './OrderDetailsScreen';
+export * from './OrderDetailsScreen/OrderDetailsHeader';
 export * from './ProfileScreen';
 export * from './PositionOrderDeliveryScreen';
 export * from './UserAccountScreen';

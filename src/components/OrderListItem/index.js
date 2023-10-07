@@ -19,6 +19,7 @@ import {
   REGION,
 } from '@env';
 import { englishToFrench } from '../../translation';
+import { getStructure } from '../../graphql/queries';
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -34,6 +35,7 @@ export const OrderListItem = ({order}) => {
 
   const [totalQty, setTotalQty] = useState(null);
   const [totalPrice, setTotalPrice] = useState(null);
+  const [currentStruct, setCurrentStruct] = useState(null);
   const [structurePictureInOrder, setStructurePictureInOrder] = useState();
   const s3 = new AWS.S3();
 
@@ -79,7 +81,7 @@ export const OrderListItem = ({order}) => {
   }, [order.id]);
 
   useEffect(() => {
-    if (order && order.orderDishes !== null) {
+    if (currentStruct && order && order.orderDishes !== null) {
       const theTotalQty = order.OrderDishes.items.reduce(
         (sum, orderDish) => sum + orderDish.quantity,
         0,
@@ -91,30 +93,21 @@ export const OrderListItem = ({order}) => {
             : orderDish.Ingredient
             ? sum + orderDish.quantity * orderDish.Ingredient.price
             : null,
-        order.Structure.deliveryFee,
+        /// order.Structure.deliveryFee,
+        currentStruct.deliveryFee,
       );
       setTotalQty(theTotalQty);
       setTotalPrice(theTotalPrice);
+      
+      ///Get structure image from order
+      getStructurePicture(currentStruct)
     }
-  }, [order]);
+  }, [currentStruct]);
 
   useEffect(() => {
-    //Get structure image from order
-    if (order.Structure) {
-      console.log('the structure in order:', order.Structure);
-      const params = {
-        Bucket: S3_BUCKET,
-        Key: `${order.Structure.image}`,
-      };
-      s3.getSignedUrl('getObject', params, (err, data) => {
-        if (err) {
-          console.log('we have some error:', err, err.stack);
-        } else {
-          setStructurePictureInOrder(data);
-        }
-      });
-    }
-  }, []);
+    ///Get Structure in the order
+    getStructureByHisIdInOrder(order.structureID)
+  },[order])
 
   const statusToColor = {
     [OrderStatus.NEW]: '#249689',
@@ -124,9 +117,30 @@ export const OrderListItem = ({order}) => {
     [OrderStatus.COMPLETED]: 'skyblue',
   };
 
-  useEffect(() => {
-    console.log({structurePictureInOrder});
-  }, [structurePictureInOrder]);
+  // useEffect(() => {
+  //   console.log({structurePictureInOrder});
+  // }, [structurePictureInOrder]);
+
+  const getStructureByHisIdInOrder = async (structID) => {
+    const structureInOrder = await API.graphql(
+        graphqlOperation(getStructure, {id: structID}),
+    );
+    setCurrentStruct(structureInOrder.data.getStructure)
+  }
+
+  const getStructurePicture = async (structure) => {
+    const params = {
+      Bucket: S3_BUCKET,
+      Key: `${structure.image}`,
+    };
+    s3.getSignedUrl('getObject', params, (err, data) => {
+      if (err) {
+        console.log('we have some error:', err, err.stack);
+      } else {
+        setStructurePictureInOrder(data);
+      }
+    });
+  }
 
   return (
     <Pressable
@@ -141,7 +155,7 @@ export const OrderListItem = ({order}) => {
       />
       <View style={styles.detailsContainer}>
         <View style={{marginLeft:10, justifyContent:'space-around'}}>
-            <Text style={styles.name}>{order?.Structure?.name}</Text>
+            <Text style={styles.name}>{currentStruct?.name}</Text>
         
             <Text style={styles.textDetails}>
               {dayjs(order?.createdAt).fromNow(true)}
@@ -166,7 +180,7 @@ export const OrderListItem = ({order}) => {
           </Text>
           <Text style={styles.textDetails}>
             {`${
-              order?.Structure.type === 'RESTAURANT'
+              currentStruct?.type === 'RESTAURANT'
                 ? totalQty + ' items'
                 : totalQty?.toFixed(1) + ' g'
             }`}

@@ -46,10 +46,9 @@ const OrderContextProvider = ({children}) => {
       graphqlOperation(createOrder, {
         input: {
           userID: dbUser.id,
-          orderStructureId: restaurantInfos.id,
+          structureID: restaurantInfos.id,
           status: 'NEW',
         },
-        Structure: restaurantInfos,
       }),
     );
 
@@ -168,8 +167,10 @@ const OrderContextProvider = ({children}) => {
   };
 
   const getOrderById = async id => {
+    console.log('we get the iiidd hereee:::', id)
     const order = await API.graphql(graphqlOperation(getOrder, {id}));
     const theGetOrder = order.data.getOrder;
+    console.log('the returned oooorder::::', theGetOrder)
 
     const orderDishesByOrderId = await API.graphql(
       graphqlOperation(listOrderDishesByOrderId, {id}),
@@ -207,38 +208,7 @@ export const getOrderByOrderId = /* GraphQL */ `
       id
       status
       userID
-      Structure {
-        id
-        name
-        image
-        deliveryFee
-        minDeliveryTime
-        maxDeliveryTime
-        rating
-        address
-        lat
-        lng
-        type
-        adminSub
-        isActive
-        Dishes {
-          nextToken
-          startedAt
-        }
-        Ingredients {
-          nextToken
-          startedAt
-        }
-        Baskets {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
+      StructureID
       OrderDishes {
         items {
           id
@@ -299,13 +269,12 @@ export const getOrderByOrderId = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
-      orderStructureId
       orderCourierId
     }
   }
 `;
 
-export const listOrdersByDbUser = /* GraphQL */ `
+export const listOrdersByDbUser = /* GraphQL */ ` 
   query GetUser($id: ID!) {
     getUser(id: $id) {
       Orders {
@@ -313,12 +282,13 @@ export const listOrdersByDbUser = /* GraphQL */ `
           id
           status
           userID
+          structureID
+          orderCourierId
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderStructureId
           orderCourierId
           OrderDishes {
             items {
@@ -356,25 +326,6 @@ export const listOrdersByDbUser = /* GraphQL */ `
             }
             nextToken
             startedAt
-          }
-          Structure {
-            id
-            name
-            image
-            deliveryFee
-            minDeliveryTime
-            maxDeliveryTime
-            rating
-            address
-            lat
-            lng
-            type
-            adminSub
-            createdAt
-            updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         nextToken
@@ -434,37 +385,6 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
         nextToken
         startedAt
       }
-      Structure {
-        id
-        name
-        image
-        deliveryFee
-        minDeliveryTime
-        maxDeliveryTime
-        rating
-        address
-        lat
-        lng
-        type
-        adminSub
-        Dishes {
-          nextToken
-          startedAt
-        }
-        Ingredients {
-          nextToken
-          startedAt
-        }
-        Baskets {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
       Courier {
         id
         name
@@ -478,12 +398,12 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
         _deleted
         _lastChangedAt
       }
+      structureID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderStructureId
       orderCourierId
     }
   }

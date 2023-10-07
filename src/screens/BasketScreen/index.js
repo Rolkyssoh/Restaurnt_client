@@ -27,9 +27,11 @@ export const BasketScreen = () => {
   const onCreateOrder = async () => {
     if (restaurantInfos) {
       const newOrder = await createNewOrder();
-      setBasketDishes([]);
       // if (newOrder) navigation.navigate('orderList');
-      if (newOrder) navigation.navigate('HomeTabs', {screen: 'Orders'});
+      if (newOrder){
+        setBasketDishes([]);
+        navigation.navigate('HomeTabs', {screen: 'Orders'});
+      } 
     }
     if (shopInfos) {
       const newIngredientOrder = await createIngredientOrder();

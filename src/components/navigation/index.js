@@ -184,7 +184,7 @@ const HomeStackNavigator = props => {
       {!authUser && viewWelcomeScreen ==='true' && <HomeStackRoutes.Screen 
         name='Welcome'
         component={WelcomeScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false}} 
       />}
       <HomeStackRoutes.Screen
         name="HomeTabs"

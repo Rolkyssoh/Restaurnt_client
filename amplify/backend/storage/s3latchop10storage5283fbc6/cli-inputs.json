@@ -1,0 +1,15 @@
+{
+  "resourceName": "s3latchop10storage5283fbc6",
+  "bucketName": "latchop1-0-storage-5283fbc6",
+  "policyUUID": "712bc330",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ",
+    "CREATE_AND_UPDATE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

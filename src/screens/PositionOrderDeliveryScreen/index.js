@@ -3,7 +3,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {API, graphqlOperation} from 'aws-amplify';
-import {Courier, Order} from '../../models';
 import {getCourier, getOrder, listCouriers} from '../../graphql/queries';
 import {onUpdateCourier, onUpdateOrder} from '../../graphql/subscriptions';
 import { englishToFrench } from '../../translation';

@@ -17,11 +17,6 @@ const OrderStatus = {
   "DECLINED_BY_STRUCTURE": "DECLINED_BY_STRUCTURE"
 };
 
-const StructureType = {
-  "RESTAURANT": "RESTAURANT",
-  "SHOP": "SHOP"
-};
-
 const UserType = {
   "CUSTOMER": "CUSTOMER",
   "DRIVER": "DRIVER",
@@ -29,20 +24,25 @@ const UserType = {
   "RESTORER": "RESTORER"
 };
 
-const { Courier, OrderDish, Dish, Ingredient, Order, Structure, Basket, BasketDish, User } = initSchema(schema);
+const StructureType = {
+  "RESTAURANT": "RESTAURANT",
+  "SHOP": "SHOP"
+};
+
+const { Courier, OrderDish, Order, User, BasketDish, Basket, Ingredient, Dish, Structure } = initSchema(schema);
 
 export {
   Courier,
   OrderDish,
-  Dish,
-  Ingredient,
   Order,
-  Structure,
-  Basket,
-  BasketDish,
   User,
+  BasketDish,
+  Basket,
+  Ingredient,
+  Dish,
+  Structure,
   TransportationModes,
   OrderStatus,
-  StructureType,
-  UserType
+  UserType,
+  StructureType
 };
