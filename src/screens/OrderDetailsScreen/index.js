@@ -37,7 +37,7 @@ export const OrderDetailsScreen = ({id}) => {
   }, []);
 
   if (!order) {
-    return <ActivityIndicator size={'large'} color="black" />;
+    return <ActivityIndicator size={'large'} color="#249689" />;
   }
 
   return (

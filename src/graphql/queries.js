@@ -6,11 +6,31 @@ export const getCourier = /* GraphQL */ `
     getCourier(id: $id) {
       id
       name
-      sub
+      address
       lat
       lng
       tranportationMode
       email
+      Orders {
+        items {
+          id
+          status
+          userID
+          structureID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      isActive
+      sub
       createdAt
       updatedAt
       _version
@@ -30,11 +50,18 @@ export const listCouriers = /* GraphQL */ `
       items {
         id
         name
-        sub
+        address
         lat
         lng
         tranportationMode
         email
+        Orders {
+          nextToken
+          startedAt
+          __typename
+        }
+        isActive
+        sub
         createdAt
         updatedAt
         _version
@@ -64,11 +91,18 @@ export const syncCouriers = /* GraphQL */ `
       items {
         id
         name
-        sub
+        address
         lat
         lng
         tranportationMode
         email
+        Orders {
+          nextToken
+          startedAt
+          __typename
+        }
+        isActive
+        sub
         createdAt
         updatedAt
         _version
@@ -327,28 +361,13 @@ export const getOrder = /* GraphQL */ `
         startedAt
         __typename
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       structureID
+      courierID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
       __typename
     }
   }
@@ -369,28 +388,13 @@ export const listOrders = /* GraphQL */ `
           startedAt
           __typename
         }
-        Courier {
-          id
-          name
-          sub
-          lat
-          lng
-          tranportationMode
-          email
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
         structureID
+        courierID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        orderCourierId
         __typename
       }
       nextToken
@@ -421,28 +425,13 @@ export const syncOrders = /* GraphQL */ `
           startedAt
           __typename
         }
-        Courier {
-          id
-          name
-          sub
-          lat
-          lng
-          tranportationMode
-          email
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
         structureID
+        courierID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        orderCourierId
         __typename
       }
       nextToken
@@ -475,28 +464,13 @@ export const ordersByUserID = /* GraphQL */ `
           startedAt
           __typename
         }
-        Courier {
-          id
-          name
-          sub
-          lat
-          lng
-          tranportationMode
-          email
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
         structureID
+        courierID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        orderCourierId
         __typename
       }
       nextToken
@@ -529,28 +503,52 @@ export const ordersByStructureID = /* GraphQL */ `
           startedAt
           __typename
         }
-        Courier {
-          id
-          name
-          sub
-          lat
-          lng
-          tranportationMode
-          email
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
         structureID
+        courierID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        orderCourierId
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const ordersByCourierID = /* GraphQL */ `
+  query OrdersByCourierID(
+    $courierID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelOrderFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    ordersByCourierID(
+      courierID: $courierID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        userID
+        OrderDishes {
+          nextToken
+          startedAt
+          __typename
+        }
+        structureID
+        courierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         __typename
       }
       nextToken
@@ -591,12 +589,12 @@ export const getUser = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -604,6 +602,7 @@ export const getUser = /* GraphQL */ `
         __typename
       }
       email
+      isActive
       createdAt
       updatedAt
       _version
@@ -639,6 +638,7 @@ export const listUsers = /* GraphQL */ `
           __typename
         }
         email
+        isActive
         createdAt
         updatedAt
         _version
@@ -684,6 +684,7 @@ export const syncUsers = /* GraphQL */ `
           __typename
         }
         email
+        isActive
         createdAt
         updatedAt
         _version
@@ -1391,12 +1392,12 @@ export const getStructure = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken

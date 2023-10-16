@@ -6,11 +6,31 @@ export const onCreateCourier = /* GraphQL */ `
     onCreateCourier(filter: $filter) {
       id
       name
-      sub
+      address
       lat
       lng
       tranportationMode
       email
+      Orders {
+        items {
+          id
+          status
+          userID
+          structureID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      isActive
+      sub
       createdAt
       updatedAt
       _version
@@ -25,11 +45,31 @@ export const onUpdateCourier = /* GraphQL */ `
     onUpdateCourier(filter: $filter) {
       id
       name
-      sub
+      address
       lat
       lng
       tranportationMode
       email
+      Orders {
+        items {
+          id
+          status
+          userID
+          structureID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      isActive
+      sub
       createdAt
       updatedAt
       _version
@@ -44,11 +84,31 @@ export const onDeleteCourier = /* GraphQL */ `
     onDeleteCourier(filter: $filter) {
       id
       name
-      sub
+      address
       lat
       lng
       tranportationMode
       email
+      Orders {
+        items {
+          id
+          status
+          userID
+          structureID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      isActive
+      sub
       createdAt
       updatedAt
       _version
@@ -223,28 +283,13 @@ export const onCreateOrder = /* GraphQL */ `
         startedAt
         __typename
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       structureID
+      courierID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
       __typename
     }
   }
@@ -273,28 +318,13 @@ export const onUpdateOrder = /* GraphQL */ `
         startedAt
         __typename
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       structureID
+      courierID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
       __typename
     }
   }
@@ -323,28 +353,13 @@ export const onDeleteOrder = /* GraphQL */ `
         startedAt
         __typename
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       structureID
+      courierID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
       __typename
     }
   }
@@ -381,12 +396,12 @@ export const onCreateUser = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -394,6 +409,7 @@ export const onCreateUser = /* GraphQL */ `
         __typename
       }
       email
+      isActive
       createdAt
       updatedAt
       _version
@@ -435,12 +451,12 @@ export const onUpdateUser = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -448,6 +464,7 @@ export const onUpdateUser = /* GraphQL */ `
         __typename
       }
       email
+      isActive
       createdAt
       updatedAt
       _version
@@ -489,12 +506,12 @@ export const onDeleteUser = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -502,6 +519,7 @@ export const onDeleteUser = /* GraphQL */ `
         __typename
       }
       email
+      isActive
       createdAt
       updatedAt
       _version
@@ -943,12 +961,12 @@ export const onCreateStructure = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -1042,12 +1060,12 @@ export const onUpdateStructure = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken
@@ -1141,12 +1159,12 @@ export const onDeleteStructure = /* GraphQL */ `
           status
           userID
           structureID
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           __typename
         }
         nextToken

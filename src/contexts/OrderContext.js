@@ -208,7 +208,8 @@ export const getOrderByOrderId = /* GraphQL */ `
       id
       status
       userID
-      StructureID
+      structureID
+      courierID
       OrderDishes {
         items {
           id
@@ -251,25 +252,11 @@ export const getOrderByOrderId = /* GraphQL */ `
         nextToken
         startedAt
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
     }
   }
 `;
@@ -283,13 +270,12 @@ export const listOrdersByDbUser = /* GraphQL */ `
           status
           userID
           structureID
-          orderCourierId
+          courierID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderCourierId
           OrderDishes {
             items {
               id
@@ -385,26 +371,12 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
         nextToken
         startedAt
       }
-      Courier {
-        id
-        name
-        sub
-        lat
-        lng
-        tranportationMode
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
       structureID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      orderCourierId
     }
   }
 `;

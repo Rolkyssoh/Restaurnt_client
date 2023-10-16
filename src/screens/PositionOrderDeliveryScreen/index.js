@@ -34,17 +34,17 @@ export const PositionOrderDeliveryScreen = ({id}) => {
   }, [order]);
 
   useEffect(() => {
-    if (order?.orderCourierId) {
+    if (order?.courierID) {
       // DataStore.query(Courier, order.orderCourierId).then(setCourier);
 
       API.graphql(
-        graphqlOperation(getCourier, {id: order.orderCourierId}),
+        graphqlOperation(getCourier, {id: order.courierID}),
       ).then(result => {
         console.log('the current courier:', result.data.getCourier);
         setCourier(result.data.getCourier);
       });
     }
-  }, [order?.orderCourierId]);
+  }, [order?.courierID]);
 
   useEffect(() => {
     if (courier?.lat && courier?.lng) {

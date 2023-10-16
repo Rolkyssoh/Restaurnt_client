@@ -150,7 +150,7 @@ export const OrderListItem = ({order}) => {
         source={{
           uri: structurePictureInOrder,
         }}
-        style={styles.image}
+        style={styles.image} 
         resizeMode="cover"
       />
       <View style={styles.detailsContainer}>
@@ -235,13 +235,13 @@ export const listOrdersByDbUser = /* GraphQL */ `
           id
           status
           userID
+          courierID
+          structureID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          orderStructureId
-          orderCourierId
           OrderDishes {
             items {
               id
