@@ -109,10 +109,9 @@ const OrderContextProvider = ({children}) => {
       graphqlOperation(createOrder, {
         input: {
           userID: dbUser.id,
-          orderStructureId: shopInfos.id,
+          structureID: shopInfos.id,
           status: 'NEW',
         },
-        Structure: shopInfos,
       }),
     );
 

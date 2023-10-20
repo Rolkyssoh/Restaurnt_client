@@ -16,6 +16,7 @@ import {
   REACT_APP_S3_ACCESS_KEY_ID,
   REACT_APP_S3_SECRET_ACCESS_KEY,
   S3_BUCKET,
+  S3_BUCKET_ITEM,
   REGION,
 } from '@env';
 import { englishToFrench } from '../../translation';
@@ -130,7 +131,7 @@ export const OrderListItem = ({order}) => {
 
   const getStructurePicture = async (structure) => {
     const params = {
-      Bucket: S3_BUCKET,
+      Bucket: S3_BUCKET_ITEM,
       Key: `${structure.image}`,
     };
     s3.getSignedUrl('getObject', params, (err, data) => {

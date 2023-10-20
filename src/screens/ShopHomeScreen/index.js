@@ -153,7 +153,7 @@ export const ShopeHomeScreen = () => {
         color="#fff"
         style={styles.iconContainer}
       />
-      {basket && basketDishes.length && (
+      {basket && basketDishes.length >0 && (
         <Button
           title={
             basketDishes.length === 1 && basketDishes[0].quantity === 0

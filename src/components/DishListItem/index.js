@@ -5,12 +5,28 @@ import {useNavigation} from '@react-navigation/native';
 import {useDishContext} from '../../contexts/DishContext';
 import {useBasketContext} from '../../contexts/BasketContext';
 import styles from './styles';
+import AWS from 'aws-sdk';
+import {
+  REACT_APP_S3_ACCESS_KEY_ID,
+  REACT_APP_S3_SECRET_ACCESS_KEY, 
+  S3_BUCKET,
+  S3_BUCKET_ITEM,
+  REGION,
+} from '@env';
+
+
+AWS.config.update({
+  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+});
 
 export const DishListItem = ({dish}) => {
   const navigation = useNavigation();
   const {basketDishes, basket} = useBasketContext();
+  const s3 = new AWS.S3();
 
   const [dishQty, setDishQty] = useState(0);
+  const [dishImg, setDishImg] = useState();
 
   useEffect(() => {
     if (basket === null) setDishQty(0);
@@ -27,11 +43,28 @@ export const DishListItem = ({dish}) => {
     console.log('the quantiy:', theCurrentDish?.quantity);
   }, [basketDishes]);
 
+  useEffect(() => {
+    if (dish.image) {
+      const params = {
+        Bucket: S3_BUCKET_ITEM,
+        Key: `${dish.image}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setDishImg(data.toString());
+        }
+      });
+    }
+    console.log('the dish:::', dish)
+  }, [dish]);
+
   return (
     <View style={styles.viewContainer}>
       <View style={{width:'31%'}}>
         <Image
-          source={{uri: dish.image}}
+          source={{uri: dishImg}}
           style={styles.image}
           resizeMode="cover"
         />

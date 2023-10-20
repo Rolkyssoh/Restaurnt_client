@@ -10,6 +10,7 @@ import {
   REACT_APP_S3_ACCESS_KEY_ID,
   REACT_APP_S3_SECRET_ACCESS_KEY,
   S3_BUCKET,
+  S3_BUCKET_ITEM,
   REGION,
 } from '@env';
 import styles from '../../RestaurantItem/styles'
@@ -27,7 +28,7 @@ const ShopItem = ({shop}) => {
   useEffect(() => {
     if (shop.image) {
       const params = {
-        Bucket: S3_BUCKET,
+        Bucket: S3_BUCKET_ITEM,
         Key: `${shop.image}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {
