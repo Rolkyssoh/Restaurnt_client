@@ -62,6 +62,7 @@ type User @model @auth(rules: [{allow: public}]) {
   Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
   email: String
   isActive: Boolean
+  picture: String
 }
 
 type BasketDish @model @auth(rules: [{allow: public}]) {

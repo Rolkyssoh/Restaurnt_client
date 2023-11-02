@@ -410,6 +410,7 @@ export const onCreateUser = /* GraphQL */ `
       }
       email
       isActive
+      picture
       createdAt
       updatedAt
       _version
@@ -465,6 +466,7 @@ export const onUpdateUser = /* GraphQL */ `
       }
       email
       isActive
+      picture
       createdAt
       updatedAt
       _version
@@ -520,6 +522,7 @@ export const onDeleteUser = /* GraphQL */ `
       }
       email
       isActive
+      picture
       createdAt
       updatedAt
       _version

@@ -1,16 +1,128 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import { Divider, Text} from '@rneui/themed';
-import {Auth} from 'aws-amplify';
+import {API, Auth, Storage, graphqlOperation} from 'aws-amplify';
+import {Image} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
 import {useAuthContext} from '../../contexts/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
+import AWS from 'aws-sdk';
+import {
+  REACT_APP_S3_ACCESS_KEY_ID,
+  REACT_APP_S3_SECRET_ACCESS_KEY, 
+  S3_BUCKET,
+  S3_BUCKET_ITEM,
+  REGION,
+} from '@env';
+import { updateUser } from '../../graphql/mutations';
+
+AWS.config.update({
+  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+});
 
 export const UserAccountScreen = () => {
   const navigatin = useNavigation();
   const {dbUser} = useAuthContext();
+   const s3 = new AWS.S3();
+
+   const [usrPicture, setUsrPicture] = useState();
+   const [filePath, setFilePath] = useState();
+   const [thePath, setThePath] = useState();
+
+  useEffect(() => {
+    if (dbUser.picture) {
+      const params = {
+        Bucket: S3_BUCKET_ITEM,
+        Key: `${dbUser.picture}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setUsrPicture(data.toString());
+          console.log('the image:::::', data)
+        }
+      });
+    }
+  }, [dbUser])
+
+  const doAddPicture = async () => {
+    const response = await launchImageLibrary({maxHeight:250, maxWidth:250, mediaType:'photo'})
+    console.log('the testtt::::', response.assets[0])
+    if(response.didCancel){
+      console.log('User cancelled image picker');
+    } else if(response.error){
+      console.log('ImagePicker Error: ', response.error);
+    } else if(response.customButton){
+        console.log(
+        'User tapped custom button: ',
+        response.customButton
+        );
+        alert(response.customButton);
+    } else {
+      setFilePath(response.assets[0])
+      setThePath(response.assets)
+      uploadFile(response.assets[0])
+    }
+  }
+
+  const updateProfilePicture = async (fileName) => {
+      await API.graphql(
+        graphqlOperation(updateUser, {
+          input: {
+            _version: dbUser._version,
+            picture:fileName,
+            id: dbUser.id,
+          },
+        }),
+      );
+  }
+
+  const uploadFile = async (theFile) => {
+        console.log('the argumment::::', JSON.stringify(theFile))
+        let data = new FormData();
+        data.append('Blob', theFile);
+        console.log('the form dataaaa:::', data._parts)
+        const params = {
+          Bucket: S3_BUCKET_ITEM,
+          Key: theFile.fileName,
+          Body: data._parts[1]
+          // type:theFile.type 
+        };
+
+        // var upload = s3.upload(params).promise();
+        // console.log('the uploadeedd:::', upload)
+        var upload = s3
+        .putObject(params)
+        .on("httpUploadProgress", (evt) => console.log(
+            "Uploading " + Math.round((evt.loaded * 100) / evt.total) + "%"
+        ))
+        .promise();
+
+        upload.then((value) => {
+            console.log('the data updatedddd::::', value)
+            if(value)
+              // updateProfilePicture(theFile.fileName)
+            alert("File uploaded successfully.");
+        });
+
+      // const formdata = new FormData();
+      // formdata.append("file", theFile);
+      // console.log({ theFile });
+      // try {
+      //     const result = await Storage.put(theFile.fileName, formdata, {
+      //         contentType: theFile.type,
+      //         region: "us-east-1",
+      //     });
+      //     console.log("the result", result);
+      // } catch (error) {
+      //     console.log("the error while uploading file:", error);
+      // }
+    };
 
   return (
     <View style={styles.container}>
@@ -20,8 +132,13 @@ export const UserAccountScreen = () => {
         </View>
 
         <View style={{alignItems:'flex-end', paddingTop:35}}>
+          <FontAwesome style={styles.iconEditPicture} name="plus-circle" size={20} color="#fff" onPress={doAddPicture} />
           <View style={styles.imgView}>
-            <FontAwesome name="user" size={30} color="#fff" />
+            { !dbUser.picture ? 
+              <Image source={{uri: filePath.uri ?? usrPicture }} style={styles.image} resizeMode="cover" /> :
+              // <FontAwesome name="user" size={30} color="#249689"/> :
+              <FontAwesome name="user" size={30} color="#249689"/> }
+
           </View>
           <Text style={{fontSize:10, fontWeight:'bold', color:'#fff'}}>
             Bonjour, 
@@ -86,8 +203,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding:15
   },
+  iconEditPicture:{
+    position:'absolute',
+    marginTop:20,
+    marginRight:21,
+    right:0,
+    zIndex:1,
+    alignSelf:'center',
+  },
   imgView:{
-    backgroundColor:'lightgrey',
+    backgroundColor:'#fff',
     height:60,
     width:60,
     borderRadius:30,
@@ -96,6 +221,11 @@ const styles = StyleSheet.create({
     borderWidth:3,
     borderColor:'blue',
     marginBottom:10
+  },
+  image: {
+    height: 50, 
+    // aspectRatio: 1, 
+    borderRadius: 30,
   },
   infos_section:{
     backgroundColor:'#f1f4f9',

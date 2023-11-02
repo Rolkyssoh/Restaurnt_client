@@ -61,7 +61,7 @@ export const DishListItem = ({dish}) => {
   }, [dish]);
 
   return (
-    <View style={styles.viewContainer}>
+    <Pressable style={styles.viewContainer} onPress={() => navigation.navigate('Dish', {id: dish.id})}>
       <View style={{width:'31%'}}>
         <Image
           source={{uri: dishImg}}
@@ -69,9 +69,7 @@ export const DishListItem = ({dish}) => {
           resizeMode="cover"
         />
       </View>
-      <Pressable
-        style={styles.itemCliquable}
-        onPress={() => navigation.navigate('Dish', {id: dish.id})}>
+      <View style={styles.itemCliquable}>
         <View style={{paddingHorizontal:10}}>
           <Text style={styles.name}>{dish.name}</Text>
           <Text style={styles.description} numberOfLines={1}>
@@ -82,8 +80,8 @@ export const DishListItem = ({dish}) => {
             {dishQty != 0 && <Text style={styles.quantity}>{dishQty}x</Text>}
           </View>
         </View>
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 };
 

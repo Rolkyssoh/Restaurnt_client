@@ -165,6 +165,7 @@ type EagerUser = {
   readonly Orders?: (Order | null)[] | null;
   readonly email?: string | null;
   readonly isActive?: boolean | null;
+  readonly picture?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -185,6 +186,7 @@ type LazyUser = {
   readonly Orders: AsyncCollection<Order>;
   readonly email?: string | null;
   readonly isActive?: boolean | null;
+  readonly picture?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

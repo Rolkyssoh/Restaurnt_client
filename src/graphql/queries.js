@@ -603,6 +603,7 @@ export const getUser = /* GraphQL */ `
       }
       email
       isActive
+      picture
       createdAt
       updatedAt
       _version
@@ -639,6 +640,7 @@ export const listUsers = /* GraphQL */ `
         }
         email
         isActive
+        picture
         createdAt
         updatedAt
         _version
@@ -685,6 +687,7 @@ export const syncUsers = /* GraphQL */ `
         }
         email
         isActive
+        picture
         createdAt
         updatedAt
         _version
