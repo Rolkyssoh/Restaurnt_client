@@ -6,18 +6,12 @@ import {useDishContext} from '../../contexts/DishContext';
 import {useBasketContext} from '../../contexts/BasketContext';
 import styles from './styles';
 import AWS from 'aws-sdk';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY, 
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 export const DishListItem = ({dish}) => {
@@ -46,7 +40,7 @@ export const DishListItem = ({dish}) => {
   useEffect(() => {
     if (dish.image) {
       const params = {
-        Bucket: S3_BUCKET_ITEM,
+        Bucket: Config.S3_BUCKET_ITEM,
         Key: `${dish.image}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {

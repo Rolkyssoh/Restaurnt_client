@@ -12,19 +12,13 @@ import {useAuthContext} from '../../contexts/AuthContext';
 import {useOrderContext} from '../../contexts/OrderContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AWS from 'aws-sdk';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY,
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 import { englishToFrench } from '../../translation';
 import { getStructure } from '../../graphql/queries';
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 dayjs.extend(relativeTime);
@@ -131,7 +125,7 @@ export const OrderListItem = ({order}) => {
 
   const getStructurePicture = async (structure) => {
     const params = {
-      Bucket: S3_BUCKET_ITEM,
+      Bucket: Config.S3_BUCKET_ITEM,
       Key: `${structure.image}`,
     };
     s3.getSignedUrl('getObject', params, (err, data) => {

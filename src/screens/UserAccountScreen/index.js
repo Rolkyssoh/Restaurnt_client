@@ -10,18 +10,12 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 import AWS from 'aws-sdk';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY, 
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 import { updateUser } from '../../graphql/mutations';
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 export const UserAccountScreen = () => {
@@ -37,7 +31,7 @@ export const UserAccountScreen = () => {
   useEffect(() => {
     if (dbUser.picture) {
       const params = {
-        Bucket: S3_BUCKET_ITEM,
+        Bucket: Config.S3_BUCKET_ITEM,
         Key: `${dbUser.picture}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {
@@ -117,7 +111,7 @@ export const UserAccountScreen = () => {
   const uploadFile = async (theFile) => {
 
     const params = {
-      Bucket: S3_BUCKET_ITEM,
+      Bucket: Config.S3_BUCKET_ITEM,
       Key: theFile[0].fileName,
       Body:theBody,
     };

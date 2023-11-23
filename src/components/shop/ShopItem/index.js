@@ -6,18 +6,12 @@ import {Divider} from '@rneui/themed';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AWS from 'aws-sdk';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY,
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 import styles from '../../RestaurantItem/styles'
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 const ShopItem = ({shop}) => {
@@ -28,7 +22,7 @@ const ShopItem = ({shop}) => {
   useEffect(() => {
     if (shop.image) {
       const params = {
-        Bucket: S3_BUCKET_ITEM,
+        Bucket: Config.S3_BUCKET_ITEM,
         Key: `${shop.image}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {

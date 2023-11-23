@@ -9,20 +9,14 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SearchBar} from '@rneui/themed';
 import AWS from 'aws-sdk';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY, 
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
 import { useAuthContext } from '../../contexts/AuthContext';
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 const Header = ({restaurant, searchTerm, setTerm}) => {
@@ -50,7 +44,7 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
     /**Get the picture of the current restaurant */
     if (restaurant.image) {
       const params = {
-        Bucket: S3_BUCKET_ITEM,
+        Bucket: Config.S3_BUCKET_ITEM,
         Key: `${restaurant.image}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {

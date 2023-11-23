@@ -7,20 +7,14 @@ import styles from '../RestaurantHomeScreen/styles';
 import AWS from 'aws-sdk';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
-import {
-  REACT_APP_S3_ACCESS_KEY_ID,
-  REACT_APP_S3_SECRET_ACCESS_KEY,
-  S3_BUCKET,
-  S3_BUCKET_ITEM,
-  REGION,
-} from '@env';
+import Config from 'react-native-config'
 import { useAuthContext } from '../../contexts/AuthContext';
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
 
 AWS.config.update({
-  accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
 const ShopHeader = ({shop, searchTerm, setTerm}) => {
@@ -33,7 +27,7 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
   useEffect(() => {
     if (shop) {
       const params = {
-        Bucket: S3_BUCKET_ITEM,
+        Bucket: Config.S3_BUCKET_ITEM,
         Key: `${shop.image}`,
       };
       s3.getSignedUrl('getObject', params, (err, data) => {
