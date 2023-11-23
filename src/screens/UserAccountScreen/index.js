@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import { Divider, Text} from '@rneui/themed';
-import {API, Auth, Storage, graphqlOperation} from 'aws-amplify';
+import {API, Auth, JS, Storage, graphqlOperation} from 'aws-amplify';
 import {Image} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
 import {useAuthContext} from '../../contexts/AuthContext';
@@ -32,6 +32,7 @@ export const UserAccountScreen = () => {
    const [usrPicture, setUsrPicture] = useState();
    const [filePath, setFilePath] = useState();
    const [thePath, setThePath] = useState();
+   const [theBody, setTheBody] = useState()
 
   useEffect(() => {
     if (dbUser.picture) {
@@ -50,9 +51,21 @@ export const UserAccountScreen = () => {
     }
   }, [dbUser])
 
+  const options = {
+    title:"Selectionner une image",
+    type:"library",
+    options:{
+      maxHeight:200,
+      maxWidth:200,
+      selectionLimit:1,
+      mediaType:'photo',
+      includeBase64:false
+    }
+  }
+
   const doAddPicture = async () => {
-    const response = await launchImageLibrary({maxHeight:250, maxWidth:250, mediaType:'photo'})
-    console.log('the testtt::::', response.assets[0])
+    const response = await launchImageLibrary(options)
+    console.log('the testtt::::', response.assets)
     if(response.didCancel){
       console.log('User cancelled image picker');
     } else if(response.error){
@@ -66,7 +79,7 @@ export const UserAccountScreen = () => {
     } else {
       setFilePath(response.assets[0])
       setThePath(response.assets)
-      uploadFile(response.assets[0])
+      uploadFile(response.assets)
     }
   }
 
@@ -82,20 +95,34 @@ export const UserAccountScreen = () => {
       );
   }
 
-  const uploadFile = async (theFile) => {
-        console.log('the argumment::::', JSON.stringify(theFile))
-        let data = new FormData();
-        data.append('Blob', theFile);
-        console.log('the form dataaaa:::', data._parts)
-        const params = {
-          Bucket: S3_BUCKET_ITEM,
-          Key: theFile.fileName,
-          Body: data._parts[1]
-          // type:theFile.type 
-        };
+  useEffect(() => {
+    if(filePath){
+      console.log('the argumment::::', filePath)
+      let data = new FormData();
+      data.append('File',filePath)
+      // data.append('File', {
+      //   uid: filePath.uri,
+      //   type: filePath.type,
+      //   name: filePath.fileName,
+      //   // size: filePath.fileSize
+      // });
+      let theTest = new File(data._parts,filePath.fileName,{type: filePath.type, lastModified:Date.now()})
+      // theTest._data.size = filePath.fileSize;
+      console.log('the fileee:::', theTest)
+      console.log('the form dataaaa:::', data._parts[0][1])
+      setTheBody(data._parts[0])
+    }
+  },[filePath])
 
+  const uploadFile = async (theFile) => {
+
+    const params = {
+      Bucket: S3_BUCKET_ITEM,
+      Key: theFile[0].fileName,
+      Body:theBody,
+    };
         // var upload = s3.upload(params).promise();
-        // console.log('the uploadeedd:::', upload)
+        // console.log('the uploadeedd:::', upload) Progr@mm@t!on
         var upload = s3
         .putObject(params)
         .on("httpUploadProgress", (evt) => console.log(
@@ -106,7 +133,7 @@ export const UserAccountScreen = () => {
         upload.then((value) => {
             console.log('the data updatedddd::::', value)
             if(value)
-              // updateProfilePicture(theFile.fileName)
+              updateProfilePicture(theFile.fileName)
             alert("File uploaded successfully.");
         });
 
@@ -134,8 +161,8 @@ export const UserAccountScreen = () => {
         <View style={{alignItems:'flex-end', paddingTop:35}}>
           <FontAwesome style={styles.iconEditPicture} name="plus-circle" size={20} color="#fff" onPress={doAddPicture} />
           <View style={styles.imgView}>
-            { !dbUser.picture ? 
-              <Image source={{uri: filePath.uri ?? usrPicture }} style={styles.image} resizeMode="cover" /> :
+            { dbUser.picture ? 
+              <Image source={{uri: (filePath && filePath?.uri) ?? usrPicture }} style={styles.image} resizeMode="cover" /> :
               // <FontAwesome name="user" size={30} color="#249689"/> :
               <FontAwesome name="user" size={30} color="#249689"/> }
 
@@ -218,13 +245,14 @@ const styles = StyleSheet.create({
     borderRadius:30,
     justifyContent:'center',
     alignItems:'center',
-    borderWidth:3,
+    borderWidth:0.5,
     borderColor:'blue',
     marginBottom:10
   },
   image: {
-    height: 50, 
-    // aspectRatio: 1, 
+    height: 59, 
+    width:59,
+    aspectRatio: 1, 
     borderRadius: 30,
   },
   infos_section:{

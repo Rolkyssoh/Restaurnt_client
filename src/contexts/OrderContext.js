@@ -5,6 +5,7 @@ import {createOrder, createOrderDish, deleteBasket} from '../graphql/mutations';
 import {getOrder} from '../graphql/queries';
 import {useAuthContext} from './AuthContext';
 import {useBasketContext} from './BasketContext';
+import { OrderStatus } from '../models';
 
 const orderContext = createContext();
 
@@ -47,7 +48,7 @@ const OrderContextProvider = ({children}) => {
         input: {
           userID: dbUser.id,
           structureID: restaurantInfos.id,
-          status: 'NEW',
+          status: OrderStatus.NEW
         },
       }),
     );

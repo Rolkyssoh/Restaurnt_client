@@ -63,6 +63,7 @@ type User @model @auth(rules: [{allow: public}]) {
   email: String
   isActive: Boolean
   picture: String
+  favouriteRestaurants: [ID]
 }
 
 type BasketDish @model @auth(rules: [{allow: public}]) {
@@ -87,6 +88,7 @@ type Ingredient @model @auth(rules: [{allow: public}]) {
   description: String
   price: Float!
   structureID: ID! @index(name: "byStructure")
+  image_url: String
 }
 
 type Dish @model @auth(rules: [{allow: public}]) {
@@ -96,6 +98,7 @@ type Dish @model @auth(rules: [{allow: public}]) {
   description: String
   price: Float!
   structureID: ID! @index(name: "byStructure")
+  image_url: String
 }
 
 enum StructureType {
@@ -121,5 +124,6 @@ type Structure @model @auth(rules: [{allow: public}]) {
   Ingredients: [Ingredient] @hasMany(indexName: "byStructure", fields: ["id"])
   Baskets: [Basket] @hasMany(indexName: "byStructure", fields: ["id"])
   Orders: [Order] @hasMany(indexName: "byStructure", fields: ["id"])
+  image_url: String
 }
  

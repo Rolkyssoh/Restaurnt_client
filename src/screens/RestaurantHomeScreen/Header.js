@@ -16,6 +16,9 @@ import {
   S3_BUCKET_ITEM,
   REGION,
 } from '@env';
+import { API, graphqlOperation } from 'aws-amplify';
+import { updateUser } from '../../graphql/mutations';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 AWS.config.update({
   accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
@@ -23,10 +26,28 @@ AWS.config.update({
 });
 
 const Header = ({restaurant, searchTerm, setTerm}) => {
-  const [structureImg, setStructureImg] = useState();
   const s3 = new AWS.S3();
+  const { dbUser, setDbUser } = useAuthContext()
+  const [structureImg, setStructureImg] = useState();
+  const [isFavorite, setIsFavorite] = useState()
+  const [arrayOfFavorite, setArrayOfFavorite] = useState(dbUser.favouriteRestaurants)
+  
+  useEffect(() => {
+    /**Manage the display of favorite icon */
+    if(arrayOfFavorite && arrayOfFavorite.length >0){
+        const isInclude = arrayOfFavorite.includes(restaurant.id)
+        if(isInclude){
+          setIsFavorite(true)
+        } else {
+          setIsFavorite(false)
+        }
+    } else {
+      setIsFavorite(false)
+    }
+  },[arrayOfFavorite])
 
   useEffect(() => {
+    /**Get the picture of the current restaurant */
     if (restaurant.image) {
       const params = {
         Bucket: S3_BUCKET_ITEM,
@@ -42,6 +63,38 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
     }
   }, [restaurant]);
 
+  const doHandleFavorite = async (action) => {
+    setIsFavorite(!isFavorite)
+    if(action==='add'){
+      /**Add structure to my favorite */
+      const updated = await API.graphql(
+        graphqlOperation(updateUser, {
+          input: {
+            _version: dbUser._version,
+            favouriteRestaurants: [restaurant.id, ...arrayOfFavorite],
+            id: dbUser.id,
+          },
+        }),
+      );
+      setDbUser(updated.data.updateUser)
+      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+    } else if(action==='remove'){
+      /**Remove structure to my favorite */
+      const removed = arrayOfFavorite.filter((favorite) => favorite != restaurant.id)
+      const updated = await API.graphql(
+        graphqlOperation(updateUser, {
+          input: {
+            _version: dbUser._version,
+            favouriteRestaurants: removed,
+            id: dbUser.id,
+          },
+        }),
+      );
+      setDbUser(updated.data.updateUser)
+      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+    }
+  }
+
   return (
     <View style={[styles.container]}>
       <View style={{backgroundColor:'#249689', borderBottomLeftRadius:135,   elevation: 20, shadowColor: '#249689',}}>
@@ -53,11 +106,18 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
             <Text style={styles.name}>{restaurant.name}</Text>
             <Text style={[styles.textDeliveryStyle, {color:'#000'}]}>Restaurant</Text>
           </View>
-          <Ionicons
+          { isFavorite ? <Ionicons
             name="bookmark"
-            size={20}
+            size={25}
             color="#000"
-          />
+            onPress={() => doHandleFavorite('remove')}
+          /> :
+          <Ionicons
+            name="bookmark-outline"
+            size={25}
+            color="#000"
+            onPress={() => doHandleFavorite('add')}
+          />}
         </View>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:25}}>
           <View style={styles.rating}>

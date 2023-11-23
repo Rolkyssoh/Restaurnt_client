@@ -51,7 +51,9 @@ export const IngredientListItem = ({ingredient}) => {
     //     resizeMode="cover"
     //   />
     // </Pressable>
-    <View style={styles.viewContainer}>
+    <Pressable 
+      style={styles.viewContainer}
+      onPress={() => navigation.navigate('IngredientDetails', {id: ingredient.id})}>
       <View style={{width:'31%'}}>
         <Image
           source={{uri: ingredient.image}}
@@ -59,9 +61,8 @@ export const IngredientListItem = ({ingredient}) => {
           resizeMode="cover"
         />
       </View>
-      <Pressable
-        style={styles.itemCliquable}
-        onPress={() => navigation.navigate('IngredientDetails', {id: ingredient.id})}>
+      <View
+        style={styles.itemCliquable}>
         <View style={{paddingHorizontal:10}}>
           <Text style={styles.name}>{ingredient.name}</Text>
           <Text style={styles.description} numberOfLines={1}>
@@ -72,8 +73,8 @@ export const IngredientListItem = ({ingredient}) => {
             {ingredientQty != 0 && <Text style={styles.quantity}>{ingredientQty}x</Text>}
           </View>
         </View>
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 };
 

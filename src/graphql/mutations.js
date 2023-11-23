@@ -142,6 +142,7 @@ export const createOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -156,6 +157,7 @@ export const createOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -190,6 +192,7 @@ export const updateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -204,6 +207,7 @@ export const updateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -238,6 +242,7 @@ export const deleteOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -252,6 +257,7 @@ export const deleteOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -435,6 +441,7 @@ export const createUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -494,6 +501,7 @@ export const updateUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -553,6 +561,7 @@ export const deleteUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -578,6 +587,7 @@ export const createBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -592,6 +602,7 @@ export const createBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -626,6 +637,7 @@ export const updateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -640,6 +652,7 @@ export const updateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -674,6 +687,7 @@ export const deleteBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -688,6 +702,7 @@ export const deleteBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -826,6 +841,7 @@ export const createIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -847,6 +863,7 @@ export const updateIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -868,6 +885,7 @@ export const deleteIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -889,6 +907,7 @@ export const createDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -910,6 +929,7 @@ export const updateDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -931,6 +951,7 @@ export const deleteDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -967,6 +988,7 @@ export const createStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -986,6 +1008,7 @@ export const createStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1031,6 +1054,7 @@ export const createStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version
@@ -1067,6 +1091,7 @@ export const updateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1086,6 +1111,7 @@ export const updateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1131,6 +1157,7 @@ export const updateStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version
@@ -1167,6 +1194,7 @@ export const deleteStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1186,6 +1214,7 @@ export const deleteStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1231,6 +1260,7 @@ export const deleteStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version

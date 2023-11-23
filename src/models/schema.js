@@ -483,6 +483,14 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "favouriteRestaurants": {
+                    "name": "favouriteRestaurants",
+                    "isArray": true,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -795,6 +803,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "image_url": {
+                    "name": "image_url",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -889,6 +904,13 @@ export const schema = {
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
+                    "attributes": []
+                },
+                "image_url": {
+                    "name": "image_url",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
                     "attributes": []
                 },
                 "createdAt": {
@@ -1102,6 +1124,13 @@ export const schema = {
                         ]
                     }
                 },
+                "image_url": {
+                    "name": "image_url",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1184,5 +1213,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "822eab48a516371f0b397832c8c0aa6d"
+    "version": "9b34084fe5e77130f27064a953855f73"
 };

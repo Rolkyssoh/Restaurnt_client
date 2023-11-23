@@ -132,6 +132,7 @@ export const onCreateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -146,6 +147,7 @@ export const onCreateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -179,6 +181,7 @@ export const onUpdateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -193,6 +196,7 @@ export const onUpdateOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -226,6 +230,7 @@ export const onDeleteOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -240,6 +245,7 @@ export const onDeleteOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -411,6 +417,7 @@ export const onCreateUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -467,6 +474,7 @@ export const onUpdateUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -523,6 +531,7 @@ export const onDeleteUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -547,6 +556,7 @@ export const onCreateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -561,6 +571,7 @@ export const onCreateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -594,6 +605,7 @@ export const onUpdateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -608,6 +620,7 @@ export const onUpdateBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -641,6 +654,7 @@ export const onDeleteBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -655,6 +669,7 @@ export const onDeleteBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -783,6 +798,7 @@ export const onCreateIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -803,6 +819,7 @@ export const onUpdateIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -823,6 +840,7 @@ export const onDeleteIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -841,6 +859,7 @@ export const onCreateDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -859,6 +878,7 @@ export const onUpdateDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -877,6 +897,7 @@ export const onDeleteDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -912,6 +933,7 @@ export const onCreateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -931,6 +953,7 @@ export const onCreateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -976,6 +999,7 @@ export const onCreateStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version
@@ -1011,6 +1035,7 @@ export const onUpdateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1030,6 +1055,7 @@ export const onUpdateStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1075,6 +1101,7 @@ export const onUpdateStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version
@@ -1110,6 +1137,7 @@ export const onDeleteStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1129,6 +1157,7 @@ export const onDeleteStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1174,6 +1203,7 @@ export const onDeleteStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version

@@ -166,6 +166,7 @@ type EagerUser = {
   readonly email?: string | null;
   readonly isActive?: boolean | null;
   readonly picture?: string | null;
+  readonly favouriteRestaurants?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -187,6 +188,7 @@ type LazyUser = {
   readonly email?: string | null;
   readonly isActive?: boolean | null;
   readonly picture?: string | null;
+  readonly favouriteRestaurants?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -278,6 +280,7 @@ type EagerIngredient = {
   readonly description?: string | null;
   readonly price: number;
   readonly structureID: string;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -293,6 +296,7 @@ type LazyIngredient = {
   readonly description?: string | null;
   readonly price: number;
   readonly structureID: string;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -314,6 +318,7 @@ type EagerDish = {
   readonly description?: string | null;
   readonly price: number;
   readonly structureID: string;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -329,6 +334,7 @@ type LazyDish = {
   readonly description?: string | null;
   readonly price: number;
   readonly structureID: string;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -361,6 +367,7 @@ type EagerStructure = {
   readonly Ingredients?: (Ingredient | null)[] | null;
   readonly Baskets?: (Basket | null)[] | null;
   readonly Orders?: (Order | null)[] | null;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -387,6 +394,7 @@ type LazyStructure = {
   readonly Ingredients: AsyncCollection<Ingredient>;
   readonly Baskets: AsyncCollection<Basket>;
   readonly Orders: AsyncCollection<Order>;
+  readonly image_url?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

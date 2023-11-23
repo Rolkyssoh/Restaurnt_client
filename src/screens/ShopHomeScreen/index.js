@@ -27,14 +27,16 @@ export const ShopeHomeScreen = () => {
     restaurantInfos,
   } = useBasketContext();
 
-  const id = route.params?.ShopId;
   const [shopContent, setShopContent] = useState(null);
   const [ingredients, setIngredients] = useState([]);
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const id = route.params?.ShopId;
+
   // For get shop by his id
   useEffect(() => {
+    console.log('the id:::::::', id)
     if (!id) {
       return;
     }
@@ -44,7 +46,6 @@ export const ShopeHomeScreen = () => {
       setShopContent(resp.data.getStructure),
     );
     fetchIngredients(id);
-    console.log('le dish dans shop HOMe:', basketDishes);
   }, [id]);
 
   useEffect(() => {

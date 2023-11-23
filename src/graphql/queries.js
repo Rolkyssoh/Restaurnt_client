@@ -128,6 +128,7 @@ export const getOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -142,6 +143,7 @@ export const getOrderDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -178,6 +180,7 @@ export const listOrderDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -192,6 +195,7 @@ export const listOrderDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -238,6 +242,7 @@ export const syncOrderDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -252,6 +257,7 @@ export const syncOrderDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -300,6 +306,7 @@ export const orderDishesByOrderID = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -314,6 +321,7 @@ export const orderDishesByOrderID = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -604,6 +612,7 @@ export const getUser = /* GraphQL */ `
       email
       isActive
       picture
+      favouriteRestaurants
       createdAt
       updatedAt
       _version
@@ -641,6 +650,7 @@ export const listUsers = /* GraphQL */ `
         email
         isActive
         picture
+        favouriteRestaurants
         createdAt
         updatedAt
         _version
@@ -688,6 +698,7 @@ export const syncUsers = /* GraphQL */ `
         email
         isActive
         picture
+        favouriteRestaurants
         createdAt
         updatedAt
         _version
@@ -714,6 +725,7 @@ export const getBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -728,6 +740,7 @@ export const getBasketDish = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -764,6 +777,7 @@ export const listBasketDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -778,6 +792,7 @@ export const listBasketDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -824,6 +839,7 @@ export const syncBasketDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -838,6 +854,7 @@ export const syncBasketDishes = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -886,6 +903,7 @@ export const basketDishesByBasketID = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -900,6 +918,7 @@ export const basketDishesByBasketID = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1102,6 +1121,7 @@ export const getIngredient = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -1125,6 +1145,7 @@ export const listIngredients = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1158,6 +1179,7 @@ export const syncIngredients = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1193,6 +1215,7 @@ export const ingredientsByStructureID = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1215,6 +1238,7 @@ export const getDish = /* GraphQL */ `
       description
       price
       structureID
+      image_url
       createdAt
       updatedAt
       _version
@@ -1238,6 +1262,7 @@ export const listDishes = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1271,6 +1296,7 @@ export const syncDishes = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1306,6 +1332,7 @@ export const dishesByStructureID = /* GraphQL */ `
         description
         price
         structureID
+        image_url
         createdAt
         updatedAt
         _version
@@ -1343,6 +1370,7 @@ export const getStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1362,6 +1390,7 @@ export const getStructure = /* GraphQL */ `
           description
           price
           structureID
+          image_url
           createdAt
           updatedAt
           _version
@@ -1407,6 +1436,7 @@ export const getStructure = /* GraphQL */ `
         startedAt
         __typename
       }
+      image_url
       createdAt
       updatedAt
       _version
@@ -1457,6 +1487,7 @@ export const listStructures = /* GraphQL */ `
           startedAt
           __typename
         }
+        image_url
         createdAt
         updatedAt
         _version
@@ -1517,6 +1548,7 @@ export const syncStructures = /* GraphQL */ `
           startedAt
           __typename
         }
+        image_url
         createdAt
         updatedAt
         _version

@@ -61,7 +61,7 @@ export const RestaurantHomeScreen = () => {
 
   useEffect(() => {
     if (id) {
-      // Watch the home restau created
+      // Watch the on create dish
       const subscription = API.graphql(
         graphqlOperation(onCreateDish, {
           filter: {structureID: {eq: id}},
@@ -81,7 +81,7 @@ export const RestaurantHomeScreen = () => {
 
   useEffect(() => {
     if (id) {
-      // Watch the home restau deleted
+      // Watch the on delete dish
       const subscriptionToDeleted = API.graphql(
         graphqlOperation(onDeleteDish, {
           filter: {structureID: {eq: id}},
