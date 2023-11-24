@@ -1,4 +1,4 @@
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
 import {StructureType} from '../../../models';
@@ -9,10 +9,13 @@ import {
   onDeleteStructure,
   onUpdateStructure,
 } from '../../../graphql/subscriptions';
+import { useAuthContext } from '../../../contexts/AuthContext';
+import { Text } from '@rneui/themed';
 
-const ShopHome = ({search}) => {
+const ShopHome = ({search, showFavorites}) => {
   const [shops, setShops] = useState([]);
   const [filterdShop, setFilteredShop] = useState([]);
+  const { dbUser } = useAuthContext()
 
   useEffect(() => {
     fetchShop();
@@ -37,9 +40,10 @@ const ShopHome = ({search}) => {
   }, []);
 
   useEffect(() => {
-    const filtering = search ? filterShopByTerm(search) : shops;
+    const filtering = search ? filterShopByTerm(search) :
+      showFavorites ? doShowFavorites() : shops;
     setFilteredShop(filtering);
-  }, [search, shops]);
+  }, [search, shops, showFavorites, dbUser]);
 
   const watchShopCreation = () => {
     const subscription = API.graphql(
@@ -88,6 +92,32 @@ const ShopHome = ({search}) => {
     return shops.filter(_ => `${_.name.toLowerCase()} `.indexOf(term) !== -1);
   };
 
+  /**Found the restaurant by ID array */
+  let favoritesArray=[]
+  const doShowFavorites = () => {
+    const getRestauById = dbUser.favouriteRestaurants.map((id) => (
+      shops.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
+    ))
+    getRestauById.map((arr) => {
+      if(arr.length >0){
+        arr.map((_) => {
+          favoritesArray=[_, ...favoritesArray]
+        })
+      }
+    })
+    return favoritesArray
+  }
+
+  if (!shops) {
+    return (
+      <ActivityIndicator
+        size={'large'}
+        color="#000"
+        style={{alignSelf: 'center', marginTop: '70%'}}
+      />
+    );
+  }
+
   return (
     <View
       style={{
@@ -96,6 +126,28 @@ const ShopHome = ({search}) => {
         marginBottom: 1,
       }}>
       <View style={styles.shopHomeContainer}>
+        {filterdShop.length <= 0 && !showFavorites && (
+          <Text
+            h3
+            style={{
+              alignSelf: 'center',
+              marginTop: '50%',
+              color: 'lightgrey',
+            }}>
+            Aucune boutique trouvée
+          </Text>
+        )}
+        {filterdShop.length <= 0 && showFavorites && (
+          <Text
+            h3
+            style={{
+              alignSelf: 'center',
+              marginTop: '50%',
+              color: 'lightgrey',
+            }}>
+            Pas de boutique dans vos favoris
+          </Text>
+        )}
         <FlatList
           data={filterdShop}
           renderItem={({item}) => <ShopItem shop={item} />}

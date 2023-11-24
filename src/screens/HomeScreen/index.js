@@ -74,7 +74,7 @@ export const HomeScreen = ({navigation, route}) => {
             tabBarIcon: ({focused }) => (<MaterialIcons name="restaurant-menu" size={20} color={ focused ? "#249689" : "gray"} />)
           }}
         >
-          {() => <RestaurantHome search={searchTerm.toLowerCase()} />}
+          {() => <RestaurantHome search={searchTerm.toLowerCase()} showFavorites={viewFavorites} />}
         </TabTop.Screen>
 
         <TabTop.Screen 
@@ -85,7 +85,7 @@ export const HomeScreen = ({navigation, route}) => {
             tabBarIcon: ({focused }) => (<MaterialIcons name="shopping-cart" size={20} color={ focused ? "#249689" : "gray"} />)
           }}
         >
-          {() => <ShopHome search={searchTerm.toLowerCase()} />}
+          {() => <ShopHome search={searchTerm.toLowerCase()} showFavorites={viewFavorites} />}
         </TabTop.Screen>
       </TabTop.Navigator>
     </View>

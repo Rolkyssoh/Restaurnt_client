@@ -58,7 +58,7 @@ export const DishListItem = ({dish}) => {
     <Pressable style={styles.viewContainer} onPress={() => navigation.navigate('Dish', {id: dish.id})}>
       <View style={{width:'31%'}}>
         <Image
-          source={{uri: dishImg}}
+          source={{uri: dish.image_url}}
           style={styles.image}
           resizeMode="cover"
         />

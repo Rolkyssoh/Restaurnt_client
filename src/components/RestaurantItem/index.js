@@ -20,7 +20,6 @@ const RestaurantItem = ({restaurant}) => {
   const s3 = new AWS.S3();
 
   useEffect(() => {
-    console.log('the bucket envvvv:::::', Config.S3_BUCKET_ITEM)
     if (restaurant.image) {
       const params = {
         Bucket: Config.S3_BUCKET_ITEM,

@@ -25,20 +25,6 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
   const [arrayOfFavorite, setArrayOfFavorite] = useState(dbUser.favouriteRestaurants)
 
   useEffect(() => {
-    if (shop) {
-      const params = {
-        Bucket: Config.S3_BUCKET_ITEM,
-        Key: `${shop.image}`,
-      };
-      s3.getSignedUrl('getObject', params, (err, data) => {
-        if (err) {
-          console.log('we have some error:', err, err.stack);
-        } else {
-          setShopPicture(data.toString());
-        }
-      });
-    }
-
     /**Manage the display of favorite icon */
     if(shop){
       if(arrayOfFavorite && arrayOfFavorite.length >0){
@@ -52,7 +38,23 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
         setIsFavorite(false)
       }
     }
-  }, [shop, arrayOfFavorite]);
+  }, [arrayOfFavorite]);
+
+  useEffect(() => {
+    if (shop) {
+      const params = {
+        Bucket: Config.S3_BUCKET_ITEM,
+        Key: `${shop.image}`,
+      };
+      s3.getSignedUrl('getObject', params, (err, data) => {
+        if (err) {
+          console.log('we have some error:', err, err.stack);
+        } else {
+          setShopPicture(data.toString());
+        }
+      });
+    }
+  }, [shop]);
 
 
   const doHandleFavorite = async (action) => {

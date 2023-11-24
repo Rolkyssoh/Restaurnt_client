@@ -10,12 +10,15 @@ import {
   onCreateStructure,
   onUpdateStructure,
 } from '../../../graphql/subscriptions';
+import { useAuthContext } from '../../../contexts/AuthContext';
 
-const RestaurantHome = ({search}) => {
+const RestaurantHome = ({search, showFavorites}) => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const { dbUser } = useAuthContext()
 
   useEffect(() => {
+    console.log('the user is favorite:::', dbUser.favouriteRestaurants)
     fetchRestaurants();
     watchRestaurantCreation();
     watchRestaurantUpdating();
@@ -38,9 +41,10 @@ const RestaurantHome = ({search}) => {
   }, []);
 
   useEffect(() => {
-    const filtering = search ? filterRestaurantByTerm(search) : restaurants;
+    const filtering = search ? filterRestaurantByTerm(search) :
+      showFavorites ? doShowFavorites() : restaurants;
     setFilteredRestaurants(filtering);
-  }, [search, restaurants]);
+  }, [search, restaurants, showFavorites, dbUser]);
 
   const watchRestaurantCreation = () => {
     const subscription = API.graphql(
@@ -89,6 +93,22 @@ const RestaurantHome = ({search}) => {
     return restaurants.filter(_ => `${_.name.toLowerCase()} `.indexOf(term) !== -1);
   };
 
+  /**Found the shop by ID array in existing array of shops */
+  let favoritesArray=[]
+  const doShowFavorites = () => {
+    const getRestauById = dbUser.favouriteRestaurants.map((id) => (
+      restaurants.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
+    ))
+    getRestauById.map((arr) => {
+      if(arr.length >0){
+        arr.map((_) => {
+          favoritesArray=[_, ...favoritesArray]
+        })
+      }
+    })
+    return favoritesArray
+  }
+
   if (!restaurants) {
     return (
       <ActivityIndicator
@@ -102,7 +122,7 @@ const RestaurantHome = ({search}) => {
   return (
     <View style={{flex: 1, marginBottom: 1, backgroundColor: 'white'}}>
       <View style={styles.homeContainer}>
-        {filteredRestaurants.length <= 0 && (
+        {filteredRestaurants.length <= 0 && !showFavorites &&  (
           <Text
             h3
             style={{
@@ -111,6 +131,17 @@ const RestaurantHome = ({search}) => {
               color: 'lightgrey',
             }}>
             Aucun restaurant trouvé
+          </Text>
+        )}
+        {filteredRestaurants.length <= 0 && showFavorites && (
+          <Text
+            h3
+            style={{
+              alignSelf: 'center',
+              marginTop: '50%',
+              color: 'lightgrey',
+            }}>
+            Pas de restaurant dans vos favoris
           </Text>
         )}
         <FlatList

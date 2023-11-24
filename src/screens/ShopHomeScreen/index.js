@@ -1,4 +1,4 @@
-import {View, FlatList} from 'react-native';
+import {View, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
@@ -115,6 +115,10 @@ export const ShopeHomeScreen = () => {
   useEffect(() => {
     setShopInfos(shopContent);
   }, [shopContent]);
+
+  if (!shopContent) {
+    return <ActivityIndicator size={'large'} color="black" />;
+  }
 
   return (
     <View style={styles.container}>
