@@ -13,6 +13,7 @@ import {getStructure} from '../../graphql/queries';
 import {
   onCreateIngredient,
   onDeleteIngredient,
+  onUpdateIngredient,
 } from '../../graphql/subscriptions';
 
 export const ShopeHomeScreen = () => {
@@ -53,6 +54,25 @@ export const ShopeHomeScreen = () => {
       // Watch the oncreate ingredients
       const subscription = API.graphql(
         graphqlOperation(onCreateIngredient, {
+          filter: {structureID: {eq: id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
+          fetchIngredients(id);
+        },
+        error: err => {
+          console.warn(err);
+        },
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      // Watch the onupdate ingredients
+      const subscription = API.graphql(
+        graphqlOperation(onUpdateIngredient, {
           filter: {structureID: {eq: id}},
         }),
       ).subscribe({
@@ -182,6 +202,7 @@ export const listIngredientsByShop = /* GraphQL */ `
           id
           name
           image
+          image_url
           description
           price
           structureID

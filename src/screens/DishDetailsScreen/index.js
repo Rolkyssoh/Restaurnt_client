@@ -1,6 +1,6 @@
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Divider} from '@rneui/themed';
+import {Button, Divider, Text} from '@rneui/themed';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -8,6 +8,7 @@ import {useBasketContext} from '../../contexts/BasketContext';
 import {useDishContext} from '../../contexts/DishContext';
 import {getDish} from '../../graphql/queries';
 import styles from './styles'
+import { Image } from '@rneui/base';
 
 export const DishDetailsSCreen = () => {
   const navigation = useNavigation();
@@ -52,6 +53,7 @@ export const DishDetailsSCreen = () => {
 
   return (
     <View style={styles.constainerScreen}>
+      <Image source={{uri: dish.image_url}} style={{aspectRatio: 5/2,}} />
       <Text style={styles.name}>{dish.name}</Text>
       <Text style={styles.description}>{dish.description}</Text>
       <Divider color="lightgrey" width={2} />

@@ -21,7 +21,7 @@ const RestaurantHome = ({search, showFavorites}) => {
     console.log('the user is favorite:::', dbUser.favouriteRestaurants)
     fetchRestaurants();
     watchRestaurantCreation();
-    watchRestaurantUpdating();
+    watchRestaurantUpdating(); 
 
     // Watch the restau list for deleting
     const subscription = API.graphql(

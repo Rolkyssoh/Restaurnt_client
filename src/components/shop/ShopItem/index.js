@@ -16,24 +16,7 @@ AWS.config.update({
 
 const ShopItem = ({shop}) => {
   const navigation = useNavigation();
-  const [shopPicture, setShopPicture] = useState();
   const s3 = new AWS.S3();
-
-  useEffect(() => {
-    if (shop.image) {
-      const params = {
-        Bucket: Config.S3_BUCKET_ITEM,
-        Key: `${shop.image}`,
-      };
-      s3.getSignedUrl('getObject', params, (err, data) => {
-        if (err) {
-          console.log('we have some error:', err, err.stack);
-        } else {
-          setShopPicture(data.toString());
-        }
-      });
-    }
-  }, [shop.image]);
 
   const onPress = () => {
     navigation.navigate('Shop', {ShopId: shop.id});
@@ -41,8 +24,7 @@ const ShopItem = ({shop}) => {
 
   return (
     <Pressable onPress={onPress} style={styles.structureItemContainer}>
-      <Image source={{uri: shopPicture}} style={styles.image} />
-
+      <Image source={{uri: shop.image_url}} style={styles.image} />
       <View style={styles.row}>
         <View>
           <Text style={styles.name}>{shop.name}</Text>

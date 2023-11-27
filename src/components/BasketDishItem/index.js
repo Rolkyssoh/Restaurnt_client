@@ -86,13 +86,17 @@ export const BasketDishItem = ({basketDish}) => {
           <Text style={styles.dishName}>
             {basketDish.Dish != null
               ? basketDish.Dish?.name
-              : basketDish.Ingredient.name}
+              : basketDish.Ingredient != null ? 
+              basketDish.Ingredient?.name
+              :null}
           </Text>
           <Text
             style={styles.dishPrice}>
             {basketDish.Dish != null
               ? basketDish.Dish?.price
-              : basketDish.Ingredient.price}{' '}
+              : basketDish.Ingredient != null 
+              ? basketDish.Ingredient.price
+              : null}{' '}
             MAD
           </Text>
           {showHandlerQtyBtn &&

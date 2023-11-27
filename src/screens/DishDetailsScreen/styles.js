@@ -3,7 +3,6 @@ import {StyleSheet} from 'react-native';
 export default StyleSheet.create({
   constainerScreen: {
     height: '100%',
-    paddingTop: 40,
   },
   name: {fontSize: 30, fontWeight: '600', margin: 10, color: '#000'},
   description: {color: 'gray', marginBottom: 5, marginHorizontal: 10},

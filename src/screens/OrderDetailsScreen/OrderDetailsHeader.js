@@ -22,7 +22,6 @@ dayjs.extend(relativeTime);
 
 
 export const OrderDetailsHeader = ({order}) => {
-  const [structurePicture, setStructurePicture] = useState();
   const [currentStruct, setCurrentStruct] = useState(null);
   const s3 = new AWS.S3();
 
@@ -32,12 +31,6 @@ export const OrderDetailsHeader = ({order}) => {
     }
   },[order.structureID])
 
-  useEffect(() => {
-    if (currentStruct) 
-      getTheStructurePicture(currentStruct)
-  }, [currentStruct]);
-
-
   const getStructureByHisIdInOrder = async (structID) => {
     const structureInOrder = await API.graphql(
         graphqlOperation(getStructure, {id: structID}),
@@ -45,25 +38,11 @@ export const OrderDetailsHeader = ({order}) => {
     setCurrentStruct(structureInOrder.data.getStructure);
   }
 
-  const getTheStructurePicture = async (struct) => {
-    const params = {
-      Bucket: Config.S3_BUCKET_ITEM,
-      Key: `${struct.image}`,
-    };
-    s3.getSignedUrl('getObject', params, (err, data) => {
-      if (err) {
-        console.log('we have some error:', err, err.stack);
-      } else {
-        setStructurePicture(data.toString());
-      }
-    });
-  }
-
   return (
     <View>
       <View style={styles.screenContainer}>
         <Image
-          source={{uri: structurePicture}}
+          source={{uri: currentStruct?.image_url}}
           style={styles.image}
           resizeMode="cover"
         />

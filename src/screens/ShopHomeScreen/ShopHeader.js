@@ -92,7 +92,7 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
   return (
     <View style={styles.container}>
       <View style={{backgroundColor:'#249689', borderBottomLeftRadius:135,   elevation: 20, shadowColor: '#249689',}}>
-        <Image source={{uri: shopPicture}} style={styles.image} />
+        <Image source={{uri: shop.image_url}} style={styles.image} />
       </View>
       <View style={styles.headerContentContainer}>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>

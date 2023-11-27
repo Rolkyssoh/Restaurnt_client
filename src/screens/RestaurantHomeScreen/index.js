@@ -9,7 +9,7 @@ import {Button, Text} from '@rneui/themed';
 import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {getStructure} from '../../graphql/queries';
-import {onCreateDish, onDeleteDish} from '../../graphql/subscriptions';
+import {onCreateDish, onDeleteDish, onUpdateDish} from '../../graphql/subscriptions';
 
 export const RestaurantHomeScreen = () => {
   const navigation = useNavigation();
@@ -70,6 +70,26 @@ export const RestaurantHomeScreen = () => {
         next: ({value}) => {
           fetchDishes(id);
           console.log('le wath onCreateDish:', value);
+        },
+        error: err => {
+          console.warn(err);
+        },
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      // Watch the on update dish
+      const subscription = API.graphql(
+        graphqlOperation(onUpdateDish, {
+          filter: {structureID: {eq: id}},
+        }),
+      ).subscribe({
+        next: ({value}) => {
+          fetchDishes(id);
+          console.log('le wath onUpdateDish:', value);
         },
         error: err => {
           console.warn(err);

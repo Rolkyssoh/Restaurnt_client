@@ -1,5 +1,5 @@
-import {View, StyleSheet, Pressable} from 'react-native';
-import React, {memo, useEffect, useState} from 'react';
+import {View, Pressable} from 'react-native';
+import React, {memo} from 'react';
 import {Image, Text} from '@rneui/base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,35 +11,18 @@ import styles from './styles'
 
 AWS.config.update({
   accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY,
+  secretAccessKey: Config.REACT_APP_S3_SECRET_ACCESS_KEY, 
 });
 
 const RestaurantItem = ({restaurant}) => {
   const navigation = useNavigation();
-  const [structurePicture, setStructurePicture] = useState();
   const s3 = new AWS.S3();
-
-  useEffect(() => {
-    if (restaurant.image) {
-      const params = {
-        Bucket: Config.S3_BUCKET_ITEM,
-        Key: `${restaurant.image}`,
-      };
-      s3.getSignedUrl('getObject', params, (err, data) => {
-        if (err) {
-          console.log('we have some error:', err, err.stack);
-        } else {
-          setStructurePicture(data.toString());
-        }
-      });
-    }
-  }, [restaurant.image]);
 
   return (
     <Pressable
       style={styles.structureItemContainer}
       onPress={() => navigation.navigate('Restaurant', {id: restaurant.id})}>
-      <Image source={{uri: structurePicture}} style={styles.image} />
+      <Image source={{uri: restaurant.image_url}} style={styles.image} />
 
       <View style={styles.row}>
         <View>

@@ -4,7 +4,6 @@ import {Image} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {OrderDish} from '../../models';
 import {OrderStatus} from '../../models';
 import {onUpdateOrder} from '../../graphql/subscriptions';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -31,17 +30,7 @@ export const OrderListItem = ({order}) => {
   const [totalQty, setTotalQty] = useState(null);
   const [totalPrice, setTotalPrice] = useState(null);
   const [currentStruct, setCurrentStruct] = useState(null);
-  const [structurePictureInOrder, setStructurePictureInOrder] = useState();
   const s3 = new AWS.S3();
-
-  // const OrderStatus = {
-  //   NEW: 'NEW',
-  //   COOKING: 'COOKING',
-  //   READY_FOR_PICKUP: 'READY_FOR_PICKUP',
-  //   PICKED_UP: 'PICKED_UP',
-  //   COMPLETED: 'COMPLETED',
-  //   ACCEPTED: 'ACCEPTED',
-  // };
 
   const fetchOrders = () => {
     API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
@@ -49,7 +38,6 @@ export const OrderListItem = ({order}) => {
         const userIsOrders = resp.data.getUser.Orders.items.filter(
           _ => !_._deleted,
         );
-        console.log('get orderssss:', userIsOrders);
         setOrders(userIsOrders);
       },
     );
@@ -93,9 +81,6 @@ export const OrderListItem = ({order}) => {
       );
       setTotalQty(theTotalQty);
       setTotalPrice(theTotalPrice);
-      
-      ///Get structure image from order
-      getStructurePicture(currentStruct)
     }
   }, [currentStruct]);
 
@@ -112,29 +97,11 @@ export const OrderListItem = ({order}) => {
     [OrderStatus.COMPLETED]: 'skyblue',
   };
 
-  // useEffect(() => {
-  //   console.log({structurePictureInOrder});
-  // }, [structurePictureInOrder]);
-
   const getStructureByHisIdInOrder = async (structID) => {
     const structureInOrder = await API.graphql(
         graphqlOperation(getStructure, {id: structID}),
     );
     setCurrentStruct(structureInOrder.data.getStructure)
-  }
-
-  const getStructurePicture = async (structure) => {
-    const params = {
-      Bucket: Config.S3_BUCKET_ITEM,
-      Key: `${structure.image}`,
-    };
-    s3.getSignedUrl('getObject', params, (err, data) => {
-      if (err) {
-        console.log('we have some error:', err, err.stack);
-      } else {
-        setStructurePictureInOrder(data);
-      }
-    });
   }
 
   return (
@@ -143,7 +110,7 @@ export const OrderListItem = ({order}) => {
       onPress={() => navigation.navigate('Order', {id: order.id})}>
       <Image
         source={{
-          uri: structurePictureInOrder,
+          uri: currentStruct?.image_url,
         }}
         style={styles.image} 
         resizeMode="cover"
@@ -248,6 +215,7 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 id
                 name
                 image
+                image_url
                 description
                 price
                 structureID
@@ -261,6 +229,7 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 id
                 name
                 image
+                image_url
                 description
                 price
                 structureID
@@ -278,6 +247,7 @@ export const listOrdersByDbUser = /* GraphQL */ `
             id
             name
             image
+            image_url
             deliveryFee
             minDeliveryTime
             maxDeliveryTime

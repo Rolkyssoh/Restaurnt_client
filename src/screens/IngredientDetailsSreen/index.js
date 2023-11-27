@@ -8,6 +8,7 @@ import {useBasketContext} from '../../contexts/BasketContext';
 import {useIngredientContext} from '../../contexts/IngredientContext';
 import {getIngredient} from '../../graphql/queries';
 import styles from '../DishDetailsScreen/styles'
+import { Image } from '@rneui/base';
 
 export const IngredientDetailsSCreen = () => {
   const navigation = useNavigation();
@@ -56,6 +57,7 @@ export const IngredientDetailsSCreen = () => {
 
   return (
     <View style={styles.constainerScreen}>
+      <Image source={{uri: ingredient.image_url}} style={{aspectRatio:5/2}} />
       <Text style={styles.name}>{ingredient.name}</Text>
       <Text style={styles.description}>{ingredient.description}</Text>
       <Divider color="lightgrey" width={2} />
