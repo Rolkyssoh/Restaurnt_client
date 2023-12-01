@@ -24,6 +24,7 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
   const { dbUser, setDbUser } = useAuthContext()
   const [structureImg, setStructureImg] = useState();
   const [isFavorite, setIsFavorite] = useState()
+  const [isLoading, setIsLoading] = useState(false)
   const [arrayOfFavorite, setArrayOfFavorite] = useState(dbUser.favouriteRestaurants)
   
   useEffect(() => {
@@ -59,19 +60,29 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
 
   const doHandleFavorite = async (action) => {
     setIsFavorite(!isFavorite)
+    setIsLoading(true)
     if(action==='add'){
       /**Add structure to my favorite */
-      const updated = await API.graphql(
-        graphqlOperation(updateUser, {
-          input: {
-            _version: dbUser._version,
-            favouriteRestaurants: [restaurant.id, ...arrayOfFavorite],
-            id: dbUser.id,
-          },
-        }),
-      );
-      setDbUser(updated.data.updateUser)
-      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+      if(!arrayOfFavorite.find((_) => _.id === restaurant.id)){
+        const updated = await API.graphql(
+          graphqlOperation(updateUser, {
+            input: {
+              _version: dbUser._version,
+              favouriteRestaurants: [restaurant.id, ...arrayOfFavorite],
+              id: dbUser.id,
+            },
+          }),
+        );
+        if(updated){
+          setDbUser(updated.data.updateUser)
+          setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+          setIsLoading(false)
+        } else {
+          setIsLoading(false)
+        }
+      } else{
+        console.log('Existe déjà dans les favoris!!!')
+      }
     } else if(action==='remove'){
       /**Remove structure to my favorite */
       const removed = arrayOfFavorite.filter((favorite) => favorite != restaurant.id)
@@ -84,8 +95,13 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
           },
         }),
       );
-      setDbUser(updated.data.updateUser)
-      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+      if(updated){
+        setDbUser(updated.data.updateUser)
+        setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -104,7 +120,7 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
             name="bookmark"
             size={25}
             color="#000"
-            onPress={() => doHandleFavorite('remove')}
+            onPress={() => !isLoading ? doHandleFavorite('remove'): console.log('pas possible!!!')}
           /> :
           <Ionicons
             name="bookmark-outline"

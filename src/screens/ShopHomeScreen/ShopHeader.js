@@ -21,7 +21,8 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
   const s3 = new AWS.S3();
   const { dbUser, setDbUser } = useAuthContext()
   const [shopPicture, setShopPicture] = useState();
-  const [isFavorite, setIsFavorite] = useState()
+  const [isFavorite, setIsFavorite] = useState();
+  const [isLoading, setIsLoading] = useState(false)
   const [arrayOfFavorite, setArrayOfFavorite] = useState(dbUser.favouriteRestaurants)
 
   useEffect(() => {
@@ -59,19 +60,29 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
 
   const doHandleFavorite = async (action) => {
     setIsFavorite(!isFavorite)
+    setIsLoading(true)
     if(action==='add'){
       /**Add structure to my favorite */
-      const updated = await API.graphql(
-        graphqlOperation(updateUser, {
-          input: {
-            _version: dbUser._version,
-            favouriteRestaurants: [shop.id, ...arrayOfFavorite],
-            id: dbUser.id,
-          },
-        }),
-      );
-      setDbUser(updated.data.updateUser)
-      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+      if(!arrayOfFavorite.find((_) => _.id === shop.id)){
+        const updated = await API.graphql(
+          graphqlOperation(updateUser, {
+            input: {
+              _version: dbUser._version,
+              favouriteRestaurants: [shop.id, ...arrayOfFavorite],
+              id: dbUser.id,
+            },
+          }),
+        );
+        if(updated){
+          setDbUser(updated.data.updateUser)
+          setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+          setIsLoading(false)
+        } else {
+          setIsLoading(false)
+        }
+      } else {
+        console.log('This shop is already in your favoris!!!')
+      }
     } else if(action==='remove'){
       /**Remove structure to my favorite */
       const removed = arrayOfFavorite.filter((favorite) => favorite != shop.id)
@@ -84,8 +95,13 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
           },
         }),
       );
-      setDbUser(updated.data.updateUser)
-      setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+      if(updated){
+        setDbUser(updated.data.updateUser)
+        setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
+      }
     }
   }
 

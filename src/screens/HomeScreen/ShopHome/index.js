@@ -95,7 +95,7 @@ const ShopHome = ({search, showFavorites}) => {
   /**Found the restaurant by ID array */
   let favoritesArray=[]
   const doShowFavorites = () => {
-    const getRestauById = dbUser.favouriteRestaurants.map((id) => (
+    const getRestauById = dbUser.favouriteRestaurants?.map((id) => (
       shops.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
     ))
     getRestauById.map((arr) => {
@@ -152,6 +152,7 @@ const ShopHome = ({search, showFavorites}) => {
           data={filterdShop}
           renderItem={({item}) => <ShopItem shop={item} />}
           showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </View>
