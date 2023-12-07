@@ -1,7 +1,9 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {
+  AskedFeatures,
   BasketScreen,
+  BugsScreen,
   DishDetailsSCreen,
   EntryScreen,
   HomeScreen,
@@ -220,6 +222,16 @@ const HomeStackNavigator = props => {
       <HomeStackRoutes.Screen
         name="Profile"
         component={ProfileScreen}
+        // options={{headerShown: false}}
+      />
+      <HomeStackRoutes.Screen
+        name="Bugs"
+        component={BugsScreen}
+        // options={{headerShown: false}}
+      />
+      <HomeStackRoutes.Screen
+        name="Features"
+        component={AskedFeatures}
         // options={{headerShown: false}}
       />
       {/* <HomeStackRoutes.Screen

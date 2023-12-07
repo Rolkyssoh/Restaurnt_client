@@ -9,6 +9,8 @@ export * from './PositionOrderDeliveryScreen';
 export * from './UserAccountScreen';
 export * from './EntryScreen';
 export * from './WelcomeScreen';
+export * from './BugsScreen';
+export * from './AskedFeatures';
 
 // Shop
 // export * from './HomeScreen/ShopHome';

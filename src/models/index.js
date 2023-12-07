@@ -29,9 +29,11 @@ const StructureType = {
   "SHOP": "SHOP"
 };
 
-const { Courier, OrderDish, Order, User, BasketDish, Basket, Ingredient, Dish, Structure } = initSchema(schema);
+const { Bugs, AskedFeatures, Courier, OrderDish, Order, User, BasketDish, Basket, Ingredient, Dish, Structure } = initSchema(schema);
 
 export {
+  Bugs,
+  AskedFeatures,
   Courier,
   OrderDish,
   Order,

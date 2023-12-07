@@ -1,6 +1,129 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createBugs = /* GraphQL */ `
+  mutation CreateBugs(
+    $input: CreateBugsInput!
+    $condition: ModelBugsConditionInput
+  ) {
+    createBugs(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateBugs = /* GraphQL */ `
+  mutation UpdateBugs(
+    $input: UpdateBugsInput!
+    $condition: ModelBugsConditionInput
+  ) {
+    updateBugs(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteBugs = /* GraphQL */ `
+  mutation DeleteBugs(
+    $input: DeleteBugsInput!
+    $condition: ModelBugsConditionInput
+  ) {
+    deleteBugs(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createAskedFeatures = /* GraphQL */ `
+  mutation CreateAskedFeatures(
+    $input: CreateAskedFeaturesInput!
+    $condition: ModelAskedFeaturesConditionInput
+  ) {
+    createAskedFeatures(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateAskedFeatures = /* GraphQL */ `
+  mutation UpdateAskedFeatures(
+    $input: UpdateAskedFeaturesInput!
+    $condition: ModelAskedFeaturesConditionInput
+  ) {
+    updateAskedFeatures(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteAskedFeatures = /* GraphQL */ `
+  mutation DeleteAskedFeatures(
+    $input: DeleteAskedFeaturesInput!
+    $condition: ModelAskedFeaturesConditionInput
+  ) {
+    deleteAskedFeatures(input: $input, condition: $condition) {
+      id
+      title
+      details
+      userID
+      courierID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
 export const createCourier = /* GraphQL */ `
   mutation CreateCourier(
     $input: CreateCourierInput!
@@ -34,6 +157,43 @@ export const createCourier = /* GraphQL */ `
       }
       isActive
       sub
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -76,6 +236,43 @@ export const updateCourier = /* GraphQL */ `
       }
       isActive
       sub
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -118,6 +315,43 @@ export const deleteCourier = /* GraphQL */ `
       }
       isActive
       sub
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -442,6 +676,43 @@ export const createUser = /* GraphQL */ `
       isActive
       picture
       favouriteRestaurants
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -502,6 +773,43 @@ export const updateUser = /* GraphQL */ `
       isActive
       picture
       favouriteRestaurants
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -562,6 +870,43 @@ export const deleteUser = /* GraphQL */ `
       isActive
       picture
       favouriteRestaurants
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version

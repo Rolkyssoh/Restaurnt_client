@@ -1,6 +1,297 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getBugs = /* GraphQL */ `
+  query GetBugs($id: ID!) {
+    getBugs(id: $id) {
+      id
+      title
+      details
+      userID
+      courierID
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listBugs = /* GraphQL */ `
+  query ListBugs(
+    $filter: ModelBugsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBugs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncBugs = /* GraphQL */ `
+  query SyncBugs(
+    $filter: ModelBugsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncBugs(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const bugsByUserID = /* GraphQL */ `
+  query BugsByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelBugsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    bugsByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const bugsByCourierID = /* GraphQL */ `
+  query BugsByCourierID(
+    $courierID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelBugsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    bugsByCourierID(
+      courierID: $courierID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getAskedFeatures = /* GraphQL */ `
+  query GetAskedFeatures($id: ID!) {
+    getAskedFeatures(id: $id) {
+      id
+      title
+      details
+      userID
+      courierID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listAskedFeatures = /* GraphQL */ `
+  query ListAskedFeatures(
+    $filter: ModelAskedFeaturesFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAskedFeatures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncAskedFeatures = /* GraphQL */ `
+  query SyncAskedFeatures(
+    $filter: ModelAskedFeaturesFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncAskedFeatures(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const askedFeaturesByUserID = /* GraphQL */ `
+  query AskedFeaturesByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAskedFeaturesFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    askedFeaturesByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const askedFeaturesByCourierID = /* GraphQL */ `
+  query AskedFeaturesByCourierID(
+    $courierID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAskedFeaturesFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    askedFeaturesByCourierID(
+      courierID: $courierID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        details
+        userID
+        courierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
 export const getCourier = /* GraphQL */ `
   query GetCourier($id: ID!) {
     getCourier(id: $id) {
@@ -31,6 +322,43 @@ export const getCourier = /* GraphQL */ `
       }
       isActive
       sub
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -62,6 +390,16 @@ export const listCouriers = /* GraphQL */ `
         }
         isActive
         sub
+        AskedFeatures {
+          nextToken
+          startedAt
+          __typename
+        }
+        Bugs {
+          nextToken
+          startedAt
+          __typename
+        }
         createdAt
         updatedAt
         _version
@@ -103,6 +441,16 @@ export const syncCouriers = /* GraphQL */ `
         }
         isActive
         sub
+        AskedFeatures {
+          nextToken
+          startedAt
+          __typename
+        }
+        Bugs {
+          nextToken
+          startedAt
+          __typename
+        }
         createdAt
         updatedAt
         _version
@@ -613,6 +961,43 @@ export const getUser = /* GraphQL */ `
       isActive
       picture
       favouriteRestaurants
+      Bugs {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          image
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      AskedFeatures {
+        items {
+          id
+          title
+          details
+          userID
+          courierID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -651,6 +1036,16 @@ export const listUsers = /* GraphQL */ `
         isActive
         picture
         favouriteRestaurants
+        Bugs {
+          nextToken
+          startedAt
+          __typename
+        }
+        AskedFeatures {
+          nextToken
+          startedAt
+          __typename
+        }
         createdAt
         updatedAt
         _version
@@ -699,6 +1094,16 @@ export const syncUsers = /* GraphQL */ `
         isActive
         picture
         favouriteRestaurants
+        Bugs {
+          nextToken
+          startedAt
+          __typename
+        }
+        AskedFeatures {
+          nextToken
+          startedAt
+          __typename
+        }
         createdAt
         updatedAt
         _version

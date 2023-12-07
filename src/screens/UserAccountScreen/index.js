@@ -19,7 +19,7 @@ AWS.config.update({
 });
 
 export const UserAccountScreen = () => {
-  const navigatin = useNavigation();
+  const navigation = useNavigation();
   const {dbUser} = useAuthContext();
    const s3 = new AWS.S3();
 
@@ -153,14 +153,13 @@ export const UserAccountScreen = () => {
         </View>
 
         <View style={{alignItems:'flex-end', paddingTop:35}}>
-          <FontAwesome style={styles.iconEditPicture} name="plus-circle" size={20} color="#fff" onPress={doAddPicture} />
-          <View style={styles.imgView}>
+          <Pressable onPress={doAddPicture} style={styles.imgView}>
             { dbUser.picture ? 
               <Image source={{uri: (filePath && filePath?.uri) ?? usrPicture }} style={styles.image} resizeMode="cover" /> :
               // <FontAwesome name="user" size={30} color="#249689"/> :
               <FontAwesome name="user" size={30} color="#249689"/> }
 
-          </View>
+          </Pressable>
           <Text style={{fontSize:10, fontWeight:'bold', color:'#fff'}}>
             Bonjour, 
             <Text style={{fontWeight:'300', color:'#fff'}}>{dbUser.name}</Text>
@@ -172,12 +171,12 @@ export const UserAccountScreen = () => {
         <Text>Les informations de mon compte</Text>
       </View>
       <View>
-        <Pressable style={styles.pressableStyle}>
+        {/* <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Changer le mot de passe</Text>
           <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
-        <Divider color='#249689' />
-        <Pressable onPress={() => navigatin.navigate('Profile')} style={styles.pressableStyle}>
+        <Divider color='#249689' /> */}
+        <Pressable onPress={() => navigation.navigate('Profile')} style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Editer le profil</Text>
           <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
@@ -187,16 +186,17 @@ export const UserAccountScreen = () => {
         <Text>Support</Text>
       </View>
       <View>
-        <Pressable style={styles.pressableStyle}>
+        {/* /** TODO:: */}
+        {/* <Pressable style={styles.pressableStyle}>
           <Text style={styles.textPressable}>Tutoriel</Text>
           <Ionicons name="chevron-forward" size={25} color="gray" />
-        </Pressable>
-        <Divider color='#249689' />
-        <Pressable style={styles.pressableStyle}>
+        </Pressable> 
+        <Divider color='#249689' />*/}
+        <Pressable style={styles.pressableStyle} onPress={() => navigation.navigate('Bugs')}>
           <Text style={styles.textPressable}>Soumettre un bug</Text>
           <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
-        <Pressable style={styles.pressableStyle}>
+        <Pressable style={styles.pressableStyle} onPress={() => navigation.navigate('Features')}>
           <Text style={styles.textPressable}>Soumettre une demande de fonctionnalité</Text>
           <Ionicons name="chevron-forward" size={25} color="gray" />
         </Pressable>
@@ -223,14 +223,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center',
     padding:15
-  },
-  iconEditPicture:{
-    position:'absolute',
-    marginTop:20,
-    marginRight:21,
-    right:0,
-    zIndex:1,
-    alignSelf:'center',
   },
   imgView:{
     backgroundColor:'#fff',

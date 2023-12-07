@@ -31,6 +31,76 @@ export enum StructureType {
 
 
 
+type EagerBugs = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Bugs, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title: string;
+  readonly details: string;
+  readonly userID?: string | null;
+  readonly courierID?: string | null;
+  readonly image?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyBugs = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Bugs, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title: string;
+  readonly details: string;
+  readonly userID?: string | null;
+  readonly courierID?: string | null;
+  readonly image?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Bugs = LazyLoading extends LazyLoadingDisabled ? EagerBugs : LazyBugs
+
+export declare const Bugs: (new (init: ModelInit<Bugs>) => Bugs) & {
+  copyOf(source: Bugs, mutator: (draft: MutableModel<Bugs>) => MutableModel<Bugs> | void): Bugs;
+}
+
+type EagerAskedFeatures = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AskedFeatures, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title: string;
+  readonly details: string;
+  readonly userID?: string | null;
+  readonly courierID?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyAskedFeatures = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AskedFeatures, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title: string;
+  readonly details: string;
+  readonly userID?: string | null;
+  readonly courierID?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type AskedFeatures = LazyLoading extends LazyLoadingDisabled ? EagerAskedFeatures : LazyAskedFeatures
+
+export declare const AskedFeatures: (new (init: ModelInit<AskedFeatures>) => AskedFeatures) & {
+  copyOf(source: AskedFeatures, mutator: (draft: MutableModel<AskedFeatures>) => MutableModel<AskedFeatures> | void): AskedFeatures;
+}
+
 type EagerCourier = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Courier, 'id'>;
@@ -46,6 +116,8 @@ type EagerCourier = {
   readonly Orders?: (Order | null)[] | null;
   readonly isActive?: boolean | null;
   readonly sub: string;
+  readonly AskedFeatures?: (AskedFeatures | null)[] | null;
+  readonly Bugs?: (Bugs | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -65,6 +137,8 @@ type LazyCourier = {
   readonly Orders: AsyncCollection<Order>;
   readonly isActive?: boolean | null;
   readonly sub: string;
+  readonly AskedFeatures: AsyncCollection<AskedFeatures>;
+  readonly Bugs: AsyncCollection<Bugs>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -167,6 +241,8 @@ type EagerUser = {
   readonly isActive?: boolean | null;
   readonly picture?: string | null;
   readonly favouriteRestaurants?: (string | null)[] | null;
+  readonly Bugs?: (Bugs | null)[] | null;
+  readonly AskedFeatures?: (AskedFeatures | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -189,6 +265,8 @@ type LazyUser = {
   readonly isActive?: boolean | null;
   readonly picture?: string | null;
   readonly favouriteRestaurants?: (string | null)[] | null;
+  readonly Bugs: AsyncCollection<Bugs>;
+  readonly AskedFeatures: AsyncCollection<AskedFeatures>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

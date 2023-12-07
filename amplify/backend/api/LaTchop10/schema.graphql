@@ -1,3 +1,20 @@
+type Bugs @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  details: String!
+  userID: ID @index(name: "byUser")
+  courierID: ID @index(name: "byCourier")
+  image: String
+}
+
+type AskedFeatures @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  details: String!
+  userID: ID @index(name: "byUser")
+  courierID: ID @index(name: "byCourier")
+}
+
 enum TransportationModes {
   DRIVING
   BICYCLING
@@ -14,6 +31,8 @@ type Courier @model @auth(rules: [{allow: public}]) {
   Orders: [Order] @hasMany(indexName: "byCourier", fields: ["id"])
   isActive: Boolean
   sub: String!
+  AskedFeatures: [AskedFeatures] @hasMany(indexName: "byCourier", fields: ["id"])
+  Bugs: [Bugs] @hasMany(indexName: "byCourier", fields: ["id"])
 }
 
 type OrderDish @model @auth(rules: [{allow: public}]) {
@@ -64,6 +83,8 @@ type User @model @auth(rules: [{allow: public}]) {
   isActive: Boolean
   picture: String
   favouriteRestaurants: [ID]
+  Bugs: [Bugs] @hasMany(indexName: "byUser", fields: ["id"])
+  AskedFeatures: [AskedFeatures] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type BasketDish @model @auth(rules: [{allow: public}]) {
