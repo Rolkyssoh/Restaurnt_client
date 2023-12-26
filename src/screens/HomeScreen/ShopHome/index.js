@@ -151,7 +151,7 @@ const ShopHome = ({search, showFavorites}) => {
         <FlatList
           data={filterdShop}
           renderItem={({item}) => <ShopItem shop={item} />}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false} 
           keyExtractor={(item) => item.id}
         />
       </View>

@@ -120,13 +120,13 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
             name="bookmark"
             size={25}
             color="#000"
-            onPress={() => doHandleFavorite('remove')}
+            onPress={() => !isLoading && doHandleFavorite('remove')}
           /> :
           <Ionicons
             name="bookmark-outline"
             size={25}
             color="#000"
-            onPress={() => doHandleFavorite('add')}
+            onPress={() => !isLoading && doHandleFavorite('add')}
           />}
         </View>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:25}}>

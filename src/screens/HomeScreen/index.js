@@ -75,7 +75,7 @@ export const HomeScreen = ({navigation, route}) => {
           }}
         >
           {() => <RestaurantHome search={searchTerm.toLowerCase()} showFavorites={viewFavorites} />}
-        </TabTop.Screen>
+        </TabTop.Screen> 
 
         <TabTop.Screen 
           name="ShopHome" 
