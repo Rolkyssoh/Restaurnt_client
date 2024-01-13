@@ -11,6 +11,7 @@ export const ProfileScreen = () => {
 
   const [name, setName] = useState(dbUser?.name ?? '');
   const [address, setAdress] = useState(dbUser?.address ?? '');
+  const [phonenumber, setPhonenumber] = useState(dbUser?.phonenumber ?? '');
   const [lat, setLat] = useState(dbUser?.lat);
   const [lng, setLng] = useState(dbUser?.lng);
 
@@ -40,6 +41,7 @@ export const ProfileScreen = () => {
             lng: parseFloat(lng),
             sub,
             type: UserType.CUSTOMER,
+            phonenumber
           },
         }),
       );
@@ -57,6 +59,7 @@ export const ProfileScreen = () => {
           address,
           lat: parseFloat(lat),
           lng: parseFloat(lng),
+          phonenumber,
           id: dbUser.id,
           _version: dbUser._version,
         },
@@ -71,6 +74,7 @@ export const ProfileScreen = () => {
       <Text style={styles.title}>Mes Infos</Text>
       <Input value={name} onChangeText={setName} placeholder="Name" />
       <Input value={address} onChangeText={setAdress} placeholder="Adresse" />
+      <Input value={phonenumber} onChangeText={setPhonenumber} placeholder="Numéro de Tél" />
       <Input
         value={`${lat}`}
         onChangeText={setLat}
