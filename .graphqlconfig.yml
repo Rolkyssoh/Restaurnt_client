@@ -1,6 +1,6 @@
 projects:
-  LaTchop10:
-    schemaPath: amplify/backend/api/LaTchop10/build/schema.graphql
+  LaTchopStaging:
+    schemaPath: amplify/backend/api/LaTchopStaging/build/schema.graphql
     includes:
       - src/graphql/**/*.js
     excludes:

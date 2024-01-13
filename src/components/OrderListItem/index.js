@@ -35,10 +35,10 @@ export const OrderListItem = ({order}) => {
   const fetchOrders = () => {
     API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
       resp => {
-        const userIsOrders = resp.data.getUser.Orders.items.filter(
-          _ => !_._deleted,
-        );
-        setOrders(userIsOrders);
+        // const userIsOrders = resp.data.getUser.Orders.items.filter(
+        //   _ => !_._deleted,
+        // );
+        setOrders(resp.data.getUser.Orders.items);
       },
     );
   };
@@ -201,16 +201,12 @@ export const listOrdersByDbUser = /* GraphQL */ `
           structureID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           OrderDishes {
             items {
               id
               quantity
               createdAt
               updatedAt
-              _deleted
               Dish {
                 id
                 name
@@ -221,9 +217,6 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
               Ingredient {
                 id
@@ -235,13 +228,9 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
             }
             nextToken
-            startedAt
           }
           Structure {
             id
@@ -259,19 +248,12 @@ export const listOrdersByDbUser = /* GraphQL */ `
             adminSub
             createdAt
             updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;

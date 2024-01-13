@@ -67,7 +67,7 @@ const BasketContextProvider = ({children}) => {
         graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
       ).then(result => {
         const basketList = result.data.getStructure.Baskets.items.filter(
-          _ => !_._deleted && _.userID === dbUser?.id,
+          _ => _.userID === dbUser?.id,
         );
         setBasket(basketList[0]);
       });
@@ -82,7 +82,7 @@ const BasketContextProvider = ({children}) => {
         }),
       ).then(result => {
         const basketList = result.data.getStructure.Baskets.items.filter(
-          _ => !_._deleted && _.userID === dbUser?.id,
+          _ => _.userID === dbUser?.id,
         );
         setBasket(basketList[0]);
       });
@@ -95,14 +95,14 @@ const BasketContextProvider = ({children}) => {
     //   );
     //   setBasketDishes(basketDishesByBasketId);
     // });
-    const existBd = basket?.BasketDishes?.items.filter(_ => !_._deleted);
+    // const existBd = basket?.BasketDishes?.items.filter(_ => !_._deleted);
     if (basket && restaurantInfos) {
-      if (basket.structureID === restaurantInfos.id && !basket._deleted) {
-        setBasketDishes(existBd);
+      if (basket.structureID === restaurantInfos.id) {
+        setBasketDishes(basket?.BasketDishes?.items);
       }
     } else if (basket && shopInfos) {
-      if (basket.structureID === shopInfos.id && !basket._deleted) {
-        setBasketDishes(existBd);
+      if (basket.structureID === shopInfos.id) {
+        setBasketDishes(basket?.BasketDishes?.items);
       }
     }
   }, [basket, restaurantInfos, shopInfos]);
@@ -126,7 +126,6 @@ const BasketContextProvider = ({children}) => {
         await API.graphql(
           graphqlOperation(deleteBasketDish, {
             input: {
-              _version: basketDishToUpdate._version,
               id: basketDishToUpdate.id,
             },
           }),
@@ -135,7 +134,6 @@ const BasketContextProvider = ({children}) => {
         await API.graphql(
           graphqlOperation(updateBasketDish, {
             input: {
-              _version: basketDishToUpdate._version,
               quantity,
               id: basketDishToUpdate.id,
             },
@@ -145,14 +143,14 @@ const BasketContextProvider = ({children}) => {
 
       await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
         const basketDishesByBasketId = resp.data.listBasketDishes.items.filter(
-          _ => !_._deleted && _.basketID === basket?.id,
+          _ => _.basketID === basket?.id,
         );
         if (basketDishesByBasketId)
           API.graphql(
             graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
           ).then(result => {
             const basketList = result.data.getStructure.Baskets.items.filter(
-              _ => !_._deleted && _.userID === dbUser?.id,
+              _ => _.userID === dbUser?.id,
             );
             setBasket(basketList[0]);
           });
@@ -218,7 +216,6 @@ const BasketContextProvider = ({children}) => {
         await API.graphql(
           graphqlOperation(deleteBasketDish, {
             input: {
-              _version: basketDishToUpdate._version,
               id: basketDishToUpdate.id,
             },
           }),
@@ -227,7 +224,6 @@ const BasketContextProvider = ({children}) => {
         API.graphql(
           graphqlOperation(updateBasketDish, {
             input: {
-              _version: basketIngredientToUpdate._version,
               quantity,
               id: basketIngredientToUpdate.id,
             },
@@ -238,7 +234,7 @@ const BasketContextProvider = ({children}) => {
       await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
         const basketIngredientsByBasketId =
           resp.data.listBasketDishes.items.filter(
-            _ => !_._deleted && _.basketID === basket?.id,
+            _ =>_.basketID === basket?.id,
           );
 
         if (basketIngredientsByBasketId)
@@ -246,7 +242,7 @@ const BasketContextProvider = ({children}) => {
             graphqlOperation(listBasketsByStructure, {id: shopInfos?.id}),
           ).then(result => {
             const basketList = result.data.getStructure.Baskets.items.filter(
-              _ => !_._deleted && _.userID === dbUser?.id,
+              _ =>_.userID === dbUser?.id,
             );
             setBasket(basketList[0]);
           });
@@ -331,9 +327,6 @@ export const listBasketsByStructure = /* GraphQL */ `
               basketID
               createdAt
               updatedAt
-              _version
-              _deleted
-              _lastChangedAt
               basketDishDishId
               basketDishIngredientId
               Dish {
@@ -345,9 +338,6 @@ export const listBasketsByStructure = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
               Ingredient {
                 id
@@ -358,22 +348,14 @@ export const listBasketsByStructure = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
             }
             nextToken
-            startedAt
           }
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
     }
   }

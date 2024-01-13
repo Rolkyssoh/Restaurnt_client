@@ -2,17 +2,17 @@ type Bugs @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   details: String!
-  userID: ID @index(name: "byUser")
-  courierID: ID @index(name: "byCourier")
   image: String
+  userID: ID! @index(name: "byUser")
+  courierID: ID! @index(name: "byCourier")
 }
 
 type AskedFeatures @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   details: String!
-  userID: ID @index(name: "byUser")
-  courierID: ID @index(name: "byCourier")
+  userID: ID! @index(name: "byUser")
+  courierID: ID! @index(name: "byCourier")
 }
 
 enum TransportationModes {
@@ -28,11 +28,12 @@ type Courier @model @auth(rules: [{allow: public}]) {
   lng: Float!
   tranportationMode: TransportationModes!
   email: String
-  Orders: [Order] @hasMany(indexName: "byCourier", fields: ["id"])
-  isActive: Boolean
+  isActive: String!
   sub: String!
+  Orders: [Order] @hasMany(indexName: "byCourier", fields: ["id"])
   AskedFeatures: [AskedFeatures] @hasMany(indexName: "byCourier", fields: ["id"])
   Bugs: [Bugs] @hasMany(indexName: "byCourier", fields: ["id"])
+  phonenumber: String!
 }
 
 type OrderDish @model @auth(rules: [{allow: public}]) {
@@ -51,14 +52,15 @@ enum OrderStatus {
   COMPLETED
   ACCEPTED
   DECLINED_BY_STRUCTURE
+  CANCELLED
 }
 
 type Order @model @auth(rules: [{allow: public}]) {
   id: ID!
   status: OrderStatus!
   userID: ID! @index(name: "byUser")
+  structureID: ID! @index(name: "byStructure")
   OrderDishes: [OrderDish] @hasMany(indexName: "byOrder", fields: ["id"])
-  structureID: ID @index(name: "byStructure")
   courierID: ID @index(name: "byCourier")
 }
 
@@ -77,22 +79,23 @@ type User @model @auth(rules: [{allow: public}]) {
   lat: Float!
   lng: Float!
   type: UserType!
-  Baskets: [Basket] @hasMany(indexName: "byUser", fields: ["id"])
-  Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
   email: String
-  isActive: Boolean
+  isActive: Boolean!
   picture: String
   favouriteRestaurants: [ID]
-  Bugs: [Bugs] @hasMany(indexName: "byUser", fields: ["id"])
+  Baskets: [Basket] @hasMany(indexName: "byUser", fields: ["id"])
+  Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
   AskedFeatures: [AskedFeatures] @hasMany(indexName: "byUser", fields: ["id"])
+  Bugs: [Bugs] @hasMany(indexName: "byUser", fields: ["id"])
+  phonenumber: String
 }
 
 type BasketDish @model @auth(rules: [{allow: public}]) {
   id: ID!
   quantity: Float!
-  basketID: ID! @index(name: "byBasket")
   Dish: Dish @hasOne
   Ingredient: Ingredient @hasOne
+  basketID: ID! @index(name: "byBasket")
 }
 
 type Basket @model @auth(rules: [{allow: public}]) {
@@ -108,8 +111,10 @@ type Ingredient @model @auth(rules: [{allow: public}]) {
   image: String!
   description: String
   price: Float!
-  structureID: ID! @index(name: "byStructure")
   image_url: String
+  structureID: ID! @index(name: "byStructure")
+  isActivate: Boolean
+  maxNumber: Int
 }
 
 type Dish @model @auth(rules: [{allow: public}]) {
@@ -118,8 +123,10 @@ type Dish @model @auth(rules: [{allow: public}]) {
   image: String!
   description: String
   price: Float!
-  structureID: ID! @index(name: "byStructure")
   image_url: String
+  structureID: ID! @index(name: "byStructure")
+  isActivate: Boolean
+  maxNumberPerDay: Int
 }
 
 enum StructureType {
@@ -141,10 +148,14 @@ type Structure @model @auth(rules: [{allow: public}]) {
   type: StructureType!
   adminSub: String
   isActive: Boolean!
+  image_url: String
   Dishes: [Dish] @hasMany(indexName: "byStructure", fields: ["id"])
   Ingredients: [Ingredient] @hasMany(indexName: "byStructure", fields: ["id"])
   Baskets: [Basket] @hasMany(indexName: "byStructure", fields: ["id"])
   Orders: [Order] @hasMany(indexName: "byStructure", fields: ["id"])
-  image_url: String
+  marketPlaceFees: Float
+  maxCancellations: Int
+  cancellationPenalityFee: Float
+  maxCancellationPenalityFee: Float
 }
  

@@ -58,30 +58,44 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
   }, [shop]);
 
 
-  const doHandleFavorite = async (action) => {
+  const doHandleFavoriteShop = async (action) => {
     setIsFavorite(!isFavorite)
     setIsLoading(true)
     if(action==='add'){
       /**Add structure to my favorite */
-      if(!arrayOfFavorite.find((_) => _.id === shop.id)){
-        const updated = await API.graphql(
+      let updated;
+      if(arrayOfFavorite ===null || arrayOfFavorite.length ===0){
+        updated = await API.graphql(
           graphqlOperation(updateUser, {
             input: {
-              _version: dbUser._version,
+              favouriteRestaurants: [shop.id],
+              id: dbUser.id,
+            },
+          }),
+        );
+      }else if(arrayOfFavorite!=null && 
+          arrayOfFavorite.length>0 &&
+          arrayOfFavorite.find((_) => _.id === shop.id)==undefined)
+      {
+        updated = await API.graphql(
+          graphqlOperation(updateUser, {
+            input: {
               favouriteRestaurants: [shop.id, ...arrayOfFavorite],
               id: dbUser.id,
             },
           }),
         );
-        if(updated){
-          setDbUser(updated.data.updateUser)
-          setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
-          setIsLoading(false)
-        } else {
-          setIsLoading(false)
-        }
       } else {
         console.log('This shop is already in your favoris!!!')
+        setIsLoading(false)
+      }
+
+      if(updated){
+        setDbUser(updated.data.updateUser)
+        setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
       }
     } else if(action==='remove'){
       /**Remove structure to my favorite */
@@ -89,7 +103,7 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
       const updated = await API.graphql(
         graphqlOperation(updateUser, {
           input: {
-            _version: dbUser._version,
+            // _version: dbUser._version,
             favouriteRestaurants: removed,
             id: dbUser.id,
           },
@@ -120,13 +134,13 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
             name="bookmark"
             size={25}
             color="#000"
-            onPress={() => !isLoading && doHandleFavorite('remove')}
+            onPress={() => !isLoading && doHandleFavoriteShop('remove')}
           /> :
           <Ionicons
             name="bookmark-outline"
             size={25}
             color="#000"
-            onPress={() => !isLoading && doHandleFavorite('add')}
+            onPress={() => !isLoading && doHandleFavoriteShop('add')}
           />}
         </View>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:25}}>

@@ -82,7 +82,7 @@ const ShopHome = ({search, showFavorites}) => {
   const fetchShop = () => {
     API.graphql(graphqlOperation(listStructures)).then(result => {
       const listShops = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.SHOP && !_._deleted && _.isActive,
+        _ => _.type === StructureType.SHOP && _.isActive,
       );
       setShops(listShops);
     });
@@ -95,16 +95,18 @@ const ShopHome = ({search, showFavorites}) => {
   /**Found the restaurant by ID array */
   let favoritesArray=[]
   const doShowFavorites = () => {
-    const getRestauById = dbUser.favouriteRestaurants?.map((id) => (
-      shops.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
-    ))
-    getRestauById.map((arr) => {
-      if(arr.length >0){
-        arr.map((_) => {
-          favoritesArray=[_, ...favoritesArray]
-        })
-      }
-    })
+    if(dbUser.favouriteRestaurants){
+      const getRestauById = dbUser.favouriteRestaurants?.map((id) => (
+        shops.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
+      ))
+      getRestauById.map((arr) => {
+        if(arr.length >0){
+          arr.map((_) => {
+            favoritesArray=[_, ...favoritesArray]
+          })
+        }
+      })
+    }
     return favoritesArray
   }
 

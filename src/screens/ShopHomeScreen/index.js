@@ -110,9 +110,10 @@ export const ShopeHomeScreen = () => {
   const fetchIngredients = idShop => {
     API.graphql(graphqlOperation(listIngredientsByShop, {id: idShop})).then(
       resp => {
-        const ingredientList = resp.data.getStructure.Ingredients.items.filter(
-          _ => !_._deleted,
-        );
+        const ingredientList = resp.data.getStructure.Ingredients.items
+        // .filter(
+        //   _ => !_._deleted,
+        // );
         setIngredients(ingredientList);
       },
     );
@@ -208,12 +209,8 @@ export const listIngredientsByShop = /* GraphQL */ `
           structureID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
     }
   }

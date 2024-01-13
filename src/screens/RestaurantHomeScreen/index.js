@@ -37,9 +37,10 @@ export const RestaurantHomeScreen = () => {
   const fetchDishes = idRestau => {
     API.graphql(graphqlOperation(listDishesByRestaurant, {id: idRestau})).then(
       resp => {
-        const dishList = resp.data.getStructure.Dishes.items.filter(
-          _ => !_._deleted,
-        );
+        const dishList = resp.data.getStructure.Dishes.items
+        // .filter(
+        //   _ => !_._deleted,
+        // );
         setDishes(dishList);
       },
     );
@@ -208,12 +209,8 @@ export const listDishesByRestaurant = /* GraphQL */ `
           structureID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
     }
   }

@@ -39,15 +39,17 @@ export const ProfileScreen = () => {
             address,
             lat: parseFloat(lat),
             lng: parseFloat(lng),
+            isActive:true,
             sub,
             type: UserType.CUSTOMER,
             phonenumber
           },
         }),
       );
-      user.data.createUser._deleted === null && setDbUser(user.data.createUser);
+      setDbUser(user.data.createUser);
     } catch (e) {
       Alert.alert('Error', e.message);
+      console.log('error while adding new user::', e)
     }
   };
 
@@ -61,7 +63,7 @@ export const ProfileScreen = () => {
           lng: parseFloat(lng),
           phonenumber,
           id: dbUser.id,
-          _version: dbUser._version,
+          // _version: dbUser._version,
         },
       }),
     );

@@ -2,9 +2,9 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "latcho22893680",
-    "userPoolName": "LaTchop10",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "latchod150beef",
+    "userPoolName": "LaTchopStaging",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -19,16 +19,18 @@
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 6,
     "passwordPolicyCharacters": [],
-    "requiredAttributes": [],
+    "requiredAttributes": [
+      "email"
+    ],
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "LaTcho22893680_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "LaTchod150beef_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "22893680",
-    "resourceName": "LaTchop10",
+    "sharedId": "d150beef",
+    "resourceName": "LaTchopStaging",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
     "usernameAttributes": [
@@ -41,20 +43,6 @@
     "thirdPartyAuth": false,
     "authProviders": [],
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true,
-    "authRoleArn": {
-      "Fn::GetAtt": [
-        "AuthRole",
-        "Arn"
-      ]
-    },
-    "unauthRoleArn": {
-      "Fn::GetAtt": [
-        "UnauthRole",
-        "Arn"
-      ]
-    },
-    "breakCircularDependency": true,
-    "dependsOn": []
+    "useEnabledMfas": true
   }
 }

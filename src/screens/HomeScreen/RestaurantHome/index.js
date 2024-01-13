@@ -83,7 +83,7 @@ const RestaurantHome = ({search, showFavorites}) => {
   const fetchRestaurants = () => {
     API.graphql(graphqlOperation(listStructures)).then(result => {
       const listRestaurants = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.RESTAURANT && !_._deleted && _.isActive,
+        _ => _.type === StructureType.RESTAURANT && _.isActive,
       );
       setRestaurants(listRestaurants);
     });
@@ -96,16 +96,20 @@ const RestaurantHome = ({search, showFavorites}) => {
   /**Found the shop by ID array in existing array of shops */
   let favoritesArray=[]
   const doShowFavorites = () => {
-    const getRestauById = dbUser.favouriteRestaurants?.map((id) => (
-      restaurants.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
-    ))
-    getRestauById.map((arr) => {
-      if(arr.length >0){
-        arr.map((_) => {
-          favoritesArray=[_, ...favoritesArray]
-        })
-      }
-    })
+    console.log('the current user in DB::::', dbUser)
+    if(dbUser.favouriteRestaurants){
+      const getRestauById = dbUser.favouriteRestaurants?.map((id) => (
+        restaurants.filter(_ => `${_.id.toLowerCase()}`.indexOf(id) !== -1)
+      ))
+      console.log('the get restau by id::::', getRestauById)
+      getRestauById?.map((arr) => {
+        if(arr.length >0){
+          arr.map((_) => {
+            favoritesArray=[_, ...favoritesArray]
+          })
+        }
+      })
+    }
     return favoritesArray
   }
 

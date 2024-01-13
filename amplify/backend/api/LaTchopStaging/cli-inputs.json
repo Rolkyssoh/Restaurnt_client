@@ -1,7 +1,7 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "LaTchop10",
+    "apiName": "LaTchopStaging",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",
@@ -15,7 +15,7 @@
     ],
     "conflictResolution": {
       "defaultResolutionStrategy": {
-        "type": "AUTOMERGE"
+        "type": "NONE"
       }
     }
   }

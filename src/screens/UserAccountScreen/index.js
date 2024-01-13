@@ -81,7 +81,7 @@ export const UserAccountScreen = () => {
       await API.graphql(
         graphqlOperation(updateUser, {
           input: {
-            _version: dbUser._version,
+            // _version: dbUser._version,
             picture:fileName,
             id: dbUser.id,
           },

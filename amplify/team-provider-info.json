@@ -1,22 +1,25 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-latchop10-staging-115116-authRole",
-      "UnauthRoleArn": "arn:aws:iam::513500889018:role/amplify-latchop10-staging-115116-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::513500889018:role/amplify-latchop10-staging-115116-authRole",
+      "AuthRoleName": "amplify-latchopstaging-staging-12557-authRole",
+      "UnauthRoleArn": "arn:aws:iam::513500889018:role/amplify-latchopstaging-staging-12557-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::513500889018:role/amplify-latchopstaging-staging-12557-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-latchop10-staging-115116-deployment",
-      "UnauthRoleName": "amplify-latchop10-staging-115116-unauthRole",
-      "StackName": "amplify-latchop10-staging-115116",
-      "StackId": "arn:aws:cloudformation:us-east-1:513500889018:stack/amplify-latchop10-staging-115116/38843c60-adf0-11ed-9de4-0aa83aaa2937",
-      "AmplifyAppId": "dp0ej4xjbqwom"
+      "DeploymentBucketName": "amplify-latchopstaging-staging-12557-deployment",
+      "UnauthRoleName": "amplify-latchopstaging-staging-12557-unauthRole",
+      "StackName": "amplify-latchopstaging-staging-12557",
+      "StackId": "arn:aws:cloudformation:us-east-1:513500889018:stack/amplify-latchopstaging-staging-12557/b8d2c100-a38d-11ee-b060-0e0311a28dc3",
+      "AmplifyAppId": "d1hccamj5bdun9"
     },
     "categories": {
-      "auth": {
-        "LaTchop10": {}
-      },
       "storage": {
-        "s3latchop10storage5283fbc6": {}
+        "latchopstaginga5910d0e": {
+          "bucketName": "latchop1-0-storage-5283fbc6115116-staging",
+          "region": "us-east-1"
+        }
+      },
+      "auth": {
+        "LaTchopStaging": {}
       }
     }
   }

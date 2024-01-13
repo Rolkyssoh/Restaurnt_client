@@ -59,29 +59,49 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
   }, [restaurant]);
 
   const doHandleFavorite = async (action) => {
+    console.log('the current action:::', action)
+    console.log('the current state of arrayOfFavorite:::', arrayOfFavorite)
     setIsFavorite(!isFavorite)
     setIsLoading(true)
     if(action==='add'){
       /**Add structure to my favorite */
-      if(!arrayOfFavorite.find((_) => _.id === restaurant.id)){
-        const updated = await API.graphql(
+      /**Here we make 2 checks
+        1- first, check if arrayOfFavorite is empty or null
+        2- second, check if the new elt we add don't exist already in the array
+      */
+      let updated
+      if(arrayOfFavorite === null || arrayOfFavorite.length ===0){
+        updated = await API.graphql(
           graphqlOperation(updateUser, {
             input: {
-              _version: dbUser._version,
+              favouriteRestaurants: [restaurant.id],
+              id: dbUser.id,
+            },
+          }),
+        );
+      } else if(arrayOfFavorite != null && 
+          arrayOfFavorite.length >0 && 
+          arrayOfFavorite.find((_) => _.id === restaurant.id)==undefined)
+      {
+        updated = await API.graphql(
+          graphqlOperation(updateUser, {
+            input: {
               favouriteRestaurants: [restaurant.id, ...arrayOfFavorite],
               id: dbUser.id,
             },
           }),
         );
-        if(updated){
-          setDbUser(updated.data.updateUser)
-          setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
-          setIsLoading(false)
-        } else {
-          setIsLoading(false)
-        }
       } else{
         console.log('Existe déjà dans les favoris!!!')
+        setIsLoading(false)
+      }
+
+      if(updated){
+        setDbUser(updated.data.updateUser)
+        setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
       }
     } else if(action==='remove'){
       /**Remove structure to my favorite */
@@ -89,7 +109,7 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
       const updated = await API.graphql(
         graphqlOperation(updateUser, {
           input: {
-            _version: dbUser._version,
+            // _version: dbUser._version,
             favouriteRestaurants: removed,
             id: dbUser.id,
           },
@@ -120,13 +140,13 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
             name="bookmark"
             size={25}
             color="#000"
-            onPress={() => !isLoading ? doHandleFavorite('remove'): console.log('pas possible!!!')}
+            onPress={() => !isLoading ? doHandleFavorite('remove'): console.log("NOUVELLE SUPPRESSION EN COURS!!")}
           /> :
           <Ionicons
             name="bookmark-outline"
             size={25}
             color="#000"
-            onPress={() => doHandleFavorite('add')}
+            onPress={() => !isLoading ? doHandleFavorite('add'): console.log("NOUVELE AJOUT EN COURS!")}
           />}
         </View>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:25}}>

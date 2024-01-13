@@ -30,11 +30,11 @@ const OrderContextProvider = ({children}) => {
         resp => {
           // const ordersList = resp.data.listOrders.items.filter(_ => !_._deleted);
           // setOrders(ordersList);
-          const userIsOrders = resp.data.getUser.Orders.items.filter(
-            _ => !_._deleted,
-          );
-          console.log('get orderssss:', userIsOrders);
-          setOrders(userIsOrders);
+          // const userIsOrders = resp.data.getUser.Orders.items.filter(
+          //   _ => !_._deleted,
+          // );
+          // console.log('get orderssss:', userIsOrders);
+          setOrders(resp.data.getUser.Orders.items);
         },
       );
   }, [dbUser]);
@@ -86,9 +86,9 @@ const OrderContextProvider = ({children}) => {
         API.graphql(
           graphqlOperation(deleteBasket, {
             input: {
-              _version: basket.data
-                ? basket.data.createBasket._version
-                : basket._version,
+              // _version: basket.data
+              //   ? basket.data.createBasket._version
+              //   : basket._version,
               id: basket.data ? basket.data.createBasket.id : basket.id,
             },
           }),
@@ -150,9 +150,9 @@ const OrderContextProvider = ({children}) => {
         await API.graphql(
           graphqlOperation(deleteBasket, {
             input: {
-              _version: basket.data
-                ? basket.data.createBasket._version
-                : basket._version,
+              // _version: basket.data
+              //   ? basket.data.createBasket._version
+              //   : basket._version,
               id: basket.data ? basket.data.createBasket.id : basket.id,
             },
           }),
@@ -175,10 +175,10 @@ const OrderContextProvider = ({children}) => {
     const orderDishesByOrderId = await API.graphql(
       graphqlOperation(listOrderDishesByOrderId, {id}),
     );
-    const notDeletedDishes =
-      orderDishesByOrderId.data.getOrder.OrderDishes.items.filter(
-        _ => !_._deleted,
-      );
+    const notDeletedDishes = orderDishesByOrderId.data.getOrder.OrderDishes.items;
+      // .filter(
+      //   _ => !_._deleted,
+      // );
 
     return {...theGetOrder, dishes: notDeletedDishes};
   };
@@ -217,9 +217,6 @@ export const getOrderByOrderId = /* GraphQL */ `
           orderID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           orderDishDishId
           orderDishIngredientId
           Dish {
@@ -231,9 +228,6 @@ export const getOrderByOrderId = /* GraphQL */ `
             structureID
             createdAt
             updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
           Ingredient {
             id
@@ -244,19 +238,12 @@ export const getOrderByOrderId = /* GraphQL */ `
             structureID
             createdAt
             updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -273,16 +260,12 @@ export const listOrdersByDbUser = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           OrderDishes {
             items {
               id
               quantity
               createdAt
               updatedAt
-              _deleted
               Dish {
                 id
                 name
@@ -292,9 +275,6 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
               Ingredient {
                 id
@@ -305,23 +285,15 @@ export const listOrdersByDbUser = /* GraphQL */ `
                 structureID
                 createdAt
                 updatedAt
-                _version
-                _deleted
-                _lastChangedAt
               }
             }
             nextToken
-            startedAt
           }
         }
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -343,9 +315,6 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
             structureID
             createdAt
             updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
           Ingredient {
             id
@@ -356,27 +325,17 @@ export const listOrderDishesByOrderId = /* GraphQL */ `
             structureID
             createdAt
             updatedAt
-            _version
-            _deleted
-            _lastChangedAt
           }
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           orderDishDishId
           orderDishIngredientId
         }
         nextToken
-        startedAt
       }
       structureID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;

@@ -7,14 +7,11 @@ export const getBugs = /* GraphQL */ `
       id
       title
       details
+      image
       userID
       courierID
-      image
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -30,51 +27,14 @@ export const listBugs = /* GraphQL */ `
         id
         title
         details
+        image
         userID
         courierID
-        image
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncBugs = /* GraphQL */ `
-  query SyncBugs(
-    $filter: ModelBugsFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncBugs(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        title
-        details
-        userID
-        courierID
-        image
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -98,18 +58,14 @@ export const bugsByUserID = /* GraphQL */ `
         id
         title
         details
+        image
         userID
         courierID
-        image
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -133,18 +89,14 @@ export const bugsByCourierID = /* GraphQL */ `
         id
         title
         details
+        image
         userID
         courierID
-        image
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -159,9 +111,6 @@ export const getAskedFeatures = /* GraphQL */ `
       courierID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -181,45 +130,9 @@ export const listAskedFeatures = /* GraphQL */ `
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncAskedFeatures = /* GraphQL */ `
-  query SyncAskedFeatures(
-    $filter: ModelAskedFeaturesFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncAskedFeatures(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        title
-        details
-        userID
-        courierID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -247,13 +160,9 @@ export const askedFeaturesByUserID = /* GraphQL */ `
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -281,13 +190,9 @@ export const askedFeaturesByCourierID = /* GraphQL */ `
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -302,6 +207,8 @@ export const getCourier = /* GraphQL */ `
       lng
       tranportationMode
       email
+      isActive
+      sub
       Orders {
         items {
           id
@@ -311,17 +218,11 @@ export const getCourier = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
-      isActive
-      sub
       AskedFeatures {
         items {
           id
@@ -331,13 +232,9 @@ export const getCourier = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       Bugs {
@@ -345,25 +242,19 @@ export const getCourier = /* GraphQL */ `
           id
           title
           details
+          image
           userID
           courierID
-          image
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
+      phonenumber
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -383,83 +274,26 @@ export const listCouriers = /* GraphQL */ `
         lng
         tranportationMode
         email
-        Orders {
-          nextToken
-          startedAt
-          __typename
-        }
         isActive
         sub
+        Orders {
+          nextToken
+          __typename
+        }
         AskedFeatures {
           nextToken
-          startedAt
           __typename
         }
         Bugs {
           nextToken
-          startedAt
           __typename
         }
+        phonenumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncCouriers = /* GraphQL */ `
-  query SyncCouriers(
-    $filter: ModelCourierFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncCouriers(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        address
-        lat
-        lng
-        tranportationMode
-        email
-        Orders {
-          nextToken
-          startedAt
-          __typename
-        }
-        isActive
-        sub
-        AskedFeatures {
-          nextToken
-          startedAt
-          __typename
-        }
-        Bugs {
-          nextToken
-          startedAt
-          __typename
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -475,13 +309,12 @@ export const getOrderDish = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumberPerDay
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       Ingredient {
@@ -490,21 +323,17 @@ export const getOrderDish = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       orderID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       orderDishDishId
       orderDishIngredientId
       __typename
@@ -527,13 +356,12 @@ export const listOrderDishes = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumberPerDay
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         Ingredient {
@@ -542,89 +370,22 @@ export const listOrderDishes = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumber
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         orderID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         orderDishDishId
         orderDishIngredientId
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncOrderDishes = /* GraphQL */ `
-  query SyncOrderDishes(
-    $filter: ModelOrderDishFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncOrderDishes(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        quantity
-        Dish {
-          id
-          name
-          image
-          description
-          price
-          structureID
-          image_url
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
-        Ingredient {
-          id
-          name
-          image
-          description
-          price
-          structureID
-          image_url
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
-        orderID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        orderDishDishId
-        orderDishIngredientId
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -653,13 +414,12 @@ export const orderDishesByOrderID = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumberPerDay
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         Ingredient {
@@ -668,27 +428,22 @@ export const orderDishesByOrderID = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumber
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         orderID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         orderDishDishId
         orderDishIngredientId
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -699,6 +454,7 @@ export const getOrder = /* GraphQL */ `
       id
       status
       userID
+      structureID
       OrderDishes {
         items {
           id
@@ -706,24 +462,16 @@ export const getOrder = /* GraphQL */ `
           orderID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           orderDishDishId
           orderDishIngredientId
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
-      structureID
       courierID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -739,59 +487,17 @@ export const listOrders = /* GraphQL */ `
         id
         status
         userID
+        structureID
         OrderDishes {
           nextToken
-          startedAt
           __typename
         }
-        structureID
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncOrders = /* GraphQL */ `
-  query SyncOrders(
-    $filter: ModelOrderFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncOrders(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        status
-        userID
-        OrderDishes {
-          nextToken
-          startedAt
-          __typename
-        }
-        structureID
-        courierID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -815,22 +521,17 @@ export const ordersByUserID = /* GraphQL */ `
         id
         status
         userID
+        structureID
         OrderDishes {
           nextToken
-          startedAt
           __typename
         }
-        structureID
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -854,22 +555,17 @@ export const ordersByStructureID = /* GraphQL */ `
         id
         status
         userID
+        structureID
         OrderDishes {
           nextToken
-          startedAt
           __typename
         }
-        structureID
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -893,22 +589,17 @@ export const ordersByCourierID = /* GraphQL */ `
         id
         status
         userID
+        structureID
         OrderDishes {
           nextToken
-          startedAt
           __typename
         }
-        structureID
         courierID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -923,6 +614,10 @@ export const getUser = /* GraphQL */ `
       lat
       lng
       type
+      email
+      isActive
+      picture
+      favouriteRestaurants
       Baskets {
         items {
           id
@@ -930,13 +625,9 @@ export const getUser = /* GraphQL */ `
           userID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       Orders {
@@ -948,36 +639,9 @@ export const getUser = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
-        __typename
-      }
-      email
-      isActive
-      picture
-      favouriteRestaurants
-      Bugs {
-        items {
-          id
-          title
-          details
-          userID
-          courierID
-          image
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
-        nextToken
-        startedAt
         __typename
       }
       AskedFeatures {
@@ -989,20 +653,29 @@ export const getUser = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
+      Bugs {
+        items {
+          id
+          title
+          details
+          image
+          userID
+          courierID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      phonenumber
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -1022,97 +695,32 @@ export const listUsers = /* GraphQL */ `
         lat
         lng
         type
-        Baskets {
-          nextToken
-          startedAt
-          __typename
-        }
-        Orders {
-          nextToken
-          startedAt
-          __typename
-        }
         email
         isActive
         picture
         favouriteRestaurants
-        Bugs {
-          nextToken
-          startedAt
-          __typename
-        }
-        AskedFeatures {
-          nextToken
-          startedAt
-          __typename
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncUsers = /* GraphQL */ `
-  query SyncUsers(
-    $filter: ModelUserFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncUsers(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        sub
-        name
-        address
-        lat
-        lng
-        type
         Baskets {
           nextToken
-          startedAt
           __typename
         }
         Orders {
           nextToken
-          startedAt
-          __typename
-        }
-        email
-        isActive
-        picture
-        favouriteRestaurants
-        Bugs {
-          nextToken
-          startedAt
           __typename
         }
         AskedFeatures {
           nextToken
-          startedAt
           __typename
         }
+        Bugs {
+          nextToken
+          __typename
+        }
+        phonenumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1122,20 +730,18 @@ export const getBasketDish = /* GraphQL */ `
     getBasketDish(id: $id) {
       id
       quantity
-      basketID
       Dish {
         id
         name
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumberPerDay
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       Ingredient {
@@ -1144,20 +750,17 @@ export const getBasketDish = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
+      basketID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       basketDishDishId
       basketDishIngredientId
       __typename
@@ -1174,20 +777,18 @@ export const listBasketDishes = /* GraphQL */ `
       items {
         id
         quantity
-        basketID
         Dish {
           id
           name
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumberPerDay
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         Ingredient {
@@ -1196,88 +797,22 @@ export const listBasketDishes = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumber
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        basketDishDishId
-        basketDishIngredientId
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncBasketDishes = /* GraphQL */ `
-  query SyncBasketDishes(
-    $filter: ModelBasketDishFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncBasketDishes(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        quantity
         basketID
-        Dish {
-          id
-          name
-          image
-          description
-          price
-          structureID
-          image_url
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
-        Ingredient {
-          id
-          name
-          image
-          description
-          price
-          structureID
-          image_url
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         basketDishDishId
         basketDishIngredientId
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1300,20 +835,18 @@ export const basketDishesByBasketID = /* GraphQL */ `
       items {
         id
         quantity
-        basketID
         Dish {
           id
           name
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumberPerDay
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         Ingredient {
@@ -1322,26 +855,22 @@ export const basketDishesByBasketID = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumber
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
+        basketID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         basketDishDishId
         basketDishIngredientId
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1358,23 +887,16 @@ export const getBasket = /* GraphQL */ `
           basketID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           basketDishDishId
           basketDishIngredientId
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       userID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -1391,54 +913,14 @@ export const listBaskets = /* GraphQL */ `
         structureID
         BasketDishes {
           nextToken
-          startedAt
           __typename
         }
         userID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncBaskets = /* GraphQL */ `
-  query SyncBaskets(
-    $filter: ModelBasketFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncBaskets(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        structureID
-        BasketDishes {
-          nextToken
-          startedAt
-          __typename
-        }
-        userID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -1463,19 +945,14 @@ export const basketsByStructureID = /* GraphQL */ `
         structureID
         BasketDishes {
           nextToken
-          startedAt
           __typename
         }
         userID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1500,19 +977,14 @@ export const basketsByUserID = /* GraphQL */ `
         structureID
         BasketDishes {
           nextToken
-          startedAt
           __typename
         }
         userID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1525,13 +997,12 @@ export const getIngredient = /* GraphQL */ `
       image
       description
       price
-      structureID
       image_url
+      structureID
+      isActivate
+      maxNumber
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -1549,51 +1020,15 @@ export const listIngredients = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncIngredients = /* GraphQL */ `
-  query SyncIngredients(
-    $filter: ModelIngredientFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncIngredients(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        image
-        description
-        price
-        structureID
-        image_url
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -1619,17 +1054,15 @@ export const ingredientsByStructureID = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumber
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1642,13 +1075,12 @@ export const getDish = /* GraphQL */ `
       image
       description
       price
-      structureID
       image_url
+      structureID
+      isActivate
+      maxNumberPerDay
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -1666,51 +1098,15 @@ export const listDishes = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumberPerDay
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncDishes = /* GraphQL */ `
-  query SyncDishes(
-    $filter: ModelDishFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncDishes(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        image
-        description
-        price
-        structureID
-        image_url
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }
@@ -1736,17 +1132,15 @@ export const dishesByStructureID = /* GraphQL */ `
         image
         description
         price
-        structureID
         image_url
+        structureID
+        isActivate
+        maxNumberPerDay
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
       __typename
     }
   }
@@ -1767,6 +1161,7 @@ export const getStructure = /* GraphQL */ `
       type
       adminSub
       isActive
+      image_url
       Dishes {
         items {
           id
@@ -1774,17 +1169,15 @@ export const getStructure = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumberPerDay
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       Ingredients {
@@ -1794,17 +1187,15 @@ export const getStructure = /* GraphQL */ `
           image
           description
           price
-          structureID
           image_url
+          structureID
+          isActivate
+          maxNumber
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       Baskets {
@@ -1814,13 +1205,9 @@ export const getStructure = /* GraphQL */ `
           userID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
       Orders {
@@ -1832,21 +1219,17 @@ export const getStructure = /* GraphQL */ `
           courierID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           __typename
         }
         nextToken
-        startedAt
         __typename
       }
-      image_url
+      marketPlaceFees
+      maxCancellations
+      cancellationPenalityFee
+      maxCancellationPenalityFee
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
   }
@@ -1872,97 +1255,32 @@ export const listStructures = /* GraphQL */ `
         type
         adminSub
         isActive
+        image_url
         Dishes {
           nextToken
-          startedAt
           __typename
         }
         Ingredients {
           nextToken
-          startedAt
           __typename
         }
         Baskets {
           nextToken
-          startedAt
           __typename
         }
         Orders {
           nextToken
-          startedAt
           __typename
         }
-        image_url
+        marketPlaceFees
+        maxCancellations
+        cancellationPenalityFee
+        maxCancellationPenalityFee
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         __typename
       }
       nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncStructures = /* GraphQL */ `
-  query SyncStructures(
-    $filter: ModelStructureFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncStructures(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        image
-        deliveryFee
-        minDeliveryTime
-        maxDeliveryTime
-        rating
-        address
-        lat
-        lng
-        type
-        adminSub
-        isActive
-        Dishes {
-          nextToken
-          startedAt
-          __typename
-        }
-        Ingredients {
-          nextToken
-          startedAt
-          __typename
-        }
-        Baskets {
-          nextToken
-          startedAt
-          __typename
-        }
-        Orders {
-          nextToken
-          startedAt
-          __typename
-        }
-        image_url
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
       __typename
     }
   }

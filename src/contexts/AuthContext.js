@@ -26,7 +26,7 @@ const AuthContextProvider = ({children}) => {
 
     API.graphql(graphqlOperation(listUsers)).then(result => {
       const theCurrentUser = result.data.listUsers.items.filter(
-        _ => _.sub === sub && !_._deleted,
+        _ => _.sub === sub,
       );
 
       if (theCurrentUser.length === 0) {
