@@ -31,19 +31,22 @@ export const IngredientListItem = ({ingredient}) => {
   return (
     <Pressable 
       style={styles.viewContainer}
-      onPress={() => navigation.navigate('IngredientDetails', {id: ingredient.id})}>
+      onPress={() => navigation.navigate('IngredientDetails', {id: ingredient.id})}
+      disabled={ingredient.maxNumber===0}
+    >
       <View style={{width:'31%'}}>
         <Image
           source={{uri: ingredient.image_url}}
           style={styles.image}
-          resizeMode="cover"
+          resizeMode="cover"maxNumber
+          blurRadius={ingredient.maxNumber===0 ? 20:0}
         />
       </View>
       <View
-        style={styles.itemCliquable}>
+        style={[styles.itemCliquable,ingredient.maxNumberPerDay===0 && {backgroundColor: 'rgba(0, 0, 0, 0.5)',zIndex:100}]}>
         <View style={{paddingHorizontal:10}}>
           <Text style={styles.name}>{ingredient.name}</Text>
-          <Text style={styles.description} numberOfLines={1}>
+          <Text style={[styles.description,ingredient.maxNumberPerDay===0 && {color: 'lightgrey', zIndex:100}]} numberOfLines={1}>
             {ingredient.description}
           </Text>
           <View style={{marginTop:20}}>

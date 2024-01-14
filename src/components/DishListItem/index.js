@@ -55,18 +55,23 @@ export const DishListItem = ({dish}) => {
   }, [dish]);
 
   return (
-    <Pressable style={styles.viewContainer} onPress={() => navigation.navigate('Dish', {id: dish.id})}>
+    <Pressable 
+      style={styles.viewContainer} 
+      onPress={() => navigation.navigate('Dish', {id: dish.id})}
+      disabled={dish.maxNumberPerDay===0}
+    >
       <View style={{width:'31%'}}>
         <Image
           source={{uri: dish.image_url}}
           style={styles.image}
           resizeMode="cover"
+          blurRadius={dish.maxNumberPerDay===0 ? 20:0}
         />
       </View>
-      <View style={styles.itemCliquable}>
+      <View style={[styles.itemCliquable,dish.maxNumberPerDay===0 && {backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex:100}]}>
         <View style={{paddingHorizontal:10}}>
           <Text style={styles.name}>{dish.name}</Text>
-          <Text style={styles.description} numberOfLines={1}>
+          <Text style={[styles.description,dish.maxNumberPerDay===0 && {color: 'lightgrey', zIndex:100}]} numberOfLines={1}>
             {dish.description}
           </Text>
           <View style={{marginTop:20}}>

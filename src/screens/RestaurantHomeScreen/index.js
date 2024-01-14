@@ -205,6 +205,7 @@ export const listDishesByRestaurant = /* GraphQL */ `
           image
           description
           price
+          maxNumberPerDay
           image_url
           structureID
           createdAt

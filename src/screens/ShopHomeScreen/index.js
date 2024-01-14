@@ -111,9 +111,6 @@ export const ShopeHomeScreen = () => {
     API.graphql(graphqlOperation(listIngredientsByShop, {id: idShop})).then(
       resp => {
         const ingredientList = resp.data.getStructure.Ingredients.items
-        // .filter(
-        //   _ => !_._deleted,
-        // );
         setIngredients(ingredientList);
       },
     );
@@ -206,6 +203,7 @@ export const listIngredientsByShop = /* GraphQL */ `
           image_url
           description
           price
+          maxNumber
           structureID
           createdAt
           updatedAt
