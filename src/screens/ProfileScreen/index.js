@@ -5,15 +5,18 @@ import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {User, UserType} from '../../models';
 import {createUser, updateUser} from '../../graphql/mutations';
+import { useNavigation } from '@react-navigation/native';
 
 export const ProfileScreen = () => {
   const {dbUser, sub, setDbUser, dbUserLocation} = useAuthContext();
+  const navigation = useNavigation()
 
   const [name, setName] = useState(dbUser?.name ?? '');
   const [address, setAdress] = useState(dbUser?.address ?? '');
   const [phonenumber, setPhonenumber] = useState(dbUser?.phonenumber ?? '');
   const [lat, setLat] = useState(dbUser?.lat);
   const [lng, setLng] = useState(dbUser?.lng);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (dbUserLocation !== null) {
@@ -31,6 +34,7 @@ export const ProfileScreen = () => {
   };
 
   const addNewUser = async () => {
+    setLoading(true)
     try {
       const user = await API.graphql(
         graphqlOperation(createUser, { 
@@ -47,13 +51,16 @@ export const ProfileScreen = () => {
         }),
       );
       setDbUser(user.data.createUser);
+      if(user.data){setLoading(false)}
     } catch (e) {
+      setLoading(false)
       Alert.alert('Error', e.message);
       console.log('error while adding new user::', e)
     }
   };
 
   const editExistedUser = async () => {
+    setLoading(true)
     const updatedUser = await API.graphql(
       graphqlOperation(updateUser, {
         input: {
@@ -69,28 +76,54 @@ export const ProfileScreen = () => {
     );
     console.log('the updated user:', updatedUser);
     setDbUser(updatedUser.data.updateUser);
+    if(updatedUser) {
+      setLoading(false);
+      navigation.goBack()
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Mes Infos</Text>
-      <Input value={name} onChangeText={setName} placeholder="Name" />
-      <Input value={address} onChangeText={setAdress} placeholder="Adresse" />
-      <Input value={phonenumber} onChangeText={setPhonenumber} placeholder="Numéro de Tél" />
+      <Input 
+        value={name} 
+        onChangeText={setName} 
+        placeholder="Name" 
+        inputContainerStyle={styles.inputContainer}
+      />
+      <Input 
+        value={address} 
+        onChangeText={setAdress} 
+        placeholder="Adresse" 
+        inputContainerStyle={styles.inputContainer}
+      />
+      <Input 
+        value={phonenumber} 
+        onChangeText={setPhonenumber} 
+        placeholder="Numéro de Tél" 
+        inputContainerStyle={styles.inputContainer}
+      />
       <Input
         value={`${lat}`}
         onChangeText={setLat}
         placeholder="Latitude"
         disabled={lat}
+        inputContainerStyle={styles.inputContainer}
       />
       <Input
         value={`${lng}`}
         onChangeText={setLng}
         placeholder="Longitude"
         disabled={lat}
+        inputContainerStyle={styles.inputContainer}
       />
 
-      <Button title="Sauvegarder" onPress={onSave} />
+      <Button 
+        title="Sauvegarder" 
+        onPress={onSave} 
+        buttonStyle={{backgroundColor:'#249689', borderRadius:10}}
+        loading={loading}
+      />
     </View>
   );
 };
@@ -105,4 +138,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     color: '#000',
   },
+  inputContainer:{
+    borderWidth:1, 
+    borderRadius:10, 
+    borderColor:'#249689'
+  }
 });
