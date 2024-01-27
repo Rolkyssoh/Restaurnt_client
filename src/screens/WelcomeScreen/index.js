@@ -80,7 +80,7 @@ export const WelcomeScreen = () => {
                 titleStyle={{color:'#000'}}
                 title={"Sauter"} 
                 buttonStyle={styles.button2Styles}
-                onPress={() => navigation.navigate('HomeTabs')}
+                onPress={() => navigation.navigate('login')}
             />
         </View>
     </View>

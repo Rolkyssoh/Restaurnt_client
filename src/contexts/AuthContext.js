@@ -1,7 +1,6 @@
 import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {listUsers} from '../graphql/queries';
-import {User} from '../models';
 import * as Location from 'expo-location';
 
 const AuthContext = createContext();
@@ -16,11 +15,13 @@ const AuthContextProvider = ({children}) => {
   const sub = authUser?.attributes?.sub;
 
   useEffect(() => {
+    console.log('the first innn:::', sub)
     Auth.currentAuthenticatedUser({bypassCache: true}).then(setAuthUser);
   }, []);
 
-  useEffect(() => {
-    if (!sub) {
+  useEffect(() => { 
+    if (sub == undefined) {
+      setLoading(false);
       return;
     }
 

@@ -19,6 +19,7 @@ export const ProfileScreen = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log('in the component here!!!!')
     if (dbUserLocation !== null) {
       setLat(dbUserLocation.latitude);
       setLng(dbUserLocation.longitude);

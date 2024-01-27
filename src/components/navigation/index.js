@@ -27,6 +27,8 @@ import {useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Auth} from 'aws-amplify';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SignUpScreen } from '../../screens/SignUpScreen';
+import { LoginScreen } from '../../screens/LoginSceen';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -112,7 +114,7 @@ export const HomeTabsRoutes = () => {
 };
 
 export const RootNavigator = () => {
-  const {dbUser, loading} = useAuthContext();
+  const {dbUser, loading, authUser} = useAuthContext();
 
   useEffect(() => {
     console.log('le dbUser dans root nav:', dbUser);
@@ -120,12 +122,12 @@ export const RootNavigator = () => {
 
   if (loading) {
     return (
-      // <ActivityIndicator
-      //   size={'large'}
-      //   color="#000"
-      //   style={{alignSelf: 'center', marginTop: 60}}
-      // />
-      <EntryScreen />
+      <ActivityIndicator
+        size={'large'}
+        color="#000"
+        style={{alignSelf: 'center', marginTop: 60}}
+      />
+      // <EntryScreen />
     );
   }
 
@@ -152,9 +154,9 @@ export const RootNavigator = () => {
         ) : (
           <Stack.Screen name="NotFound" component={NotAuthorize} />
         )
-      ) : (
+      ) : authUser ? (
         <Stack.Screen name="Profile" component={ProfileScreen} />
-      )}
+      ) : <Stack.Screen name="HomeStack" component={HomeStackNavigator} />}
     </Stack.Navigator>
   );
 };
@@ -187,6 +189,17 @@ const HomeStackNavigator = props => {
         name='Welcome'
         component={WelcomeScreen}
         options={{headerShown: false}} 
+      />}
+      
+      {!authUser && <HomeStackRoutes.Screen
+        name="signup"
+        component={SignUpScreen}
+        options={{headerShown: false}}
+      />}
+      {!authUser && <HomeStackRoutes.Screen
+        name="login"
+        component={LoginScreen}
+        options={{headerShown: false}}
       />}
       <HomeStackRoutes.Screen
         name="HomeTabs"

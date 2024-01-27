@@ -40,6 +40,7 @@ const App = () => {
       try {
         // await AsyncStorage.setItem('my-key', value);
         await AsyncStorage.setItem('@thePreviousRouteName', value)
+        console.log('the current route:::', value)
       } catch (e) {
         // saving error
         console.log('Error while saving the current, route::', e)
@@ -92,4 +93,5 @@ const styles = StyleSheet.create({
   container: {backgroundColor: '#d5d5d5', flex: 1},
 });
 
-export default withAuthenticator(App);
+// export default withAuthenticator(App);
+export default App;
