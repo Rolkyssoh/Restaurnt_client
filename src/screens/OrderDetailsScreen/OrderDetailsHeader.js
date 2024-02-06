@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
 import Config from 'react-native-config'
 import { englishToFrench } from '../../translation';
 import { getStructure } from '../../graphql/queries';
-import { API, graphqlOperation } from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 
 AWS.config.update({
   accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
@@ -24,6 +24,7 @@ dayjs.extend(relativeTime);
 export const OrderDetailsHeader = ({order}) => {
   const [currentStruct, setCurrentStruct] = useState(null);
   const s3 = new AWS.S3();
+   const client = generateClient()
 
   useEffect(() => {
     if(order){
@@ -32,9 +33,10 @@ export const OrderDetailsHeader = ({order}) => {
   },[order.structureID])
 
   const getStructureByHisIdInOrder = async (structID) => {
-    const structureInOrder = await API.graphql(
-        graphqlOperation(getStructure, {id: structID}),
-    );
+    const structureInOrder = await client.graphql({
+      query: getStructure,
+      variables: {id: structID}
+    })
     setCurrentStruct(structureInOrder.data.getStructure);
   }
 

@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Config from 'react-native-config'
 import { useAuthContext } from '../../contexts/AuthContext';
-import { API, graphqlOperation } from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import { updateUser } from '../../graphql/mutations';
 
 AWS.config.update({
@@ -19,6 +19,7 @@ AWS.config.update({
 
 const ShopHeader = ({shop, searchTerm, setTerm}) => {
   const s3 = new AWS.S3();
+  const client = generateClient();
   const { dbUser, setDbUser } = useAuthContext()
   const [shopPicture, setShopPicture] = useState();
   const [isFavorite, setIsFavorite] = useState();
@@ -65,26 +66,28 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
       /**Add structure to my favorite */
       let updated;
       if(arrayOfFavorite ===null || arrayOfFavorite.length ===0){
-        updated = await API.graphql(
-          graphqlOperation(updateUser, {
+        updated = await client.graphql({
+          query: updateUser,
+          variables: {
             input: {
               favouriteRestaurants: [shop.id],
               id: dbUser.id,
-            },
-          }),
-        );
+            }
+          }
+        })
       }else if(arrayOfFavorite!=null && 
           arrayOfFavorite.length>0 &&
           arrayOfFavorite.find((_) => _.id === shop.id)==undefined)
       {
-        updated = await API.graphql(
-          graphqlOperation(updateUser, {
+        updated = await client.graphql({
+          query: updateUser,
+          variables: {
             input: {
               favouriteRestaurants: [shop.id, ...arrayOfFavorite],
               id: dbUser.id,
-            },
-          }),
-        );
+            }
+          }
+        })
       } else {
         console.log('This shop is already in your favoris!!!')
         setIsLoading(false)
@@ -100,15 +103,15 @@ const ShopHeader = ({shop, searchTerm, setTerm}) => {
     } else if(action==='remove'){
       /**Remove structure to my favorite */
       const removed = arrayOfFavorite.filter((favorite) => favorite != shop.id)
-      const updated = await API.graphql(
-        graphqlOperation(updateUser, {
+      const updated = await client.graphql({
+        query: updateUser,
+        variables: {
           input: {
-            // _version: dbUser._version,
             favouriteRestaurants: removed,
             id: dbUser.id,
-          },
-        }),
-      );
+          }
+        }
+      });
       if(updated){
         setDbUser(updated.data.updateUser)
         setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)

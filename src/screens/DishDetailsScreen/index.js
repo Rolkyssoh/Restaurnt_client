@@ -3,16 +3,17 @@ import React, {useEffect, useState} from 'react';
 import {Button, Divider, Text} from '@rneui/themed';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {useDishContext} from '../../contexts/DishContext';
 import {getDish} from '../../graphql/queries';
 import styles from './styles'
 import { Image } from '@rneui/base';
+import {generateClient} from 'aws-amplify/api';
 
 export const DishDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const client = generateClient()
   const {addDishToBasket, basketDishes, loading} = useBasketContext();
   const {onMinus, onPlus, quantity, setQuantity} = useDishContext();
 
@@ -20,11 +21,17 @@ export const DishDetailsSCreen = () => {
 
   const [dish, setDish] = useState(null);
 
+  const theGettingDish = async (thID) => {
+    const theDish = await client.graphql({
+      query: getDish,
+      variables: {id: thID}
+    })
+    console.log({theDish})
+    setDish(theDish.data.getDish)
+
+  }
   useEffect(() => {
-    if (id)
-      API.graphql(graphqlOperation(getDish, {id})).then(resp => {
-        setDish(resp.data.getDish);
-      });
+    if (id) theGettingDish(id)
   }, [id]);
 
   useEffect(() => {

@@ -1,10 +1,11 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Input, Text } from '@rneui/themed'
 import { createBugs } from '../../graphql/mutations';
-import { API, graphqlOperation } from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import { UserType } from '../../models';
 
 export const BugsScreen = () => {
     const [title, setTitle] = useState()
@@ -12,25 +13,35 @@ export const BugsScreen = () => {
     const[loading, setLoading] =useState(false)
     const { dbUser } = useAuthContext()
     const navigation = useNavigation()
+    const client = generateClient()    
 
     const addNewBug = async () => {
         setLoading(true)
+        const customInput = {
+          title: title,
+          details: details,
+        }
+
+        if(dbUser.type === UserType.CUSTOMER){
+          customInput.userID = dbUser.id
+        } else if(dbUser.type === UserType.DRIVER){
+          customInput.courierID = dbUser.id
+        }
+
         try {
-          const bug = await API.graphql(
-            graphqlOperation(createBugs, { 
-              input: {
-                title,
-                details,
-                userID: dbUser.id,
-              },
-            }),
-          );
+          const bug = await client.graphql({
+            query: createBugs,
+            variables: {
+              input: customInput
+            }
+          })
           if(bug){
             navigation.goBack();
             setLoading(false)
           }
         } catch (e) {
-          Alert.alert('Error', e.message);
+          Alert.alert('Error', e);
+          console.log('the errorllll:', e)
           setLoading(false)
         }
     };

@@ -2,13 +2,14 @@ import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {API, graphqlOperation} from 'aws-amplify';
 import {getCourier, getOrder, listCouriers} from '../../graphql/queries';
 import {onUpdateCourier, onUpdateOrder} from '../../graphql/subscriptions';
 import { englishToFrench } from '../../translation';
+import {generateClient} from 'aws-amplify/api';
 
 export const PositionOrderDeliveryScreen = ({id}) => {
   const mapRef = useRef(null);
+  const client = generateClient();
   const [order, setOrder] = useState(null);
   const [courier, setCourier] = useState(null);
 
@@ -18,7 +19,7 @@ export const PositionOrderDeliveryScreen = ({id}) => {
       return;
     }
     getOrderById();
-    observeOrderForCourier();
+    // observeOrderForCourier();
   }, []);
 
   useEffect(() => {
@@ -31,18 +32,22 @@ export const PositionOrderDeliveryScreen = ({id}) => {
     //   }
     // });
     // return () => subscription.unsubscribe();
+    observeOrderForCourier()
   }, [order]);
 
+  const gettingCourier = async () => {
+    const findCourier = await client.graphql({
+      query: getCourier,
+      variables: {id: order.courierID }
+    })
+    console.log({findCourier})
+    setCourier(findCourier.data.getCourier);
+  }
+  
   useEffect(() => {
     if (order?.courierID) {
-      // DataStore.query(Courier, order.orderCourierId).then(setCourier);
 
-      API.graphql(
-        graphqlOperation(getCourier, {id: order.courierID}),
-      ).then(result => {
-        console.log('the current courier:', result.data.getCourier);
-        setCourier(result.data.getCourier);
-      });
+      gettingCourier()
     }
   }, [order?.courierID]);
 
@@ -61,20 +66,11 @@ export const PositionOrderDeliveryScreen = ({id}) => {
     if (!courier) {
       return;
     }
-    // const subscription = DataStore.observe(Courier, courier.id).subscribe(
-    //   msg => {
-    //     if (msg.opType === 'UPDATE') {
-    //       setCourier(msg.element);
-    //     }
-    //   },
-    // );
-    // return () => subscription.unsubscribe();
 
-    const subscription = API.graphql(
-      graphqlOperation(onUpdateCourier, {
-        filter: {id: {eq: courier.id}},
-      }),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onUpdateCourier,
+      variables: {id: courier.id }
+    }).subscribe({
       next: ({value}) => {
         // fetchDishes(id);
         console.log('le wath onUpdateCourier:', value);
@@ -86,18 +82,19 @@ export const PositionOrderDeliveryScreen = ({id}) => {
     return () => subscription.unsubscribe();
   }, [courier]);
 
-  const getOrderById = () => {
-    API.graphql(graphqlOperation(getOrder, {id})).then(response => {
-      console.log('the current user orders:,', response.data.getOrder);
-      setOrder(response.data.getOrder);
-    });
+  const getOrderById = async () => {
+    const response = await client.graphql({
+      query: getOrder,
+      variables: {id: id}
+    })
+    setOrder(response.data.getOrder);
   };
+
   const observeOrderForCourier = () => {
-    const subscription = API.graphql(
-      graphqlOperation(onUpdateOrder, {
-        filter: {id: {eq: id}},
-      }),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onUpdateOrder,
+      variables: {id: id}
+    }).subscribe({
       next: ({value}) => {
         getOrderById();
         console.log('le wath onCreateDish:', value);

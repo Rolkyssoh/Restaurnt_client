@@ -1,11 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {createOrder, createOrderDish, deleteBasket} from '../graphql/mutations';
 import {getOrder} from '../graphql/queries';
 import {useAuthContext} from './AuthContext';
 import {useBasketContext} from './BasketContext';
 import { OrderStatus } from '../models';
+import {generateClient} from 'aws-amplify/api';
 
 const orderContext = createContext();
 
@@ -20,62 +20,64 @@ const OrderContextProvider = ({children}) => {
     basket,
     setBasket,
   } = useBasketContext();
+  const client = generateClient()
 
   const [orders, setOrders] = useState([]);
   const [orderLoading, setOrderLoading] = useState(false);
 
   useEffect(() => {
-    if (dbUser?.id)
-      API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
-        resp => {
-          // const ordersList = resp.data.listOrders.items.filter(_ => !_._deleted);
-          // setOrders(ordersList);
-          // const userIsOrders = resp.data.getUser.Orders.items.filter(
-          //   _ => !_._deleted,
-          // );
-          // console.log('get orderssss:', userIsOrders);
-          setOrders(resp.data.getUser.Orders.items);
-        },
-      );
+    if (dbUser?.id) getOrdersByDbUser()
+      
   }, [dbUser]);
+
+  const getOrdersByDbUser = async () => {
+    const theOrders = await client.graphql({
+      query: listOrdersByDbUser,
+      variables:{id: dbUser.id}
+    })
+    setOrders(theOrders.data.getUser.Orders.items)
+  }
 
   // NEW ORDER FOR DISHES
   const createNewOrder = async () => {
     setOrderLoading(true);
     // create the order
-    const newOrder = await API.graphql(
-      graphqlOperation(createOrder, {
+    const newOrder = await client.graphql({
+      query: createOrder,
+      variables: {
         input: {
           userID: dbUser.id,
           structureID: restaurantInfos.id,
           status: OrderStatus.NEW
-        },
-      }),
-    );
+        }
+      }
+    })
 
     console.log('the new created order:', newOrder);
 
     // add all basketDishes to the order
     await Promise.all(
       basketDishes.map(basketDish => {
-        API.graphql(
-          graphqlOperation(createOrderDish, {
+        client.graphql({
+          query:createOrderDish,
+          variables: {
             input: {
               quantity: basketDish.quantity,
               orderID: newOrder.data.createOrder.id,
               orderDishDishId: basketDish.Dish.id,
             },
-            Dish: basketDish.Dish,
-          }),
-        );
+            Dish: basketDish.Dish
+          }
+        })
       }),
     );
 
     if (newOrder) {
       // get the new created order with all details
-      const theCompltedNewOrder = await API.graphql(
-        graphqlOperation(getOrderByOrderId, {id: newOrder.data.createOrder.id}),
-      );
+      const theCompltedNewOrder = await client.graphql({
+        query: getOrderByOrderId,
+        variables: {id: newOrder.data.createOrder.id}
+      })
       console.log({theCompltedNewOrder});
 
       console.log('le basket dans orderContext:', basket);
@@ -83,16 +85,14 @@ const OrderContextProvider = ({children}) => {
       if (theCompltedNewOrder) {
         setOrderLoading(false);
         // Delete basket
-        API.graphql(
-          graphqlOperation(deleteBasket, {
+        await client.graphql({
+          query: deleteBasket,
+          variables: {
             input: {
-              // _version: basket.data
-              //   ? basket.data.createBasket._version
-              //   : basket._version,
-              id: basket.data ? basket.data.createBasket.id : basket.id,
-            },
-          }),
-        );
+              id: basket.data ? basket.data.createBasket.id : basket.id
+            }
+          }
+        })
       }
 
       setBasket(null);
@@ -106,57 +106,54 @@ const OrderContextProvider = ({children}) => {
   const createIngredientOrder = async () => {
     setOrderLoading(true);
     // create the order
-    const newIngredientOrder = await API.graphql(
-      graphqlOperation(createOrder, {
+    const newIngredientOrder = await client.graphql({
+      query: createOrder,
+      variables: {
         input: {
           userID: dbUser.id,
           structureID: shopInfos.id,
           status: 'NEW',
-        },
-      }),
-    );
+        }
+      }
+    })
 
     console.log('the new created ingredient  order:', newIngredientOrder);
 
     // add all basketDishes to the order
     await Promise.all(
       basketDishes.map(basketIngredient => {
-        API.graphql(
-          graphqlOperation(createOrderDish, {
+        client.graphql({
+          query: createOrderDish,
+          variables: {
             input: {
               quantity: basketIngredient.quantity,
               orderID: newIngredientOrder.data.createOrder.id,
               orderDishIngredientId: basketIngredient.Ingredient.id,
             },
-            Ingredient: basketIngredient.Ingredient,
-          }),
-        );
+            Ingredient: basketIngredient.Ingredient
+          }
+        })
       }),
     );
 
     // get the new created order with all details
     if (newIngredientOrder) {
-      const theCompltedNewOrder = await API.graphql(
-        graphqlOperation(getOrderByOrderId, {
-          id: newIngredientOrder.data.createOrder.id,
-        }),
-      );
+      const theCompltedNewOrder = await client.graphql({
+        query: getOrderByOrderId,
+        variables: { id: newIngredientOrder.data.createOrder.id}
+      })
 
       console.log({theCompltedNewOrder});
 
       if (theCompltedNewOrder) {
         setOrderLoading(false);
         // Delete basket
-        await API.graphql(
-          graphqlOperation(deleteBasket, {
-            input: {
-              // _version: basket.data
-              //   ? basket.data.createBasket._version
-              //   : basket._version,
-              id: basket.data ? basket.data.createBasket.id : basket.id,
-            },
-          }),
-        );
+        await client.graphql({
+          query: deleteBasket,
+          variables: {
+            input: {id: basket.data ? basket.data.createBasket.id : basket.id}
+          }
+        })
       }
       setBasket(null);
       setOrders([theCompltedNewOrder.data.getOrder, ...orders]);
@@ -168,13 +165,17 @@ const OrderContextProvider = ({children}) => {
 
   const getOrderById = async id => {
     console.log('we get the iiidd hereee:::', id)
-    const order = await API.graphql(graphqlOperation(getOrder, {id}));
+    const order = await client.graphql({
+      query: getOrder,
+      variables: {id: id}
+    })
     const theGetOrder = order.data.getOrder;
     console.log('the returned oooorder::::', theGetOrder)
 
-    const orderDishesByOrderId = await API.graphql(
-      graphqlOperation(listOrderDishesByOrderId, {id}),
-    );
+    const orderDishesByOrderId = await client.graphql({
+      query: listOrderDishesByOrderId,
+      variables: {id: id}
+    })
     const notDeletedDishes = orderDishesByOrderId.data.getOrder.OrderDishes.items;
       // .filter(
       //   _ => !_._deleted,

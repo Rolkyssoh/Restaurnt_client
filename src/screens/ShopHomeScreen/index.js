@@ -7,7 +7,7 @@ import {useBasketContext} from '../../contexts/BasketContext';
 import {Button, Text} from '@rneui/themed';
 import ShopHeader from './ShopHeader';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import {IngredientListItem} from '../../components/shop/IngredientListItem';
 import {getStructure} from '../../graphql/queries';
 import {
@@ -19,6 +19,7 @@ import {
 export const ShopeHomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const client = generateClient();
   const {
     basket,
     basketDishes,
@@ -35,6 +36,13 @@ export const ShopeHomeScreen = () => {
 
   const id = route.params?.ShopId;
 
+  const gettingShop = async () => {
+    const resp = await client.graphql({
+      query: getStructure,
+      variables: {id: id}
+    })
+    setShopContent(resp.data.getStructure);
+  }
   // For get shop by his id
   useEffect(() => {
     console.log('the id:::::::', id)
@@ -43,20 +51,24 @@ export const ShopeHomeScreen = () => {
     }
     if (shopInfos) setShopInfos(null);
     if (restaurantInfos) setRestaurantInfos(null);
-    API.graphql(graphqlOperation(getStructure, {id})).then(resp =>
-      setShopContent(resp.data.getStructure),
-    );
+    gettingShop()
     fetchIngredients(id);
   }, [id]);
 
   useEffect(() => {
     if (id) {
       // Watch the oncreate ingredients
-      const subscription = API.graphql(
-        graphqlOperation(onCreateIngredient, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      // API.graphql(
+      //   graphqlOperation(onCreateIngredient, {
+      //     filter: {structureID: {eq: id}},
+      //   }),
+      // )
+      const subscription = client.graphql({
+        query: onCreateIngredient,
+        variables: {
+          filter: { structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchIngredients(id);
         },
@@ -71,11 +83,17 @@ export const ShopeHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the onupdate ingredients
-      const subscription = API.graphql(
-        graphqlOperation(onUpdateIngredient, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      // API.graphql(
+      //   graphqlOperation(onUpdateIngredient, {
+      //     filter: {structureID: {eq: id}},
+      //   }),
+      // )
+      const subscription = client.graphql({
+        query: onUpdateIngredient,
+        variables: {
+          filter:{structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchIngredients(id);
         },
@@ -90,11 +108,17 @@ export const ShopeHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the ondelete ingredient
-      const subscriptionToDeleted = API.graphql(
-        graphqlOperation(onDeleteIngredient, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      // API.graphql(
+      //   graphqlOperation(onDeleteIngredient, {
+      //     filter: {structureID: {eq: id}},
+      //   }),
+      // )
+      const subscriptionToDeleted = client.graphql({
+        query: onDeleteIngredient,
+        variables: {
+          filter: {structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchIngredients(id);
           console.log('le wath onDeleteIngredient:', value);
@@ -107,13 +131,12 @@ export const ShopeHomeScreen = () => {
     }
   }, [id]);
 
-  const fetchIngredients = idShop => {
-    API.graphql(graphqlOperation(listIngredientsByShop, {id: idShop})).then(
-      resp => {
-        const ingredientList = resp.data.getStructure.Ingredients.items
-        setIngredients(ingredientList);
-      },
-    );
+  const fetchIngredients = async idShop => {
+    const resp = await client.graphql({
+      query: listIngredientsByShop,
+      variables: {id: idShop}
+    })
+    setIngredients(resp.data.getStructure.Ingredients.items);
   };
 
   // For search

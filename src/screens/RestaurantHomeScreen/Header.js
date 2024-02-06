@@ -3,14 +3,13 @@ import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {Image} from '@rneui/base';
 import {Divider} from '@rneui/themed';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SearchBar} from '@rneui/themed';
 import AWS from 'aws-sdk';
 import Config from 'react-native-config'
-import { API, graphqlOperation } from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import { updateUser } from '../../graphql/mutations';
 import { useAuthContext } from '../../contexts/AuthContext';
 
@@ -21,6 +20,7 @@ AWS.config.update({
 
 const Header = ({restaurant, searchTerm, setTerm}) => {
   const s3 = new AWS.S3();
+  const client = generateClient()
   const { dbUser, setDbUser } = useAuthContext()
   const [structureImg, setStructureImg] = useState();
   const [isFavorite, setIsFavorite] = useState()
@@ -71,26 +71,28 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
       */
       let updated
       if(arrayOfFavorite === null || arrayOfFavorite.length ===0){
-        updated = await API.graphql(
-          graphqlOperation(updateUser, {
+        updated = await client.graphql({
+          query: updateUser,
+          variables: {
             input: {
               favouriteRestaurants: [restaurant.id],
               id: dbUser.id,
-            },
-          }),
-        );
+            }
+          }
+        })
       } else if(arrayOfFavorite != null && 
           arrayOfFavorite.length >0 && 
           arrayOfFavorite.find((_) => _.id === restaurant.id)==undefined)
       {
-        updated = await API.graphql(
-          graphqlOperation(updateUser, {
+        updated = await client.graphql({
+          query: updateUser,
+          variables: {
             input: {
               favouriteRestaurants: [restaurant.id, ...arrayOfFavorite],
               id: dbUser.id,
-            },
-          }),
-        );
+            }
+          }
+        })
       } else{
         console.log('Existe déjà dans les favoris!!!')
         setIsLoading(false)
@@ -106,15 +108,15 @@ const Header = ({restaurant, searchTerm, setTerm}) => {
     } else if(action==='remove'){
       /**Remove structure to my favorite */
       const removed = arrayOfFavorite.filter((favorite) => favorite != restaurant.id)
-      const updated = await API.graphql(
-        graphqlOperation(updateUser, {
+      const updated = await client.graphql({
+        query: updateUser,
+        variables: {
           input: {
-            // _version: dbUser._version,
             favouriteRestaurants: removed,
             id: dbUser.id,
-          },
-        }),
-      );
+          }
+        }
+      })
       if(updated){
         setDbUser(updated.data.updateUser)
         setArrayOfFavorite(updated.data.updateUser.favouriteRestaurants)

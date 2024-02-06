@@ -1,10 +1,11 @@
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Input, Text } from '@rneui/themed'
 import { createAskedFeatures } from '../../graphql/mutations'
-import { API, graphqlOperation } from 'aws-amplify'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { useNavigation } from '@react-navigation/native'
+import {generateClient} from 'aws-amplify/api';
+import { UserType } from '../../models'
 
 export const AskedFeatures = () => {
     const [title, setTitle] = useState()
@@ -12,26 +13,35 @@ export const AskedFeatures = () => {
     const [loading, setLoading] = useState(false)
     const { dbUser } = useAuthContext()
     const navigation = useNavigation()
+    const client = generateClient()
 
     const addNewFeature = async () => {
       setLoading(true)
-      console.log('the data:::', title, details, dbUser)
+      const inputCustomed = {
+          title,
+          details,
+      }
+
+      if(dbUser.type === UserType.CUSTOMER){
+        inputCustomed.userID = dbUser.id
+      } else if(dbUser.type === UserType.DRIVER){
+        inputCustomed.courierID = dbUser.id
+      }
+
         try {
-          const feature = await API.graphql(
-            graphqlOperation(createAskedFeatures , { 
-              input: {
-                title,
-                details,
-                userID: dbUser.id,
-              },
-            }),
-          );
+          const feature = await client.graphql({
+            query: createAskedFeatures,
+            variables: {
+              input: inputCustomed
+            }
+          })
           if(feature){
             setLoading(false);
             navigation.goBack()
           }
         } catch (e) {
-          Alert.alert('Error', e.message);
+          Alert.alert('Error', e);
+          console.log('error while adding:::', e)
           setLoading(false)
         }
     };

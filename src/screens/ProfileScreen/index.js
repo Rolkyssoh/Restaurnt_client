@@ -1,15 +1,16 @@
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Input} from '@rneui/themed';
-import {API, Auth, graphqlOperation} from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import {useAuthContext} from '../../contexts/AuthContext';
-import {User, UserType} from '../../models';
+import { UserType} from '../../models';
 import {createUser, updateUser} from '../../graphql/mutations';
 import { useNavigation } from '@react-navigation/native';
 
 export const ProfileScreen = () => {
-  const {dbUser, sub, setDbUser, dbUserLocation} = useAuthContext();
+  const {dbUser,authUser, setDbUser, dbUserLocation} = useAuthContext();
   const navigation = useNavigation()
+  const client = generateClient();
 
   const [name, setName] = useState(dbUser?.name ?? '');
   const [address, setAdress] = useState(dbUser?.address ?? '');
@@ -37,20 +38,21 @@ export const ProfileScreen = () => {
   const addNewUser = async () => {
     setLoading(true)
     try {
-      const user = await API.graphql(
-        graphqlOperation(createUser, { 
+      const user = await client.graphql({
+        query: createUser,
+        variables: {
           input: {
             name,
             address,
             lat: parseFloat(lat),
             lng: parseFloat(lng),
             isActive:true,
-            sub,
+            sub: authUser.sub,
             type: UserType.CUSTOMER,
             phonenumber
-          },
-        }),
-      );
+          }
+        }
+      });
       setDbUser(user.data.createUser);
       if(user.data){setLoading(false)}
     } catch (e) {
@@ -62,8 +64,9 @@ export const ProfileScreen = () => {
 
   const editExistedUser = async () => {
     setLoading(true)
-    const updatedUser = await API.graphql(
-      graphqlOperation(updateUser, {
+    const updatedUser = await client.graphql({
+      query: updateUser,
+      variables: {
         input: {
           name,
           address,
@@ -71,10 +74,9 @@ export const ProfileScreen = () => {
           lng: parseFloat(lng),
           phonenumber,
           id: dbUser.id,
-          // _version: dbUser._version,
-        },
-      }),
-    );
+        }
+      }
+    })
     console.log('the updated user:', updatedUser);
     setDbUser(updatedUser.data.updateUser);
     if(updatedUser) {

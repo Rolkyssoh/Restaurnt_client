@@ -1,4 +1,5 @@
-import {API, Auth, graphqlOperation} from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
+import { fetchUserAttributes } from 'aws-amplify/auth';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {listUsers} from '../graphql/queries';
 import * as Location from 'expo-location';
@@ -10,26 +11,43 @@ const AuthContextProvider = ({children}) => {
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dbUserLocation, setDbUserLocation] = useState(null);
+  const client = generateClient()
 
   // the user id
-  const sub = authUser?.attributes?.sub;
+  // let sub;
 
   useEffect(() => {
-    console.log('the first innn:::', sub)
-    Auth.currentAuthenticatedUser({bypassCache: true}).then(setAuthUser);
+    handleFetchUserAttributes()
   }, []);
 
   useEffect(() => { 
-    if (sub == undefined) {
-      setLoading(false);
+    if (!authUser) {
+      // setLoading(false);
       return;
     }
+    getCurrentUserInDb()
+  }, [authUser]);
 
-    API.graphql(graphqlOperation(listUsers)).then(result => {
-      const theCurrentUser = result.data.listUsers.items.filter(
-        _ => _.sub === sub,
-      );
+      //Get the current auth user informations
+    async function handleFetchUserAttributes() {
+        try {
+            const userAttributes = await fetchUserAttributes();
+            setAuthUser(userAttributes)
+        } catch (error) {
+          console.log(error);
+        }
+    }
 
+    const getCurrentUserInDb = async () => {
+      const result = await client.graphql({
+        query: listUsers,
+        variables:{
+          filter:{
+            sub:{ eq: authUser.sub}
+          }
+        }
+      })
+      const theCurrentUser = result.data.listUsers.items
       if (theCurrentUser.length === 0) {
         (async () => {
           let {status} = await Location.requestForegroundPermissionsAsync();
@@ -44,14 +62,14 @@ const AuthContextProvider = ({children}) => {
           });
         })();
       }
+
       setDbUser(theCurrentUser[0]);
-            setLoading(false);
-    });
-  }, [sub]);
+      setLoading(false);
+    }
 
   return (
     <AuthContext.Provider
-      value={{authUser, dbUser, sub, setDbUser, loading, dbUserLocation}}>
+      value={{authUser, dbUser, setDbUser, loading, dbUserLocation}}>
       {children}
     </AuthContext.Provider>
   );

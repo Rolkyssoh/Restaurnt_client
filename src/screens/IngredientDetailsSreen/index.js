@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Divider} from '@rneui/themed';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {useIngredientContext} from '../../contexts/IngredientContext';
 import {getIngredient} from '../../graphql/queries';
@@ -13,6 +13,7 @@ import { Image } from '@rneui/base';
 export const IngredientDetailsSCreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const client = generateClient()
   const {addIngredientToBasket, basketDishes, loading} = useBasketContext();
   const {onMinus, onPlus, quantity, setQuantity} = useIngredientContext();
 
@@ -20,11 +21,17 @@ export const IngredientDetailsSCreen = () => {
 
   const [ingredient, setIngredient] = useState(null);
 
+  const gettingIngredient = async (ingredID) => {
+    const resp = await client.graphql({
+      query: getIngredient,
+      variables: {id: ingredID}
+    })
+    setIngredient(resp.data.getIngredient)
+  }
+
   useEffect(() => {
     if (id)
-      API.graphql(graphqlOperation(getIngredient, {id})).then(resp =>
-        setIngredient(resp.data.getIngredient),
-      );
+      gettingIngredient(id)
   }, [id]);
 
   useEffect(() => {

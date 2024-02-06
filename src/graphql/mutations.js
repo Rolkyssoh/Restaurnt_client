@@ -1,6 +1,60 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createBill = /* GraphQL */ `
+  mutation CreateBill(
+    $input: CreateBillInput!
+    $condition: ModelBillConditionInput
+  ) {
+    createBill(input: $input, condition: $condition) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateBill = /* GraphQL */ `
+  mutation UpdateBill(
+    $input: UpdateBillInput!
+    $condition: ModelBillConditionInput
+  ) {
+    updateBill(input: $input, condition: $condition) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteBill = /* GraphQL */ `
+  mutation DeleteBill(
+    $input: DeleteBillInput!
+    $condition: ModelBillConditionInput
+  ) {
+    deleteBill(input: $input, condition: $condition) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createBugs = /* GraphQL */ `
   mutation CreateBugs(
     $input: CreateBugsInput!
@@ -1200,6 +1254,21 @@ export const createStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1292,6 +1361,21 @@ export const updateStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1384,6 +1468,21 @@ export const deleteStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename

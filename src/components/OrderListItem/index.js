@@ -6,7 +6,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {OrderStatus} from '../../models';
 import {onUpdateOrder} from '../../graphql/subscriptions';
-import {API, graphqlOperation} from 'aws-amplify';
 import {useAuthContext} from '../../contexts/AuthContext';
 import {useOrderContext} from '../../contexts/OrderContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -14,6 +13,7 @@ import AWS from 'aws-sdk';
 import Config from 'react-native-config'
 import { englishToFrench } from '../../translation';
 import { getStructure } from '../../graphql/queries';
+import {generateClient} from 'aws-amplify/api';
 
 AWS.config.update({
   accessKeyId: Config.REACT_APP_S3_ACCESS_KEY_ID,
@@ -31,26 +31,28 @@ export const OrderListItem = ({order}) => {
   const [totalPrice, setTotalPrice] = useState(null);
   const [currentStruct, setCurrentStruct] = useState(null);
   const s3 = new AWS.S3();
+  const client = generateClient();
 
-  const fetchOrders = () => {
-    API.graphql(graphqlOperation(listOrdersByDbUser, {id: dbUser.id})).then(
-      resp => {
-        // const userIsOrders = resp.data.getUser.Orders.items.filter(
-        //   _ => !_._deleted,
-        // );
-        setOrders(resp.data.getUser.Orders.items);
-      },
-    );
+  const fetchOrders = async () => {
+    const userIsOrders = await client.graphql({
+      query: listOrdersByDbUser,
+      variables: { id: dbUser.id }
+    })
+    setOrders(userIsOrders.data.getUser.Orders.items);
   };
 
   useEffect(() => {
     if (order.id) {
       // Watch the onupdate order
-      const subscriptionToUpdated = API.graphql(
-        graphqlOperation(onUpdateOrder, {
-          filter: {id: {eq: order.id}},
-        }),
-      ).subscribe({
+      // API.graphql(
+      //   graphqlOperation(onUpdateOrder, {
+      //     filter: {id: {eq: order.id}},
+      //   }),
+      // )
+      const subscriptionToUpdated = client.graphql({
+        query: onUpdateOrder,
+        variables: {id: order.id}
+      }).subscribe({
         next: ({value}) => {
           fetchOrders();
           console.log('le wath onUPdate order:', value);
@@ -98,9 +100,10 @@ export const OrderListItem = ({order}) => {
   };
 
   const getStructureByHisIdInOrder = async (structID) => {
-    const structureInOrder = await API.graphql(
-        graphqlOperation(getStructure, {id: structID}),
-    );
+    const structureInOrder = await client.graphql({
+      query: getStructure,
+      variables: {id: structID}
+    })
     setCurrentStruct(structureInOrder.data.getStructure)
   }
 

@@ -1,4 +1,3 @@
-import {API, graphqlOperation} from 'aws-amplify';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {
   createBasket,
@@ -10,11 +9,13 @@ import {listBasketDishes, listBaskets} from '../graphql/queries';
 import {Basket, BasketDish} from '../models';
 import {useAuthContext} from './AuthContext';
 import {useDishContext} from './DishContext';
+import {generateClient} from 'aws-amplify/api';
 
 const BasketContext = createContext();
 
 const BasketContextProvider = ({children}) => {
   const {dbUser} = useAuthContext();
+  const client = generateClient();
   const {setQuantity, quantity} = useDishContext();
 
   const [restaurantInfos, setRestaurantInfos] = useState(null);
@@ -60,42 +61,31 @@ const BasketContextProvider = ({children}) => {
     // setTotalPrice(thePrice);
   }, [basketDishes]);
 
+  const theBsketByStruct = async (shp, restau) => {
+    const theBasketList = await client.graphql({
+      query: listBasketsByStructure,
+      variables: { id:  restaurantInfos ? restau.id : shp.id}
+    })
+    console.log('{theBasketList}', theBasketList.data.getStructure.Baskets.items)
+    const theBasketListFiltered = theBasketList.data.getStructure.Baskets.items.filter(
+      (_) => _.userID === dbUser?.id
+    )
+    setBasket(theBasketListFiltered[0])
+  }
+
   // FOR RESTAURANT
   useEffect(() => {
-    if (restaurantInfos)
-      API.graphql(
-        graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
-      ).then(result => {
-        const basketList = result.data.getStructure.Baskets.items.filter(
-          _ => _.userID === dbUser?.id,
-        );
-        setBasket(basketList[0]);
-      });
+    console.log('{shopInfos} nulll,', null)
+    console.log({restaurantInfos})
+    if (restaurantInfos) theBsketByStruct(null, restaurantInfos)
   }, [dbUser, restaurantInfos]);
 
   // FOR INGREDIENT
   useEffect(() => {
-    if (shopInfos)
-      API.graphql(
-        graphqlOperation(listBasketsByStructure, {
-          id: shopInfos?.id,
-        }),
-      ).then(result => {
-        const basketList = result.data.getStructure.Baskets.items.filter(
-          _ => _.userID === dbUser?.id,
-        );
-        setBasket(basketList[0]);
-      });
+    if (shopInfos) theBsketByStruct(shopInfos, null)
   }, [dbUser, shopInfos]);
 
   useEffect(() => {
-    // API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
-    //   const basketDishesByBasketId = resp.data.listBasketDishes.items.filter(
-    //     _ => !_._deleted && _.basketID === basket?.id,
-    //   );
-    //   setBasketDishes(basketDishesByBasketId);
-    // });
-    // const existBd = basket?.BasketDishes?.items.filter(_ => !_._deleted);
     if (basket && restaurantInfos) {
       if (basket.structureID === restaurantInfos.id) {
         setBasketDishes(basket?.BasketDishes?.items);
@@ -123,44 +113,48 @@ const BasketContextProvider = ({children}) => {
       // // Increase Qty
       if (quantity === 0) {
         // Delete basketDish
-        await API.graphql(
-          graphqlOperation(deleteBasketDish, {
-            input: {
-              id: basketDishToUpdate.id,
-            },
-          }),
-        );
+        await client.graphql({
+          query: deleteBasketDish,
+          variables: {
+            input: { id: basketDishToUpdate.id }
+          }
+        })
       } else {
-        await API.graphql(
-          graphqlOperation(updateBasketDish, {
+        await client.graphql({
+          query: updateBasketDish,
+          variables: {
             input: {
-              quantity,
               id: basketDishToUpdate.id,
-            },
-          }),
-        );
+              quantity: quantity
+            }
+          }
+        })
       }
 
-      await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
-        const basketDishesByBasketId = resp.data.listBasketDishes.items.filter(
-          _ => _.basketID === basket?.id,
-        );
-        if (basketDishesByBasketId)
-          API.graphql(
-            graphqlOperation(listBasketsByStructure, {id: restaurantInfos?.id}),
-          ).then(result => {
-            const basketList = result.data.getStructure.Baskets.items.filter(
-              _ => _.userID === dbUser?.id,
-            );
-            setBasket(basketList[0]);
-          });
-        setBasketDishes(basketDishesByBasketId);
-        setLoading(false);
-      });
+      const theBasketDish = await client.graphql({
+        query: listBasketDishes,
+        variables: {
+          filter: { basketID : {eq: basket?.id}}
+        }
+      })
+      const basketDishesByBasketId = theBasketDish.data.listBasketDishes.items
+      if(basketDishesByBasketId){
+        const basketList = await client.graphql({
+          query: listBasketsByStructure,
+          variables : { id: restaurantInfos?.id }
+        })
+        const basketListFiltered = basketList.data.getStructure.Baskets.items.filter(
+          (_) => _.userID === dbUser?.id
+        )
+        setBasket(basketListFiltered[0])
+      }
+      setBasketDishes(basketDishesByBasketId);
+      setLoading(false);
     } else {
       //  create a BasketDish item and save
-      const newDish = await API.graphql(
-        graphqlOperation(createBasketDish, {
+      const newDish = await client.graphql({
+        query: createBasketDish,
+        variables:{
           input: {
             quantity,
             basketID: theBasket.data
@@ -169,8 +163,8 @@ const BasketContextProvider = ({children}) => {
             basketDishDishId: dish?.id,
           },
           Dish: dish,
-        }),
-      );
+        }
+      })
 
       if (basketDishes.length === 0) {
         setBasketDishes([newDish.data.createBasketDish]);
@@ -183,14 +177,15 @@ const BasketContextProvider = ({children}) => {
   };
 
   const createRestaurantNewBasket = async () => {
-    const newBasket = await API.graphql(
-      graphqlOperation(createBasket, {
+    const newBasket = await client.graphql({
+      query: createBasket,
+      variables: {
         input: {
           userID: dbUser.id,
           structureID: restaurantInfos.id,
-        },
-      }),
-    );
+        }
+      }
+    })
     setBasket(newBasket);
     return newBasket;
   };
@@ -213,46 +208,48 @@ const BasketContextProvider = ({children}) => {
 
       if (quantity === 0) {
         // Delete basketDish
-        await API.graphql(
-          graphqlOperation(deleteBasketDish, {
-            input: {
-              id: basketDishToUpdate.id,
-            },
-          }),
-        );
+        await client.graphql({
+          query: deleteBasketDish,
+          variables: {
+            input: { id: basketDishToUpdate.id }
+          }
+        });
       } else {
-        API.graphql(
-          graphqlOperation(updateBasketDish, {
+        await client.graphql({
+          query: updateBasketDish,
+          variables: {
             input: {
               quantity,
               id: basketIngredientToUpdate.id,
-            },
-          }),
-        );
+            }
+          }
+        })
       }
 
-      await API.graphql(graphqlOperation(listBasketDishes)).then(resp => {
-        const basketIngredientsByBasketId =
-          resp.data.listBasketDishes.items.filter(
-            _ =>_.basketID === basket?.id,
-          );
+      const basketIngred = await client.graphql({
+        query: listBasketDishes,
+        variables: {
+          filter: { basketID: {eq: basket?.id} }
+        }
+      })
+      const basketIngredientsByBasketId = basketIngred.data.listBasketDishes.items
+      if(basketIngredientsByBasketId){
+        const basketList = await client.graphql({
+          query: listBasketsByStructure,
+          variables : {id : shopInfos?.id}
+        })
+        const basketListFiltered = basketList.data.getStructure.Baskets.items.filter(
+          (_) => _.userID === dbUser?.id
+        )
+        setBasket(basketListFiltered[0])
+      }
 
-        if (basketIngredientsByBasketId)
-          API.graphql(
-            graphqlOperation(listBasketsByStructure, {id: shopInfos?.id}),
-          ).then(result => {
-            const basketList = result.data.getStructure.Baskets.items.filter(
-              _ =>_.userID === dbUser?.id,
-            );
-            setBasket(basketList[0]);
-          });
-
-        setBasketDishes(basketIngredientsByBasketId);
-        setLoading(false);
-      });
+      setBasketDishes(basketIngredientsByBasketId);
+      setLoading(false);
     } else {
-      const newIngredient = await API.graphql(
-        graphqlOperation(createBasketDish, {
+      const newIngredient = await client.graphql({
+        query: createBasketDish,
+        variables: {
           input: {
             quantity,
             basketID: theBasket.data
@@ -261,8 +258,20 @@ const BasketContextProvider = ({children}) => {
             basketDishIngredientId: ingredient?.id,
           },
           Ingredient: ingredient,
-        }),
-      );
+        }
+      }) 
+      // API.graphql(
+      //   graphqlOperation(createBasketDish, {
+      //     input: {
+      //       quantity,
+      //       basketID: theBasket.data
+      //         ? theBasket.data.createBasket.id
+      //         : theBasket.id,
+      //       basketDishIngredientId: ingredient?.id,
+      //     },
+      //     Ingredient: ingredient,
+      //   }),
+      // );
 
       if (basketDishes.length === 0) {
         setBasketDishes([newIngredient.data.createBasketDish]);
@@ -275,14 +284,15 @@ const BasketContextProvider = ({children}) => {
   };
 
   const createNewShopBasket = async () => {
-    const newShopBasket = await API.graphql(
-      graphqlOperation(createBasket, {
+    const newShopBasket = await client.graphql({
+      query: createBasket,
+      variables: {
         input: {
           userID: dbUser.id,
           structureID: shopInfos.id,
-        },
-      }),
-    );
+        }
+      }
+    })
     setBasket(newShopBasket);
     return newShopBasket;
   };

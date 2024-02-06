@@ -1,6 +1,75 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getBill = /* GraphQL */ `
+  query GetBill($id: ID!) {
+    getBill(id: $id) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listBills = /* GraphQL */ `
+  query ListBills(
+    $filter: ModelBillFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBills(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        amount
+        regulated
+        paymentDate
+        monthConcerned
+        structureID
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const billsByStructureID = /* GraphQL */ `
+  query BillsByStructureID(
+    $structureID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelBillFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    billsByStructureID(
+      structureID: $structureID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        amount
+        regulated
+        paymentDate
+        monthConcerned
+        structureID
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getBugs = /* GraphQL */ `
   query GetBugs($id: ID!) {
     getBugs(id: $id) {
@@ -1228,6 +1297,21 @@ export const getStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1276,6 +1360,10 @@ export const listStructures = /* GraphQL */ `
         maxCancellations
         cancellationPenalityFee
         maxCancellationPenalityFee
+        Bills {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename

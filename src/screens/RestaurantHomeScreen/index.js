@@ -6,10 +6,10 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import {DishListItem} from '../../components';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button, Text} from '@rneui/themed';
-import {API, graphqlOperation} from 'aws-amplify';
 import {useBasketContext} from '../../contexts/BasketContext';
 import {getStructure} from '../../graphql/queries';
 import {onCreateDish, onDeleteDish, onUpdateDish} from '../../graphql/subscriptions';
+import {generateClient} from 'aws-amplify/api';
 
 export const RestaurantHomeScreen = () => {
   const navigation = useNavigation();
@@ -22,6 +22,7 @@ export const RestaurantHomeScreen = () => {
     basket,
     basketDishes,
   } = useBasketContext();
+  const client = generateClient()
 
   const [dishes, setDishes] = useState([]);
   const [filteredDishes, setFilteredDishes] = useState([]);
@@ -34,17 +35,22 @@ export const RestaurantHomeScreen = () => {
     console.log('le basket dish dans restau home:', basketDishes);
   }, [basketDishes]);
 
-  const fetchDishes = idRestau => {
-    API.graphql(graphqlOperation(listDishesByRestaurant, {id: idRestau})).then(
-      resp => {
-        const dishList = resp.data.getStructure.Dishes.items
-        // .filter(
-        //   _ => !_._deleted,
-        // );
-        setDishes(dishList);
-      },
-    );
+  const fetchDishes = async (idRestau) => {
+    const dishList = await client.graphql({
+      query: listDishesByRestaurant,
+      variables: { id: idRestau}
+    })
+    setDishes(dishList.data.getStructure.Dishes.items)
   };
+
+  const theGettingRestaurant = async (structID) => {
+    const theRestaurant = await client.graphql({
+      query: getStructure,
+      variables:{ id: structID}
+    })
+    console.log('{theRestaurant}', theRestaurant.data.getStructure)
+    setRestaurant(theRestaurant.data.getStructure)
+  }
 
   useEffect(() => {
     if (!id) {
@@ -53,9 +59,7 @@ export const RestaurantHomeScreen = () => {
     if (restaurantInfos) setRestaurantInfos(null);
     if (shopInfos) setShopInfos(null);
     // fetch the restaurant with the id
-    API.graphql(graphqlOperation(getStructure, {id})).then(restau =>
-      setRestaurant(restau.data.getStructure),
-    );
+    theGettingRestaurant(id)
 
     fetchDishes(id);
   }, [id]);
@@ -63,11 +67,12 @@ export const RestaurantHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the on create dish
-      const subscription = API.graphql(
-        graphqlOperation(onCreateDish, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      const subscription = client.graphql({
+        query: onCreateDish,
+        variables:{
+          filter:{ structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchDishes(id);
           console.log('le wath onCreateDish:', value);
@@ -83,11 +88,12 @@ export const RestaurantHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the on update dish
-      const subscription = API.graphql(
-        graphqlOperation(onUpdateDish, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      const subscription = client.graphql({
+        query: onUpdateDish,
+        variables:{
+          filter:{ structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchDishes(id);
           console.log('le wath onUpdateDish:', value);
@@ -103,11 +109,12 @@ export const RestaurantHomeScreen = () => {
   useEffect(() => {
     if (id) {
       // Watch the on delete dish
-      const subscriptionToDeleted = API.graphql(
-        graphqlOperation(onDeleteDish, {
-          filter: {structureID: {eq: id}},
-        }),
-      ).subscribe({
+      const subscriptionToDeleted = client.graphql({
+        query: onDeleteDish,
+        variables: {
+          filter: { structureID: {eq: id}}
+        }
+      }).subscribe({
         next: ({value}) => {
           fetchDishes(id);
           console.log('le wath onDeleteDish:', value);

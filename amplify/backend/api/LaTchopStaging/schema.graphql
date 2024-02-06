@@ -1,18 +1,27 @@
+type Bill @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  amount: Float!
+  regulated: Boolean!
+  paymentDate: AWSDateTime
+  monthConcerned: String!
+  structureID: ID! @index(name: "byStructure")
+}
+
 type Bugs @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   details: String!
   image: String
-  userID: ID! @index(name: "byUser")
-  courierID: ID! @index(name: "byCourier")
+  userID: ID @index(name: "byUser")
+  courierID: ID @index(name: "byCourier")
 }
 
 type AskedFeatures @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   details: String!
-  userID: ID! @index(name: "byUser")
-  courierID: ID! @index(name: "byCourier")
+  userID: ID @index(name: "byUser")
+  courierID: ID @index(name: "byCourier")
 }
 
 enum TransportationModes {
@@ -157,5 +166,6 @@ type Structure @model @auth(rules: [{allow: public}]) {
   maxCancellations: Int
   cancellationPenalityFee: Float
   maxCancellationPenalityFee: Float
+  Bills: [Bill] @hasMany(indexName: "byStructure", fields: ["id"])
 }
  

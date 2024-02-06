@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import { Divider, Text} from '@rneui/themed';
-import {API, Auth, JS, Storage, graphqlOperation} from 'aws-amplify';
+import { signOut } from 'aws-amplify/auth';
+import {generateClient} from 'aws-amplify/api';
 import {Image} from '@rneui/base';
 import {useNavigation} from '@react-navigation/native';
 import {useAuthContext} from '../../contexts/AuthContext';
@@ -21,7 +22,8 @@ AWS.config.update({
 export const UserAccountScreen = () => {
   const navigation = useNavigation();
   const {dbUser} = useAuthContext();
-   const s3 = new AWS.S3();
+  const s3 = new AWS.S3();
+  const client = generateClient();
 
    const [usrPicture, setUsrPicture] = useState();
    const [filePath, setFilePath] = useState();
@@ -57,6 +59,15 @@ export const UserAccountScreen = () => {
     }
   }
 
+  async function handleSignOut() {
+    try {
+      const logout = await signOut();
+      console.log({logout})
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
   const doAddPicture = async () => {
     const response = await launchImageLibrary(options)
     console.log('the testtt::::', response.assets)
@@ -78,15 +89,15 @@ export const UserAccountScreen = () => {
   }
 
   const updateProfilePicture = async (fileName) => {
-      await API.graphql(
-        graphqlOperation(updateUser, {
+      await client.graphql({
+        query: updateUser,
+        variables: {
           input: {
-            // _version: dbUser._version,
             picture:fileName,
             id: dbUser.id,
-          },
-        }),
-      );
+          }
+        }
+      })
   }
 
   useEffect(() => {
@@ -203,7 +214,7 @@ export const UserAccountScreen = () => {
       </View>
 
       <View style={styles.footer_part}>
-        <Pressable onPress={() => Auth.signOut()} style={styles.logout_style}>
+        <Pressable onPress={handleSignOut} style={styles.logout_style}>
           <Entypo name="log-out" size={20} color="#000" />
           <Text style={{left: 5}}>Déconnexion</Text>
         </Pressable>

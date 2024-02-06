@@ -122,12 +122,12 @@ export const RootNavigator = () => {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        size={'large'}
-        color="#000"
-        style={{alignSelf: 'center', marginTop: 60}}
-      />
-      // <EntryScreen />
+      // <ActivityIndicator
+      //   size={'large'}
+      //   color="#000"
+      //   style={{alignSelf: 'center', marginTop: 60}}
+      // />
+      <EntryScreen />
     );
   }
 
@@ -154,9 +154,7 @@ export const RootNavigator = () => {
         ) : (
           <Stack.Screen name="NotFound" component={NotAuthorize} />
         )
-      ) : authUser ? (
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      ) : <Stack.Screen name="HomeStack" component={HomeStackNavigator} />}
+      ) :<Stack.Screen name="Profile" component={ProfileScreen} />}
     </Stack.Navigator>
   );
 };
@@ -191,7 +189,7 @@ const HomeStackNavigator = props => {
         options={{headerShown: false}} 
       />}
       
-      {!authUser && <HomeStackRoutes.Screen
+      {/* {!authUser && <HomeStackRoutes.Screen
         name="signup"
         component={SignUpScreen}
         options={{headerShown: false}}
@@ -200,7 +198,7 @@ const HomeStackNavigator = props => {
         name="login"
         component={LoginScreen}
         options={{headerShown: false}}
-      />}
+      />} */}
       <HomeStackRoutes.Screen
         name="HomeTabs"
         component={HomeTabsRoutes}

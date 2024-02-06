@@ -1,7 +1,7 @@
 import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import RestaurantItem from '../../../components/RestaurantItem';
-import {API, graphqlOperation} from 'aws-amplify';
+import {generateClient} from 'aws-amplify/api';
 import {StructureType} from '../../../models';
 import {Text} from '@rneui/themed';
 import {listStructures} from '../../../graphql/queries';
@@ -16,6 +16,7 @@ const RestaurantHome = ({search, showFavorites}) => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const { dbUser } = useAuthContext()
+  const client = generateClient()
 
   useEffect(() => {
     console.log('the user is favorite:::', dbUser.favouriteRestaurants)
@@ -24,9 +25,9 @@ const RestaurantHome = ({search, showFavorites}) => {
     watchRestaurantUpdating(); 
 
     // Watch the restau list for deleting
-    const subscription = API.graphql(
-      graphqlOperation(onDeleteStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onDeleteStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onDeleteSTructure result:', value);
         if (value.data.onDeleteStructure.type === StructureType.RESTAURANT) {
@@ -47,9 +48,9 @@ const RestaurantHome = ({search, showFavorites}) => {
   }, [search, restaurants, showFavorites, dbUser]);
 
   const watchRestaurantCreation = () => {
-    const subscription = API.graphql(
-      graphqlOperation(onCreateStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onCreateStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onCreateStructure result in Restaurant:', value);
         if (value.data.onCreateStructure.type === StructureType.RESTAURANT) {
@@ -64,9 +65,9 @@ const RestaurantHome = ({search, showFavorites}) => {
   };
 
   const watchRestaurantUpdating = () => {
-    const subscription = API.graphql(
-      graphqlOperation(onUpdateStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onUpdateStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onUpdateStructure result in Restaurant:', value);
         if (value.data.onUpdateStructure.type === StructureType.RESTAURANT) {
@@ -80,13 +81,17 @@ const RestaurantHome = ({search, showFavorites}) => {
     return () => subscription.unsubscribe();
   };
 
-  const fetchRestaurants = () => {
-    API.graphql(graphqlOperation(listStructures)).then(result => {
-      const listRestaurants = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.RESTAURANT && _.isActive,
-      );
-      setRestaurants(listRestaurants);
-    });
+  const fetchRestaurants = async () => {
+    const listRestaurants = await client.graphql({
+      query: listStructures,
+      variables:{
+        filter:{
+          type: {eq: StructureType.RESTAURANT},
+          isActive: {eq: true}
+        }
+      }
+    })
+    setRestaurants(listRestaurants.data.listStructures.items)
   };
 
   const filterRestaurantByTerm = term => {

@@ -1,6 +1,5 @@
 import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {API, graphqlOperation} from 'aws-amplify';
 import {StructureType} from '../../../models';
 import ShopItem from '../../../components/shop/ShopItem';
 import {listStructures} from '../../../graphql/queries';
@@ -9,6 +8,7 @@ import {
   onDeleteStructure,
   onUpdateStructure,
 } from '../../../graphql/subscriptions';
+import {generateClient} from 'aws-amplify/api';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { Text } from '@rneui/themed';
 
@@ -16,6 +16,7 @@ const ShopHome = ({search, showFavorites}) => {
   const [shops, setShops] = useState([]);
   const [filterdShop, setFilteredShop] = useState([]);
   const { dbUser } = useAuthContext()
+  const client = generateClient()
 
   useEffect(() => {
     fetchShop();
@@ -23,9 +24,9 @@ const ShopHome = ({search, showFavorites}) => {
     watchShopUpdating();
 
     // Watch the shop list for deleting
-    const subscription = API.graphql(
-      graphqlOperation(onDeleteStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onDeleteStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onDeleteSTructure result in ShopHome:', value);
         if (value.data.onDeleteStructure.type === StructureType.SHOP) {
@@ -46,9 +47,9 @@ const ShopHome = ({search, showFavorites}) => {
   }, [search, shops, showFavorites, dbUser]);
 
   const watchShopCreation = () => {
-    const subscription = API.graphql(
-      graphqlOperation(onCreateStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onCreateStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onCreateStructure result in ShopHome:', value);
         if (value.data.onCreateStructure.type === StructureType.SHOP) {
@@ -63,9 +64,9 @@ const ShopHome = ({search, showFavorites}) => {
   };
 
   const watchShopUpdating = () => {
-    const subscription = API.graphql(
-      graphqlOperation(onUpdateStructure, {}),
-    ).subscribe({
+    const subscription = client.graphql({
+      query: onUpdateStructure
+    }).subscribe({
       next: ({value}) => {
         console.log('le wath onUpdateSHOP result in ShopHome:', value);
         if (value.data.onUpdateStructure.type === StructureType.SHOP) {
@@ -79,13 +80,17 @@ const ShopHome = ({search, showFavorites}) => {
     return () => subscription.unsubscribe();
   };
 
-  const fetchShop = () => {
-    API.graphql(graphqlOperation(listStructures)).then(result => {
-      const listShops = result.data.listStructures.items.filter(
-        _ => _.type === StructureType.SHOP && _.isActive,
-      );
-      setShops(listShops);
-    });
+  const fetchShop = async () => {
+    const theListOfShops = await client.graphql({
+      query:listStructures,
+      variables:{
+        filter:{
+          type: {eq: StructureType.SHOP},
+          isActive : {eq: true}
+        }
+      }
+    })
+    setShops(theListOfShops.data.listStructures.items)
   };
 
   const filterShopByTerm = term => {

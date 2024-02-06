@@ -1,6 +1,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateBill = /* GraphQL */ `
+  subscription OnCreateBill($filter: ModelSubscriptionBillFilterInput) {
+    onCreateBill(filter: $filter) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateBill = /* GraphQL */ `
+  subscription OnUpdateBill($filter: ModelSubscriptionBillFilterInput) {
+    onUpdateBill(filter: $filter) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteBill = /* GraphQL */ `
+  subscription OnDeleteBill($filter: ModelSubscriptionBillFilterInput) {
+    onDeleteBill(filter: $filter) {
+      id
+      amount
+      regulated
+      paymentDate
+      monthConcerned
+      structureID
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreateBugs = /* GraphQL */ `
   subscription OnCreateBugs($filter: ModelSubscriptionBugsFilterInput) {
     onCreateBugs(filter: $filter) {
@@ -1133,6 +1178,21 @@ export const onCreateStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1224,6 +1284,21 @@ export const onUpdateStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1315,6 +1390,21 @@ export const onDeleteStructure = /* GraphQL */ `
       maxCancellations
       cancellationPenalityFee
       maxCancellationPenalityFee
+      Bills {
+        items {
+          id
+          amount
+          regulated
+          paymentDate
+          monthConcerned
+          structureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
